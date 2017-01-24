@@ -1,4 +1,4 @@
-#include "initialization.h"
+#include "../include/initialization.h"
 
 VideoCapture initializeVideoCapture() {
     VideoCapture cap(DEFAULT_CAMERA); // open the default camera

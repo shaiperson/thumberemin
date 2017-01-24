@@ -1,5 +1,5 @@
-#include "global.h"
-#include "initialization.h"
+#include "../include/global.h"
+#include "../include/initialization.h"
 
 int main() {
 
