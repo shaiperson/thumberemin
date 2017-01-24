@@ -11,11 +11,13 @@ int main() {
     while (true) {
         cap >> frameCopy;
         flip(frameCopy, frame, 1);
+
         initialScreen.updateFrame(frame);
 
         imshow("camarita", frame);
+        // return 0;
         if(waitKey(30) >= 0) break;
     }
-    // the camera will be deinitialized automatically in VideoCapture destructor
+
     return 0;
 }
