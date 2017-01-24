@@ -27,3 +27,16 @@
 *.exe
 *.out
 *.app
+bin/*
+
+# Mac-specific files
+.DS_Store
+
+# CMake-generated files
+build/CMakeCache.txt
+build/CMakeFiles/
+build/Makefile
+build/cmake_install.cmake
+
+# Notes
+notes.txt
