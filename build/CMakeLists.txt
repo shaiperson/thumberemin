@@ -30,9 +30,7 @@ if(CMAKE_VERSION VERSION_LESS "2.8.11")
 endif()
 
 # Declare the executable target built from your sources
-add_executable(prueba ../main.cpp)
-# add_executable(camshift_example ../camshift_example.cpp)
+add_executable(prueba ../main.cpp ../initialization.cpp)
 
 # Link your application with OpenCV libraries
 target_link_libraries(prueba ${OpenCV_LIBS})
-# target_link_libraries(camshift_example ${OpenCV_LIBS})
