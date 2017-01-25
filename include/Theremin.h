@@ -7,21 +7,19 @@
 class Theremin {
 public:
     Theremin();
+    ~Theremin();
     void run();
 private:
     VideoCapture capture;
     Size frameSize;
 
-    // Screen* screen; // TODO make polymorphic
+    Screen* screen; // TODO make polymorphic
+    // InitialScreen initialScreen;
+    // PlayingScreen playingScreen;
+    void replaceScreen();
 
-    InitialScreen initialScreen;
-    PlayingScreen playingScreen;
     string windowName;
 
-    void runner(Screen&);
-
-    void runInitial();
-    void runPlaying();
 };
 
 #endif

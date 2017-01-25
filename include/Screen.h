@@ -6,6 +6,7 @@
 
 class Screen {
 public:
+    virtual ~Screen() {}
     virtual void updateFrame(Mat& frame) = 0;
 };
 
