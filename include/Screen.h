@@ -9,7 +9,7 @@ public:
     virtual void updateFrame(Mat& frame) = 0;
 };
 
-class InitialScreen : Screen {
+class InitialScreen : public Screen {
 public:
     InitialScreen(const Size& size);
     void updateFrame(Mat& frame);
@@ -22,10 +22,10 @@ private:
 
 };
 
-// class GameScreen : Screen {
-// public:
-//     // GameScreen(bla);
-//     void updateFrame(Mat& frame);
-// }
+class PlayingScreen : public Screen {
+public:
+    PlayingScreen(const Size& size);
+    void updateFrame(Mat& frame);
+};
 
 #endif
