@@ -2,16 +2,12 @@
 
 Theremin::Theremin() :
     capture(DEFAULT_CAMERA),
-    frameSize(
-        capture.get(CV_CAP_PROP_FRAME_WIDTH),
-        capture.get(CV_CAP_PROP_FRAME_HEIGHT)
-    ),
     windowName("Theremin")
 {
     if(!capture.isOpened())  // check if we succeeded
         throw runtime_error("Error initializing camera");
 
-    screen = new InitialScreen(frameSize);
+    screen = new InitialScreen(capture, windowName);
 }
 
 Theremin::~Theremin() {
@@ -19,14 +15,16 @@ Theremin::~Theremin() {
 }
 
 void Theremin::run() {
-    Mat frame, frameCopy;
+    // Mat frame, frameCopy;
     while (true) {
-        capture >> frameCopy;
-        flip(frameCopy, frame, 1);
+        // capture >> frameCopy;
+        // flip(frameCopy, frame, 1);
+        //
+        // screen->updateFrame(frame);
+        //
+        // imshow("camarita", frame);
 
-        screen->updateFrame(frame);
-
-        imshow("camarita", frame);
+        screen->update();
 
         int key = waitKey(1);
         if (key == 113) {
@@ -41,5 +39,5 @@ void Theremin::run() {
 
 void Theremin::replaceScreen() {
     delete screen;
-    screen = new PlayingScreen(frameSize);
+    screen = new PlayingScreen(capture, windowName);
 }

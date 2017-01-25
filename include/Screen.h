@@ -6,37 +6,44 @@
 
 class Screen {
 public:
+    Screen(VideoCapture& cap, string wn);
     virtual ~Screen() {}
-    virtual void updateFrame(Mat& frame) = 0;
+    virtual void update() = 0;
+
 protected:
-    void dimRegions(Mat& frame, const vector<Rect> regions, double factor) {
-        Mat regionFrameData;
-        for (const Rect& region : regions) {
-            regionFrameData = frame(region);
-            regionFrameData.convertTo(regionFrameData, -1, factor, 0);
-        }
-    };
+    VideoCapture capture;
+    Size frameSize;
+    string windowName;
+    Rect playingRegion;
+    vector<Rect> inactiveRegions;
+
+    Mat captureAndPreprocess();
+    void dimRegions(Mat& frame, const vector<Rect> regions, double factor);
 };
 
 class InitialScreen : public Screen {
 public:
-    InitialScreen(const Size& size);
-    void updateFrame(Mat& frame);
+    InitialScreen(VideoCapture& cap, string wn);
+    void update();
 
 private:
-    using Screen::dimRegions;
+    using Screen::capture;
+    using Screen::frameSize;
+    using Screen::windowName;
+    using Screen::inactiveRegions;
+    using Screen::playingRegion;
 
-    vector<Rect> inactiveRegions;
-    Rect activeRegion;
     Rect samplingRegion;
     InstructionsText samplingInstructions;
 
+    using Screen::dimRegions;
+    using Screen::captureAndPreprocess;
 };
 
 class PlayingScreen : public Screen {
 public:
-    PlayingScreen(const Size& size);
-    void updateFrame(Mat& frame);
+    PlayingScreen(VideoCapture& cap, string windowName);
+    void update();
 private:
     using Screen::dimRegions;
 

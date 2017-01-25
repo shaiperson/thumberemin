@@ -36,7 +36,8 @@ add_executable (
     ../src/InitialScreen.cpp
     ../src/PlayingScreen.cpp
     ../src/InstructionsText.cpp
-    ../src/Theremin.cpp)
+    ../src/Theremin.cpp
+    ../src/Screen.cpp)
 
 # Link your application with OpenCV libraries
 target_link_libraries(prueba ${OpenCV_LIBS})

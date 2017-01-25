@@ -11,7 +11,6 @@ public:
     void run();
 private:
     VideoCapture capture;
-    Size frameSize;
 
     Screen* screen; // TODO make polymorphic
     // InitialScreen initialScreen;
