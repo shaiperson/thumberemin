@@ -6,6 +6,8 @@ int main() {
     Mat frame, frameCopy;
     VideoCapture cap = initializeVideoCapture();
     cap >> frame;
+
+    namedWindow("camarita", 1);
     InitialScreen initialScreen(frame.size());
 
     while (true) {
@@ -15,8 +17,14 @@ int main() {
         initialScreen.updateFrame(frame);
 
         imshow("camarita", frame);
-        // return 0;
-        if(waitKey(30) >= 0) break;
+
+        int key = waitKey(1);
+        if (key == 113) {
+            cout << "K, quitting." << endl;
+            break;
+        } else if (key == 13) {
+            cout << "Entering playing mode" << endl;
+        }
     }
 
     return 0;
