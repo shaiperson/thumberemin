@@ -14,9 +14,7 @@ InitialScreen::InitialScreen(VideoCapture& cap, string wn) :
         Point(playingRegion.x, samplingRegion.y)
     ) {}
 
-void InitialScreen::update() {
-    Mat frame = captureAndPreprocess();
-
+void InitialScreen::processFrame(Mat& frame) {
     /* darken inactive regions */
     dimRegions(frame, inactiveRegions, 0.3);
 
@@ -25,7 +23,4 @@ void InitialScreen::update() {
 
     /* sampling instruction text */
     samplingInstructions.write(frame);
-
-    /* show frame*/
-    imshow(windowName, frame);
 }

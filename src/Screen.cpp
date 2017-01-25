@@ -20,6 +20,12 @@ Screen::Screen(VideoCapture& cap, string wn) :
     };
 }
 
+void Screen::update() {
+    Mat frame = captureAndPreprocessFrame();
+    processFrame(frame);
+    imshow(windowName, frame);
+}
+
 void Screen::dimRegions(Mat& frame, const vector<Rect> regions, double factor) {
     Mat regionFrameData;
     for (const Rect& region : regions) {
@@ -28,7 +34,7 @@ void Screen::dimRegions(Mat& frame, const vector<Rect> regions, double factor) {
     }
 }
 
-Mat Screen::captureAndPreprocess() {
+Mat Screen::captureAndPreprocessFrame() {
     Mat frame, frameCopy;
     capture >> frameCopy;
     flip(frameCopy, frame, 1);

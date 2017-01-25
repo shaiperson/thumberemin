@@ -8,7 +8,7 @@ class Screen {
 public:
     Screen(VideoCapture& cap, string wn);
     virtual ~Screen() {}
-    virtual void update() = 0;
+    void update();
 
 protected:
     VideoCapture capture;
@@ -17,7 +17,8 @@ protected:
     Rect playingRegion;
     vector<Rect> inactiveRegions;
 
-    Mat captureAndPreprocess();
+    virtual void processFrame(Mat&) = 0;
+    Mat captureAndPreprocessFrame();
     void dimRegions(Mat& frame, const vector<Rect> regions, double factor);
 };
 
@@ -27,6 +28,8 @@ public:
     void update();
 
 private:
+    void processFrame(Mat&);
+
     using Screen::capture;
     using Screen::frameSize;
     using Screen::windowName;
@@ -37,7 +40,7 @@ private:
     InstructionsText samplingInstructions;
 
     using Screen::dimRegions;
-    using Screen::captureAndPreprocess;
+    using Screen::captureAndPreprocessFrame;
 };
 
 class PlayingScreen : public Screen {
@@ -45,10 +48,16 @@ public:
     PlayingScreen(VideoCapture& cap, string windowName);
     void update();
 private:
-    using Screen::dimRegions;
+    void processFrame(Mat&);
 
-    vector<Rect> inactiveRegions;
-    Rect playingRegion;
+    using Screen::capture;
+    using Screen::frameSize;
+    using Screen::windowName;
+    using Screen::inactiveRegions;
+    using Screen::playingRegion;
+
+    using Screen::dimRegions;
+    using Screen::captureAndPreprocessFrame;
 };
 
 #endif
