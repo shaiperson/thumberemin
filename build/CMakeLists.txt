@@ -30,7 +30,11 @@ if(CMAKE_VERSION VERSION_LESS "2.8.11")
 endif()
 
 # Declare the executable target built from your sources
-add_executable(prueba ../src/main.cpp ../src/initialization.cpp)
+add_executable (
+    prueba
+    ../src/main.cpp
+    ../src/Screen.cpp
+    ../src/InstructionsText.cpp)
 
 # Link your application with OpenCV libraries
 target_link_libraries(prueba ${OpenCV_LIBS})

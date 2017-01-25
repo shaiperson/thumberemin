@@ -1,35 +1,4 @@
-#include "../include/initialization.h"
-
-VideoCapture initializeVideoCapture() {
-    VideoCapture cap(DEFAULT_CAMERA); // open the default camera
-    if(!cap.isOpened())  // check if we succeeded
-        throw runtime_error("Error initializing camera");
-    return cap;
-}
-
-InstructionsText::InstructionsText(const vector<string>& lines, const Point& bottomLeft)
-: lines(lines), bottomLeft(bottomLeft) {
-    fontFace = FONT_HERSHEY_SIMPLEX;
-    fontScale = 0.4;
-    thickness = 1;
-    firstLineSize = getTextSize(lines[0], fontFace, fontScale, thickness, &baseLine);
-    color = Scalar(255,255,255);
-}
-
-void InstructionsText::write(Mat& frame) {
-    // cout << bottomLeft << endl;
-    size_t lineIndex = 0;
-    size_t totalLines = lines.size();
-    for (const string& line : lines)
-        putText (
-            frame,
-            line,
-            Point(bottomLeft.x, bottomLeft.y - (totalLines-lineIndex++)*(firstLineSize.height+baseLine)),
-            fontFace,
-            fontScale,
-            color
-        );
-}
+#include "../include/Screen.h"
 
 InitialScreen::InitialScreen(const Size& size) :
     activeRegion (
@@ -44,10 +13,9 @@ InitialScreen::InitialScreen(const Size& size) :
         activeRegion.width*0.5,
         activeRegion.width*0.5
     ),
-    samplingInstructions(
+    samplingInstructions (
         {"Cover square", "with thumb", "and press 'enter'", "", "Press 'q' to quit"},
         Point(activeRegion.x, samplingRegion.y)
-
     )
 {
     inactiveRegions = {
