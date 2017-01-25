@@ -1,5 +1,6 @@
 #include "../include/Screen.h"
 
+// TODO hardcoded values
 InitialScreen::InitialScreen(const Size& size) :
     activeRegion (
         size.width*(10/12.0),
@@ -26,12 +27,7 @@ InitialScreen::InitialScreen(const Size& size) :
 
 void InitialScreen::updateFrame(Mat& frame) {
     /* darken inactive regions */
-    Mat regionFrameData;
-    for (Rect& region : inactiveRegions) {
-        // cout << region << endl;
-        regionFrameData = frame(region);
-        regionFrameData.convertTo(regionFrameData, -1, 0.3, 0); // TODO hardcoded values
-    }
+    dimRegions(frame, inactiveRegions, 0.3);
 
     /* draw rectangle marking finger color sampling region */
     rectangle(frame, samplingRegion, Scalar(255,191,0), 4); // TODO hardcoded values
