@@ -1,14 +1,14 @@
-#ifndef THEREMIN_H
-#define THEREMIN_H
+#ifndef GAME_H
+#define GAME_H
 
 #include "global.h"
 #include "PlayingScreen.h"
 #include "InitialScreen.h"
 
-class Theremin {
+class Game {
 public:
-    Theremin();
-    ~Theremin();
+    Game();
+    ~Game();
     void run();
 
 private:
