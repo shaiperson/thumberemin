@@ -15,29 +15,40 @@ Theremin::~Theremin() {
 }
 
 void Theremin::run() {
-    // Mat frame, frameCopy;
-    while (true) {
-        // capture >> frameCopy;
-        // flip(frameCopy, frame, 1);
-        //
-        // screen->updateFrame(frame);
-        //
-        // imshow("camarita", frame);
-
+    /* wait for user to choose playing mode */
+    while (keyOptions()) {
         screen->update();
+    }
 
-        int key = waitKey(1);
-        if (key == 113) {
-            cout << "K, quitting." << endl;
-            break;
-        } else if (key == 13) {
-            cout << "Entering playing mode" << endl;
-            replaceScreen();
+    if (playingMode) {
+        cout << "hola" << endl;
+        while (keyOptions()) {
+            screen->update();
         }
     }
 }
 
-void Theremin::replaceScreen() {
+bool Theremin::keyOptions() {
+    int key = waitKey(1);
+    bool continuePlaying = true;
+
+    /* enter key */
+    if (key == 13) {
+        cout << "Entering playing mode" << endl;
+        switchToPlayingMode();
+        continuePlaying = false;
+    }
+    /* 'q' key */
+    if (key == 113) {
+        cout << "K, quitting." << endl;
+        continuePlaying = false;
+    }
+
+    return continuePlaying;
+}
+
+void Theremin::switchToPlayingMode() {
     delete screen;
     screen = new PlayingScreen(capture, windowName);
+    playingMode = true;
 }
