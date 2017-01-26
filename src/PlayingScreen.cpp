@@ -1,4 +1,4 @@
-#include "../include/Screen.h"
+#include "../include/PlayingScreen.h"
 
 PlayingScreen::PlayingScreen(VideoCapture& cap, string wn) :
     Screen(cap, wn) {}

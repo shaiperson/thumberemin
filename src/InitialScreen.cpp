@@ -1,4 +1,4 @@
-#include "../include/Screen.h"
+#include "../include/InitialScreen.h"
 
 // TODO hardcoded values
 InitialScreen::InitialScreen(VideoCapture& cap, string wn) :

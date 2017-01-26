@@ -2,22 +2,24 @@
 #define THEREMIN_H
 
 #include "global.h"
-#include "Screen.h"
+#include "PlayingScreen.h"
+#include "InitialScreen.h"
 
 class Theremin {
 public:
     Theremin();
     ~Theremin();
     void run();
+
 private:
     VideoCapture capture;
-
-    Screen* screen; // TODO make polymorphic
-    // InitialScreen initialScreen;
-    // PlayingScreen playingScreen;
-    void replaceScreen();
-
+    Screen* screen;
     string windowName;
+
+    bool playingMode; // TODO make polymorphic with respect to run()?
+
+    void switchToPlayingMode();
+    bool keyOptions();
 
 };
 
