@@ -5,7 +5,7 @@
 
 struct InstructionsText {
     vector<string> lines;
-    Point bottomLeft;
+    // Point bottomLeft;
     int fontFace;
     double fontScale;
     int thickness;
@@ -13,8 +13,9 @@ struct InstructionsText {
     Scalar color;
     int baseLine;
 
-    InstructionsText(const vector<string>& lines, const Point& bottomLeft);
-    void write(Mat&);
+    // InstructionsText(const vector<string>& lines, const Point& bottomLeft);
+    InstructionsText(const vector<string>& lines); // constructor que no toma posición; write() pasa a tomar posición
+    void write(Mat&, const Point& bottomLeft);
 };
 
 #endif

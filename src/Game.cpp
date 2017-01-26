@@ -2,28 +2,33 @@
 
 Game::Game() :
     capture(DEFAULT_CAMERA),
-    windowName("Game")
+    windowName(GAME_WINDOW_NAME)
 {
     if(!capture.isOpened())  // check if we succeeded
         throw runtime_error("Error initializing camera");
 
     screen = new InitialScreen(capture, windowName);
+    tracker = new ColorSampler();
 }
 
 Game::~Game() {
     delete screen;
+    delete tracker;
 }
 
 void Game::run() {
     /* wait for user to choose playing mode */
     while (keyOptions()) {
-        screen->update();
+        Mat frame = captureAndPreprocessFrame();
+        tracker->update(frame)
+        screen->update(frame, tracker);
     }
 
     if (playingMode) {
-        cout << "hola" << endl;
         while (keyOptions()) {
-            screen->update();
+            Mat frame = captureAndPreprocessFrame();
+            tracker->update(frame)
+            screen->update(frame, tracker);
         }
     }
 }
@@ -50,5 +55,16 @@ bool Game::keyOptions() {
 void Game::switchToPlayingMode() {
     delete screen;
     screen = new PlayingScreen(capture, windowName);
+
+    delete tracker;
+    tracker = new PlayingTracker();
+
     playingMode = true;
+}
+
+Mat Game::captureAndPreprocessFrame() {
+    Mat frame, frameCopy;
+    capture >> frameCopy;
+    flip(frameCopy, frame, 1);
+    return frame;
 }

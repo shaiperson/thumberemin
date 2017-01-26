@@ -5,6 +5,8 @@
 #include "PlayingScreen.h"
 #include "InitialScreen.h"
 
+LOL ESTO
+
 class Game {
 public:
     Game();
@@ -15,9 +17,11 @@ private:
     VideoCapture capture;
     Screen* screen;
     string windowName;
+    TrackingInfo* tracker;
 
     bool playingMode; // TODO make polymorphic with respect to run()?
 
+    Mat Screen::captureAndPreprocessFrame();
     void switchToPlayingMode();
     bool keyOptions();
 

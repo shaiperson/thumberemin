@@ -5,19 +5,18 @@
 
 class PlayingScreen : public Screen {
 public:
-    PlayingScreen(VideoCapture& cap, string windowName);
-    void update();
-private:
-    void processFrame(Mat&);
+    PlayingScreen(const Size& fsz, const string& windowName);
+    using Screen::update; // hace falta?
 
-    using Screen::capture;
+private:
+    void processFrame(Mat&, const TrackingInfo&);
+
     using Screen::frameSize;
     using Screen::windowName;
     using Screen::inactiveRegions;
     using Screen::playingRegion;
 
     using Screen::dimRegions;
-    using Screen::captureAndPreprocessFrame;
 };
 
 #endif

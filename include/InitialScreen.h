@@ -5,23 +5,20 @@
 
 class InitialScreen : public Screen {
 public:
-    InitialScreen(VideoCapture& cap, string wn);
-    void update();
+    InitialScreen(const Size& fsz, const string& wn);
+    using Screen::update; // hace falta?
 
 private:
-    void processFrame(Mat&);
+    void processFrame(Mat&, const TrackingInfo&);
 
-    using Screen::capture;
     using Screen::frameSize;
     using Screen::windowName;
     using Screen::inactiveRegions;
     using Screen::playingRegion;
 
-    Rect samplingRegion;
-    InstructionsText samplingInstructions;
-
     using Screen::dimRegions;
-    using Screen::captureAndPreprocessFrame;
+
+    InstructionsText samplingInstructions;
 };
 
 #endif

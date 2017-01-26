@@ -6,18 +6,15 @@
 
 class Screen {
 public:
-    Screen(VideoCapture& cap, string wn);
-    virtual ~Screen() {}
-    void update();
+    Screen(const Size& fsz, string wn);
+    virtual ~Screen() { }
+    void update(Mat& frame, const TrackingInfo& tracker);
 
 protected:
-    VideoCapture capture;
     Size frameSize;
     string windowName;
-    Rect playingRegion;
-    vector<Rect> inactiveRegions;
 
-    virtual void processFrame(Mat&) = 0;
+    virtual void processFrame(Mat&, const TrackingInfo&) = 0;
     Mat captureAndPreprocessFrame();
     void dimRegions(Mat& frame, const vector<Rect> regions, double factor);
 };
