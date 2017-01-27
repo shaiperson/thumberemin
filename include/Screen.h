@@ -2,6 +2,7 @@
 #define SCREEN_H
 
 #include "global.h"
+#include "config.h"
 #include "InstructionsText.h"
 #include "TrackingInfo.h"
 

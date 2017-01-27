@@ -1,10 +1,10 @@
 #include "../include/Screen.h"
 
 Screen::Screen() :
-    windowName(config::gameWindowName),
-    frameSize(config::frameSize),
-    playingRegion(config::playingRegion),
-    inactiveRegions(config::inactiveRegions) { }
+    windowName(StaticConfiguation::gameWindowName),
+    frameSize(dynconf.frameSize),
+    playingRegion(dynconf.playingRegion),
+    inactiveRegions(dynconf.inactiveRegions) { }
 
 void Screen::update(Mat& frame, const TrackingInfo& tracker) {
     /* darken inactive regions */

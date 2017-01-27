@@ -1,15 +1,16 @@
 #include "../include/Game.h"
 
 Game::Game() :
-    capture(config::defaultCamera),
-    windowName(config::gameWindowName)
+    capture(StaticConfiguation::defaultCamera),
+    windowName(StaticConfiguation::gameWindowName)
 {
     if(!capture.isOpened()) throw runtime_error("Error initializing camera");
 
+    // Has to be defined before screen object is created
+    dynconf = DynamicConfiguration(Size(capture.get(CV_CAP_PROP_FRAME_WIDTH), capture.get(CV_CAP_PROP_FRAME_HEIGHT)));
+
     screen = new InitialScreen();
     tracker = new ColorSampler();
-
-    config::frameSize = Size(capture.get(CV_CAP_PROP_FRAME_WIDTH), capture.get(CV_CAP_PROP_FRAME_HEIGHT)); // TODO hacer no-global
 }
 
 Game::~Game() {

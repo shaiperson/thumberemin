@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "global.h"
+#include "config.h"
 #include "PlayingScreen.h"
 #include "InitialScreen.h"
 #include "TrackingInfo.h"

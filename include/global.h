@@ -12,14 +12,4 @@
 using namespace cv;
 using namespace std;
 
-namespace config {
-    extern int defaultCamera;
-    extern string gameWindowName;
-    extern Size frameSize;
-    extern Rect playingRegion;
-    extern vector<Rect> inactiveRegions;
-    extern Rect samplingRegion;
-    extern Size trackingWindowSize;
-}
-
 #endif

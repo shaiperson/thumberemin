@@ -33,7 +33,7 @@ endif()
 add_executable (
     prueba
     ../src/main.cpp
-    ../src/global.cpp
+    ../src/config.cpp
     ../src/InitialScreen.cpp
     ../src/PlayingScreen.cpp
     ../src/InstructionsText.cpp
