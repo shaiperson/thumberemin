@@ -15,7 +15,7 @@ struct InstructionsText {
 
     // InstructionsText(const vector<string>& lines, const Point& bottomLeft);
     InstructionsText(const vector<string>& lines); // constructor que no toma posición; write() pasa a tomar posición
-    void write(Mat&, const Point& bottomLeft);
+    void write(Mat&, const Point& bottomLeft) const;
 };
 
 #endif

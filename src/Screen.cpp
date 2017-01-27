@@ -6,7 +6,7 @@ Screen::Screen() :
     playingRegion(dynconf.playingRegion),
     inactiveRegions(dynconf.inactiveRegions) { }
 
-void Screen::update(Mat& frame, const TrackingInfo& tracker) {
+void Screen::update(Mat& frame, const TrackingInfo& tracker) const {
     /* darken inactive regions */
     dimRegions(frame, inactiveRegions, 0.3);
 
@@ -21,7 +21,7 @@ void Screen::update(Mat& frame, const TrackingInfo& tracker) {
     imshow(windowName, frame);
 }
 
-void Screen::dimRegions(Mat& frame, const vector<Rect> regions, double factor) {
+void Screen::dimRegions(Mat& frame, const vector<Rect> regions, double factor) const {
     Mat regionFrameData;
     for (const Rect& region : regions) {
         regionFrameData = frame(region);

@@ -6,10 +6,9 @@
 class PlayingScreen : public Screen {
 public:
     PlayingScreen();
-    using Screen::update; // hace falta?
 
 private:
-    void processFrame(Mat&, const TrackingInfo&);
+    void processFrame(Mat&, const TrackingInfo&) const;
 
     using Screen::frameSize;
     using Screen::windowName;

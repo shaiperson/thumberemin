@@ -8,7 +8,7 @@ InitialScreen::InitialScreen() :
     ) {}
 
 /* Derived-screen-specific additional frame processing for display*/
-void InitialScreen::processFrame(Mat& frame, const TrackingInfo& tracker) {
+void InitialScreen::processFrame(Mat& frame, const TrackingInfo& tracker) const {
     // Initial screen in particular shows instructions and shit
     samplingInstructions.write(frame, Point((dynconf.playingRegion).x, (tracker.current()).y));
 }

@@ -9,7 +9,7 @@ InstructionsText::InstructionsText(const vector<string>& lines)
     color = Scalar(255,255,255);
 }
 
-void InstructionsText::write(Mat& frame, const Point& bottomLeft) {
+void InstructionsText::write(Mat& frame, const Point& bottomLeft) const {
     // cout << bottomLeft << endl;
     size_t lineIndex = 0;
     size_t totalLines = lines.size();
