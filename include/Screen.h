@@ -8,17 +8,10 @@
 
 class Screen {
 public:
-    Screen();
     virtual ~Screen() { }
     void update(Mat& frame, const TrackingInfo& tracker) const;
 
 protected:
-    const string windowName;
-    const Size frameSize;
-
-    Rect playingRegion;
-    vector<Rect> inactiveRegions;
-
     virtual void processFrame(Mat& frame, const TrackingInfo& tracker) const = 0;
     void dimRegions(Mat& frame, const vector<Rect> regions, double factor) const;
 };

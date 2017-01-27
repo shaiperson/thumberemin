@@ -2,7 +2,6 @@
 
 // TODO hardcoded values
 InitialScreen::InitialScreen() :
-    Screen(),
     samplingInstructions (
         {"Cover square", "with thumb", "and press 'enter'", "", "Press 'q' to quit"}
     ) {}

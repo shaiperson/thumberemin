@@ -1,14 +1,8 @@
 #include "../include/Screen.h"
 
-Screen::Screen() :
-    windowName(StaticConfiguation::gameWindowName),
-    frameSize(dynconf.frameSize),
-    playingRegion(dynconf.playingRegion),
-    inactiveRegions(dynconf.inactiveRegions) { }
-
 void Screen::update(Mat& frame, const TrackingInfo& tracker) const {
     /* darken inactive regions */
-    dimRegions(frame, inactiveRegions, 0.3);
+    dimRegions(frame, dynconf.inactiveRegions, 0.3);
 
     /* draw tracking window */
     Rect trackingWindow(tracker.current(), tracker.windowSize());
@@ -18,7 +12,7 @@ void Screen::update(Mat& frame, const TrackingInfo& tracker) const {
     processFrame(frame, tracker);
 
     /* show frame */
-    imshow(windowName, frame);
+    imshow(StaticConfiguation::gameWindowName, frame);
 }
 
 void Screen::dimRegions(Mat& frame, const vector<Rect> regions, double factor) const {

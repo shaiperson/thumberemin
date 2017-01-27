@@ -5,7 +5,6 @@
 
 struct InstructionsText {
     vector<string> lines;
-    // Point bottomLeft;
     int fontFace;
     double fontScale;
     int thickness;
