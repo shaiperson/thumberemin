@@ -24,6 +24,7 @@ void Game::run() {
         capture >> frame;
         tracker->update(frame);
         screen->update(frame, *tracker);
+        // sound->update(*tracker);
     }
 
     if (playingMode) {
@@ -31,6 +32,7 @@ void Game::run() {
             capture >> frame;
             tracker->update(frame);
             screen->update(frame, *tracker);
+            // sound->update(*tracker);
         }
     }
 }
