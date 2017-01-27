@@ -1,6 +1,6 @@
-#include "../include/Game.h"
+#include "../include/Theremin.h"
 
-Game::Game() :
+Theremin::Theremin() :
     capture(StaticConfiguation::defaultCamera)
 {
     if(!capture.isOpened()) throw runtime_error("Error initializing camera");
@@ -12,12 +12,12 @@ Game::Game() :
     tracker = new ColorSampler();
 }
 
-Game::~Game() {
+Theremin::~Theremin() {
     delete screen;
     delete tracker;
 }
 
-void Game::run() {
+void Theremin::run() {
     /* wait for user to choose playing mode */
     Mat frame;
     while (keyOptions()) {
@@ -37,7 +37,7 @@ void Game::run() {
     }
 }
 
-bool Game::keyOptions() {
+bool Theremin::keyOptions() {
     int key = waitKey(1);
     bool continuePlaying = true;
 
@@ -56,7 +56,7 @@ bool Game::keyOptions() {
     return continuePlaying;
 }
 
-void Game::switchToPlayingMode() {
+void Theremin::switchToPlayingMode() {
     delete screen;
     screen = new PlayingScreen();
 

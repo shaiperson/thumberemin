@@ -1,5 +1,5 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef THEREMIN_H
+#define THEREMIN_H
 
 #include "global.h"
 #include "config.h"
@@ -8,10 +8,10 @@
 #include "InitialScreen.h"
 #include "TrackingInfo.h"
 
-class Game {
+class Theremin {
 public:
-    Game();
-    ~Game();
+    Theremin();
+    ~Theremin();
     void run();
 
 private:

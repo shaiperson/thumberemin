@@ -1,9 +1,9 @@
-#include "../include/Game.h"
+#include "../include/Theremin.h"
 
 int main() {
 
-    Game game;
-    game.run();
+    Theremin theremin;
+    theremin.run();
 
     return 0;
 }
