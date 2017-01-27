@@ -3,6 +3,7 @@
 
 #include "global.h"
 #include "InstructionsText.h"
+#include "TrackingInfo.h"
 
 class Screen {
 public:
@@ -11,10 +12,10 @@ public:
     void update(Mat& frame, const TrackingInfo& tracker);
 
 protected:
-    windowName;
-    frameSize;
-    playingRegion;
-    inactiveRegions;
+    string windowName;
+    Size frameSize;
+    Rect playingRegion;
+    vector<Rect> inactiveRegions;
 
     virtual void processFrame(Mat&, const TrackingInfo&) = 0;
     Mat captureAndPreprocessFrame();

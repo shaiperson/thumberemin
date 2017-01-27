@@ -5,11 +5,13 @@
 
 class TrackingInfo {
 public:
-    Tracker();
-    ~Tracker();
+    TrackingInfo() { }
+    virtual ~TrackingInfo() { };
 
-    virtual update() = 0;
-    virtual current() = 0;
+    virtual void update(const Mat& frame) = 0;
+    virtual Point current() const = 0;
+
+    Size windowSize() const { return config::trackingWindowSize; }
 
 protected:
     // tracking state (current position for example)
@@ -17,14 +19,14 @@ protected:
 
 class ColorSampler : public TrackingInfo {
 public:
-    update(const Mat& frame) {} // empty as fuck
-    current(); // returns a fixed position for sampling
+    void update(const Mat& frame) { } // empty as fuck
+    Point current() const { return config::samplingRegion.tl(); } // returns a fixed position for color sampling ()
 };
 
 class Tracker : public TrackingInfo {
 public:
-    update(const Mat& frame) {} // do actual tracking and update state accordingly
-    current(); // returns position according to tracker state as updated by update()
-}
+    /* TODO */ void update(const Mat& frame) {} // do actual tracking and update state accordingly
+    /* TODO */ Point current() const { return Point(0,0); } // returns position according to tracker state as updated by update()
+};
 
 #endif

@@ -1,7 +1,7 @@
 #include "../include/InstructionsText.h"
 
-InstructionsText::InstructionsText(const vector<string>& lines, const Point& bottomLeft)
-: lines(lines), bottomLeft(bottomLeft) {
+InstructionsText::InstructionsText(const vector<string>& lines)
+: lines(lines) {
     fontFace = FONT_HERSHEY_SIMPLEX;
     fontScale = 0.4;
     thickness = 1;
@@ -9,7 +9,7 @@ InstructionsText::InstructionsText(const vector<string>& lines, const Point& bot
     color = Scalar(255,255,255);
 }
 
-void InstructionsText::write(Mat& frame) {
+void InstructionsText::write(Mat& frame, const Point& bottomLeft) {
     // cout << bottomLeft << endl;
     size_t lineIndex = 0;
     size_t totalLines = lines.size();

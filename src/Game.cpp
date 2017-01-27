@@ -22,14 +22,14 @@ void Game::run() {
     while (keyOptions()) {
         Mat frame = captureAndPreprocessFrame();
         tracker->update(frame);
-        screen->update(frame, tracker);
+        screen->update(frame, *tracker);
     }
 
     if (playingMode) {
         while (keyOptions()) {
             Mat frame = captureAndPreprocessFrame();
-            tracker->update(frame)
-            screen->update(frame, tracker);
+            tracker->update(frame);
+            screen->update(frame, *tracker);
         }
     }
 }
@@ -55,10 +55,10 @@ bool Game::keyOptions() {
 
 void Game::switchToPlayingMode() {
     delete screen;
-    screen = new PlayingScreen(capture, windowName);
+    screen = new PlayingScreen();
 
     delete tracker;
-    tracker = new PlayingTracker();
+    tracker = new Tracker();
 
     playingMode = true;
 }

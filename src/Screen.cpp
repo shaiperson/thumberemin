@@ -3,7 +3,7 @@
 Screen::Screen() :
     windowName(config::gameWindowName),
     frameSize(config::frameSize),
-    playingRegion(config::playingRegion)
+    playingRegion(config::playingRegion),
     inactiveRegions(config::inactiveRegions) { }
 
 void Screen::update(Mat& frame, const TrackingInfo& tracker) {

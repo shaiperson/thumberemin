@@ -4,6 +4,7 @@
 #include "global.h"
 #include "PlayingScreen.h"
 #include "InitialScreen.h"
+#include "TrackingInfo.h"
 
 class Game {
 public:
@@ -19,7 +20,7 @@ private:
 
     bool playingMode; // TODO make polymorphic with respect to run()?
 
-    Mat Screen::captureAndPreprocessFrame();
+    Mat captureAndPreprocessFrame();
     void switchToPlayingMode();
     bool keyOptions();
 

@@ -1,6 +1,6 @@
 #include "../include/PlayingScreen.h"
 
-PlayingScreen::PlayingScreen(const Size& fsz, const string& wn) :
+PlayingScreen::PlayingScreen() :
     Screen() {}
 
 /* Derived-screen-specific additional frame processing for display*/
