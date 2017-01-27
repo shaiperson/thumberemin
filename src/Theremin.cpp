@@ -57,11 +57,18 @@ bool Theremin::keyOptions() {
 }
 
 void Theremin::switchToPlayingMode() {
+    /* set private playingMode flag */
+    playingMode = true;
+
+    /* replace inital screen with playing screen */
     delete screen;
     screen = new PlayingScreen();
 
-    delete tracker;
-    tracker = new Tracker();
+    /* take color sample from samplingRegion and replace ColorSampler with Tracker */
+    Mat frameForSampling;
+    capture >> frameForSampling;
+    Mat sampleHistogram = tracker->takeSample(frameForSampling);
 
-    playingMode = true;
+    delete tracker;
+    tracker = new Tracker(sampleHistogram);
 }

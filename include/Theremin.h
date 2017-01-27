@@ -7,6 +7,8 @@
 #include "PlayingScreen.h"
 #include "InitialScreen.h"
 #include "TrackingInfo.h"
+#include "ColorSampler.h"
+#include "Tracker.h"
 
 class Theremin {
 public:
