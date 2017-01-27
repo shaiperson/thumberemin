@@ -6,13 +6,15 @@
 
 class Screen {
 public:
-    Screen(const Size& fsz, string wn);
+    Screen();
     virtual ~Screen() { }
     void update(Mat& frame, const TrackingInfo& tracker);
 
 protected:
-    Size frameSize;
-    string windowName;
+    windowName;
+    frameSize;
+    playingRegion;
+    inactiveRegions;
 
     virtual void processFrame(Mat&, const TrackingInfo&) = 0;
     Mat captureAndPreprocessFrame();

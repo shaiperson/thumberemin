@@ -1,20 +1,10 @@
 #include "../include/Screen.h"
 
-Screen::Screen(const Size& fsz, const string& wn) :
-    windowName(wn),
-    frameSize(fsz),
-    playingRegion ( // TODO hardcoded
-        frameSize.width*(10/12.0),
-        0,
-        frameSize.width/12.0,
-        frameSize.height
-    )
-{
-    inactiveRegions = {
-        Rect(0, 0, playingRegion.x, frameSize.height),
-        Rect(playingRegion.x+playingRegion.width, 0, frameSize.width-playingRegion.x-playingRegion.width-1, frameSize.height),
-    };
-}
+Screen::Screen() :
+    windowName(config::gameWindowName),
+    frameSize(config::frameSize),
+    playingRegion(config::playingRegion)
+    inactiveRegions(config::inactiveRegions) { }
 
 void Screen::update(Mat& frame, const TrackingInfo& tracker) {
     /* darken inactive regions */

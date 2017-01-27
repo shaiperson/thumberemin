@@ -1,14 +1,15 @@
 #include "../include/Game.h"
 
 Game::Game() :
-    capture(DEFAULT_CAMERA),
-    windowName(GAME_WINDOW_NAME)
+    capture(config::defaultCamera),
+    windowName(config::gameWindowName)
 {
-    if(!capture.isOpened())  // check if we succeeded
-        throw runtime_error("Error initializing camera");
+    if(!capture.isOpened()) throw runtime_error("Error initializing camera");
 
-    screen = new InitialScreen(capture, windowName);
+    screen = new InitialScreen();
     tracker = new ColorSampler();
+
+    config::frameSize = Size(capture.get(CV_CAP_PROP_FRAME_WIDTH), capture.get(CV_CAP_PROP_FRAME_HEIGHT)); // TODO hacer no-global
 }
 
 Game::~Game() {
@@ -20,7 +21,7 @@ void Game::run() {
     /* wait for user to choose playing mode */
     while (keyOptions()) {
         Mat frame = captureAndPreprocessFrame();
-        tracker->update(frame)
+        tracker->update(frame);
         screen->update(frame, tracker);
     }
 

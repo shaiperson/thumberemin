@@ -5,8 +5,6 @@
 #include "PlayingScreen.h"
 #include "InitialScreen.h"
 
-LOL ESTO
-
 class Game {
 public:
     Game();

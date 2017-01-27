@@ -5,7 +5,7 @@
 
 class InitialScreen : public Screen {
 public:
-    InitialScreen(const Size& fsz, const string& wn);
+    InitialScreen();
     using Screen::update; // hace falta?
 
 private:

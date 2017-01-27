@@ -5,7 +5,7 @@
 
 class PlayingScreen : public Screen {
 public:
-    PlayingScreen(const Size& fsz, const string& windowName);
+    PlayingScreen();
     using Screen::update; // hace falta?
 
 private:

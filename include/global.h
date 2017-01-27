@@ -11,6 +11,22 @@
 using namespace cv;
 using namespace std;
 
-#define DEFAULT_CAMERA 0
+namespace config {
+    int defaultCamera = 0;
+    string gameWindowName = "Theremin";
+    Size frameSize;
+
+    playingRegion ( // TODO hardcoded
+        frameSize.width*(10/12.0),
+        0,
+        frameSize.width/12.0,
+        frameSize.height
+    )
+
+    inactiveRegions = {
+        Rect(0, 0, playingRegion.x, frameSize.height),
+        Rect(playingRegion.x+playingRegion.width, 0, frameSize.width-playingRegion.x-playingRegion.width-1, frameSize.height),
+    };
+}
 
 #endif

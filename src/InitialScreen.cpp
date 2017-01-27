@@ -1,8 +1,8 @@
 #include "../include/InitialScreen.h"
 
 // TODO hardcoded values
-InitialScreen::InitialScreen(const Size& fsz, const string& wn) :
-    Screen(fsz, wn),
+InitialScreen::InitialScreen() :
+    Screen(),
     samplingInstructions (
         {"Cover square", "with thumb", "and press 'enter'", "", "Press 'q' to quit"}
     ) {}

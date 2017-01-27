@@ -1,7 +1,7 @@
 #include "../include/PlayingScreen.h"
 
 PlayingScreen::PlayingScreen(const Size& fsz, const string& wn) :
-    Screen(fsz, wn) {}
+    Screen() {}
 
 /* Derived-screen-specific additional frame processing for display*/
 void PlayingScreen::processFrame(Mat& frame, const TrackingInfo& tracker) {
