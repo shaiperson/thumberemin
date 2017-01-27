@@ -17,3 +17,7 @@ Capture& Capture::operator>>(Mat& image) {
     flip(temp, image, 1);
     return *this;
 }
+
+bool Capture::read(Mat& image) {
+    return cvcapture.read(image);
+}

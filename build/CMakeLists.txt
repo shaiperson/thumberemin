@@ -34,6 +34,7 @@ add_executable (
     prueba
     ../src/main.cpp
     ../src/config.cpp
+    ../src/Capture.cpp
     ../src/InitialScreen.cpp
     ../src/PlayingScreen.cpp
     ../src/InstructionsText.cpp

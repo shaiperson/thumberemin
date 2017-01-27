@@ -7,16 +7,11 @@
 
 class Capture {
 public:
-    Capture(int cameraId) : cvcapture(cameraId) { }
-    Size frameSize() { return Size(cvcapture.get(CV_CAP_PROP_FRAME_WIDTH), cvcapture.get(CV_CAP_PROP_FRAME_HEIGHT)); }
-    bool isOpened() { return cvcapture.isOpened(); }
-
-    Capture& operator>>(Mat& image) {
-        Mat temp;
-        cvcapture >> temp;
-        flip(temp, image, 1);
-        return *this;
-    }
+    Capture(int cameraId);
+    Size frameSize();
+    bool isOpened();
+    Capture& operator>>(Mat& image);
+    bool read(Mat& image);
 
 private:
     VideoCapture cvcapture;
