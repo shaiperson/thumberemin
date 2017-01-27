@@ -7,7 +7,7 @@ Game::Game() :
     if(!capture.isOpened()) throw runtime_error("Error initializing camera");
 
     // Has to be defined before screen object is created
-    dynconf = DynamicConfiguration(Size(capture.get(CV_CAP_PROP_FRAME_WIDTH), capture.get(CV_CAP_PROP_FRAME_HEIGHT)));
+    dynconf = DynamicConfiguration(capture.frameSize());
 
     screen = new InitialScreen();
     tracker = new ColorSampler();
@@ -20,15 +20,16 @@ Game::~Game() {
 
 void Game::run() {
     /* wait for user to choose playing mode */
+    Mat frame;
     while (keyOptions()) {
-        Mat frame = captureAndPreprocessFrame();
+        capture >> frame;
         tracker->update(frame);
         screen->update(frame, *tracker);
     }
 
     if (playingMode) {
         while (keyOptions()) {
-            Mat frame = captureAndPreprocessFrame();
+            capture >> frame;
             tracker->update(frame);
             screen->update(frame, *tracker);
         }
@@ -62,11 +63,4 @@ void Game::switchToPlayingMode() {
     tracker = new Tracker();
 
     playingMode = true;
-}
-
-Mat Game::captureAndPreprocessFrame() {
-    Mat frame, frameCopy;
-    capture >> frameCopy;
-    flip(frameCopy, frame, 1);
-    return frame;
 }

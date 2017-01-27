@@ -3,6 +3,7 @@
 
 #include "global.h"
 #include "config.h"
+#include "Capture.h"
 #include "PlayingScreen.h"
 #include "InitialScreen.h"
 #include "TrackingInfo.h"
@@ -14,14 +15,13 @@ public:
     void run();
 
 private:
-    VideoCapture capture;
+    Capture capture;
     Screen* screen;
     string windowName;
     TrackingInfo* tracker;
 
     bool playingMode; // TODO make polymorphic with respect to run()?
 
-    Mat captureAndPreprocessFrame();
     void switchToPlayingMode();
     bool keyOptions();
 
