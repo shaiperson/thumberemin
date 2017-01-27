@@ -1,8 +1,7 @@
 #include "../include/Game.h"
 
 Game::Game() :
-    capture(StaticConfiguation::defaultCamera),
-    windowName(StaticConfiguation::gameWindowName)
+    capture(StaticConfiguation::defaultCamera)
 {
     if(!capture.isOpened()) throw runtime_error("Error initializing camera");
 

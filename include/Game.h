@@ -17,7 +17,6 @@ public:
 private:
     Capture capture;
     Screen* screen;
-    string windowName;
     TrackingInfo* tracker;
 
     bool playingMode; // TODO make polymorphic with respect to run()?
