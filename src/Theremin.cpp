@@ -69,6 +69,11 @@ void Theremin::switchToPlayingMode() {
     capture >> frameForSampling;
     Mat sampleHistogram = tracker->takeSample(frameForSampling);
 
+    // cout << "Hist.dims = " << sampleHistogram.dims << endl;
+    // cout << "Value: " << sampleHistogram.at<double>(0,0, 0) << endl;
+    // cout << "Hist.rows = "<< sampleHistogram.rows << endl;
+    // cout << "Hist.cols = "<< sampleHistogram.cols << endl;
+
     delete tracker;
     tracker = new Tracker(sampleHistogram);
 }

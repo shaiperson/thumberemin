@@ -2,7 +2,7 @@
 
 void Screen::update(Mat& frame, const TrackingInfo& tracker) const {
     /* darken inactive regions */
-    dimRegions(frame, dynconf.inactiveRegions, 0.3);
+    dimRegions(frame, dynconf.inactiveRegions, 0.6);
 
     /* draw tracking window */
     Rect trackingWindow(tracker.current(), tracker.windowSize());

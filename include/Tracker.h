@@ -14,6 +14,8 @@ public:
 
 private:
     Mat sample;
+    Rect window;
+    TermCriteria termCriteria;
 };
 
 #endif
