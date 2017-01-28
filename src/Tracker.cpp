@@ -12,13 +12,14 @@ void Tracker::update(const Mat& frame) {
     float singleBinRange[2] = {0, 256};
     const float* ranges[3] = {singleBinRange, singleBinRange, singleBinRange};
 
-    // Mat roi = frame(dynconf.playingRegion);
-    // imshow("OMG POTAOTES", playingRegion);
     Mat backProjection;
-    // calcBackProject(&roi, nimages, channels, sample, backProjection, ranges);
-    calcBackProject(&frame, nimages, channels, sample, backProjection, ranges);
+    
+    Mat roi = frame(dynconf.playingRegion);
+    calcBackProject(&roi, nimages, channels, sample, backProjection, ranges);
 
+    window -= Point((dynconf.inactiveRegions[0]).width, 0); // shift to playingRegion-relative position
     meanShift(backProjection, window, termCriteria);
+    window += Point((dynconf.inactiveRegions[0]).width, 0); // shift back to frame-relative position
 }
 
 Point Tracker::current() const {
