@@ -2,11 +2,16 @@
 
 void Screen::update(Mat& frame, const TrackingInfo& tracker) const {
     /* darken inactive regions */
-    dimRegions(frame, dynconf.inactiveRegions, 0.6);
+    dimRegions(frame, dynconf.inactiveRegions, StaticConfiguation::dimmingFactor);
 
     /* draw tracking window */
     Rect trackingWindow(tracker.current(), tracker.windowSize());
-    rectangle(frame, trackingWindow, Scalar(255,191,0), 4); // TODO hardcoded values (color and thickness)
+    rectangle (
+        frame,
+        trackingWindow,
+        StaticConfiguation::trackingWindowColor,
+        StaticConfiguation::trackingWindowThickness
+    );
 
     /* additional processing to be implemented by each derived screen class */
     processFrame(frame, tracker);

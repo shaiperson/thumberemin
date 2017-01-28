@@ -6,6 +6,9 @@
 namespace StaticConfiguation {
     extern const int defaultCamera;
     extern const string gameWindowName;
+    extern const double dimmingFactor;
+    extern const Scalar trackingWindowColor;
+    extern const int trackingWindowThickness;
 }
 
 struct DynamicConfiguration {

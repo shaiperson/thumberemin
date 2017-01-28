@@ -12,8 +12,7 @@ struct InstructionsText {
     Scalar color;
     int baseLine;
 
-    // InstructionsText(const vector<string>& lines, const Point& bottomLeft);
-    InstructionsText(const vector<string>& lines); // constructor que no toma posición; write() pasa a tomar posición
+    InstructionsText(const vector<string>& lines); // lines should be provided in desired order of appearance
     void write(Mat&, const Point& bottomLeft) const;
 };
 

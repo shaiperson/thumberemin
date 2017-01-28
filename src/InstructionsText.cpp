@@ -10,14 +10,13 @@ InstructionsText::InstructionsText(const vector<string>& lines)
 }
 
 void InstructionsText::write(Mat& frame, const Point& bottomLeft) const {
-    // cout << bottomLeft << endl;
     size_t lineIndex = 0;
     size_t totalLines = lines.size();
     for (const string& line : lines)
         putText (
             frame,
             line,
-            Point(bottomLeft.x, bottomLeft.y - (totalLines-lineIndex++)*(firstLineSize.height+baseLine)),
+            Point(bottomLeft.x, bottomLeft.y - (totalLines-lineIndex++)*(firstLineSize.height)),
             fontFace,
             fontScale,
             color
