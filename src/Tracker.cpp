@@ -13,13 +13,21 @@ void Tracker::update(const Mat& frame) {
 
     Mat backProjection;
 
-    Mat roi = frame(dynconf.playingRegion);
+    /* Playing region expanded with exact margins to allow desired movement of tracking marker
+    Note this strongly relies on meanShift()'s behavior with respect to tracking window reaching edges of frame*/
+    Point playingRegionExpansionVector = Point(0, StaticConfiguration::trackingWindowSize.height / 2);
+    Rect roiRect (
+        dynconf.playingRegion.tl() - playingRegionExpansionVector,
+        dynconf.playingRegion.br() + playingRegionExpansionVector
+    );
+
+    Mat roi = frame(roiRect);
     calcBackProject(&roi, nimages, channels, sample, backProjection, ranges);
 
-    Point windowShift = Point(-dynconf.inactiveRegions[0].width, -dynconf.playingRegion.y);
-    window += windowShift; // shift to playingRegion-relative position
+    Point windowShiftVector = Point(-dynconf.inactiveRegions[0].width, -roiRect.y);
+    window += windowShiftVector; // shift to playingRegion-relative position
     meanShift(backProjection, window, termCriteria);
-    window -= windowShift; // shift back to frame-relative position
+    window -= windowShiftVector; // shift back to frame-relative position
 }
 
 Point Tracker::current() const {

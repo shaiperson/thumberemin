@@ -6,9 +6,11 @@
 namespace StaticConfiguration {
     extern const int defaultCamera;
     extern const string gameWindowName;
+    extern const double screenDivisionFactor;
     extern const double dimmingFactor;
-    extern const Scalar trackingWindowColor;
-    extern const int trackingWindowThickness;
+    extern const Size trackingWindowSize;
+    extern const Scalar samplingWindowColor;
+    extern const int samplingWindowThickness;
     extern const Scalar trackingMarkerColor;
     extern const int trackingMarkerThickness;
     extern const float noteRange[2];
@@ -21,7 +23,6 @@ struct DynamicConfiguration {
     Rect playingRegion;
     vector<Rect> inactiveRegions;
     Rect samplingRegion;
-    Size trackingWindowSize;
     int trackingMarkerRadius;
 
     DynamicConfiguration(const Size&);

@@ -12,7 +12,7 @@ public:
     virtual Point current() const = 0;
     virtual Mat takeSample(Mat& frame) = 0;
 
-    Size windowSize() const { return dynconf.trackingWindowSize; }
+    Size windowSize() const { return StaticConfiguration::trackingWindowSize; }
 
 protected:
     Rect window;

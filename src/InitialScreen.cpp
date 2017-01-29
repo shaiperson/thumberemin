@@ -17,7 +17,7 @@ void InitialScreen::drawRectangleWithCenterAndSize(Mat& frame, const Point& cent
     rectangle (
         frame,
         trackingWindow,
-        StaticConfiguration::trackingWindowColor,
-        StaticConfiguration::trackingWindowThickness
+        StaticConfiguration::samplingWindowColor,
+        StaticConfiguration::samplingWindowThickness
     );
 }

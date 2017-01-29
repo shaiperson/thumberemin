@@ -2,30 +2,39 @@
 
 const int StaticConfiguration::defaultCamera = 0;
 const string StaticConfiguration::gameWindowName = "Theremin";
+
 const double StaticConfiguration::dimmingFactor = 0.7;
-const Scalar StaticConfiguration::trackingWindowColor = Scalar(255,191,0);
-const int StaticConfiguration::trackingWindowThickness = 2;
+const double StaticConfiguration::screenDivisionFactor = 48.0;
+
+const Size StaticConfiguration::trackingWindowSize = Size(50, 50);
+const Scalar StaticConfiguration::samplingWindowColor = Scalar(255,191,0);
+const int StaticConfiguration::samplingWindowThickness = 2;
+
 const Scalar StaticConfiguration::trackingMarkerColor = Scalar(255,191,0);
 const int StaticConfiguration::trackingMarkerThickness = 1;
+
 const float StaticConfiguration::noteRange[2] = {220, 880};
-const size_t StaticConfiguration::totalNotes = 100;
+const size_t StaticConfiguration::totalNotes = 72;
 
 DynamicConfiguration::DynamicConfiguration(const Size& fsz) {
     /* Size of the frames fed by the camera in use */
     frameSize = Size(fsz);
 
-    /* Mapping y-coordinate -> frequency */
-    size_t pixelsPerNote = frameSize.height / StaticConfiguration::totalNotes;
+    /* Calculate playing region height 1. leaving enough space for tracking marker 2. considering number of notes */
+    size_t min_playingRegionMargin = StaticConfiguration::trackingWindowSize.height / 2;
+    size_t max_playingRegionHeight = frameSize.height - 2*min_playingRegionMargin;
+
+    size_t pixelsPerNote = max_playingRegionHeight / StaticConfiguration::totalNotes;
+    size_t actual_playingRegionHeight = pixelsPerNote * StaticConfiguration::totalNotes;
+
+    size_t actual_playingRegionVerticalMargin = (frameSize.height - actual_playingRegionHeight)/2;
 
     /* Denotes the region of the screen where motion tracking happens */
-    size_t playingRegionHeight = pixelsPerNote * StaticConfiguration::totalNotes;
-    size_t playingRegionVerticalMargin = (frameSize.height - playingRegionHeight)/2;
-
     playingRegion = Rect ( // TODO hardcoded
-        frameSize.width*(41/48.0),
-        playingRegionVerticalMargin,
-        frameSize.width*(2/48.0),
-        playingRegionHeight
+        frameSize.width*(41 / StaticConfiguration::screenDivisionFactor),
+        actual_playingRegionVerticalMargin,
+        frameSize.width*(2 / StaticConfiguration::screenDivisionFactor),
+        actual_playingRegionHeight
     );
 
     /* A collection of rectangles denoting the rest of the screen */
@@ -43,28 +52,25 @@ DynamicConfiguration::DynamicConfiguration(const Size& fsz) {
         Rect ( // above playingRegion
             playingRegion.x, 0,
             playingRegion.width,
-            playingRegionVerticalMargin
+            actual_playingRegionVerticalMargin
         ),
         Rect ( // below playingRegion
             playingRegion.x, playingRegion.y + playingRegion.height,
             playingRegion.width,
-            playingRegionVerticalMargin
+            actual_playingRegionVerticalMargin
         )
     };
 
     /* Denotes the subregion of the playing region from where the color sample is taken for tracking */
     samplingRegion = Rect (
         playingRegion.x,
-        playingRegion.height*(40/48.0),
-        playingRegion.width,
-        playingRegion.width
+        playingRegion.height*(40/StaticConfiguration::screenDivisionFactor),
+        StaticConfiguration::trackingWindowSize.width,
+        StaticConfiguration::trackingWindowSize.height
     );
 
-    /* Size of the sampling region */
-    trackingWindowSize = samplingRegion.size();
-
     /* Radius of circular tracking marker */
-    trackingMarkerRadius = samplingRegion.height/2;
+    trackingMarkerRadius = StaticConfiguration::trackingWindowSize.width / 2;
 }
 
 DynamicConfiguration dynconf;
