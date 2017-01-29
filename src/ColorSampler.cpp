@@ -9,7 +9,7 @@ Point ColorSampler::current() const {
 }
 
 Mat ColorSampler::takeSample(Mat& frame) {
-    Mat roi = frame(dynconf.samplingRegion);
+    Mat samplingData = frame(dynconf.samplingRegion);
 
     int nimages = 1; // only one 3-channel image
     const int channels[3] = {0,1,2};
@@ -19,7 +19,7 @@ Mat ColorSampler::takeSample(Mat& frame) {
     const float* ranges[3] = {singleBinRange, singleBinRange, singleBinRange};
 
     Mat hist;
-    calcHist(&roi, nimages, channels, Mat(), hist, dims, histSize, ranges);
+    calcHist(&samplingData, nimages, channels, Mat(), hist, dims, histSize, ranges);
 
     return hist;
 }
