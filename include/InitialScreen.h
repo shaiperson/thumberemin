@@ -12,6 +12,7 @@ private:
     using Screen::dimRegions;
 
     InstructionsText samplingInstructions;
+    void drawRectangleWithCenterAndSize(Mat& frame, const Point& center, const Size& size) const;
 };
 
 #endif

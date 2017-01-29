@@ -5,6 +5,9 @@ const string StaticConfiguration::gameWindowName = "Theremin";
 const double StaticConfiguration::dimmingFactor = 0.7;
 const Scalar StaticConfiguration::trackingWindowColor = Scalar(255,191,0);
 const int StaticConfiguration::trackingWindowThickness = 2;
+const int StaticConfiguration::trackingMarkerRadius = 10;
+const Scalar StaticConfiguration::trackingMarkerColor = Scalar(86,86,240);
+const int StaticConfiguration::trackingMarkerThickness = -1;
 const float StaticConfiguration::noteRange[2] = {220, 880};
 const size_t StaticConfiguration::totalNotes = 100;
 

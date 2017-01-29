@@ -13,7 +13,6 @@ public:
 
 protected:
     virtual void processFrame(Mat& frame, const TrackingInfo& tracker) const = 0;
-    void drawRectangleWithCenterAndSize(Mat& frame, const Point& center, const Size& size) const;
     void dimRegions(Mat& frame, const vector<Rect> regions, double factor) const;
 };
 

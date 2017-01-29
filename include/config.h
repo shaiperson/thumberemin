@@ -9,6 +9,9 @@ namespace StaticConfiguration {
     extern const double dimmingFactor;
     extern const Scalar trackingWindowColor;
     extern const int trackingWindowThickness;
+    extern const int trackingMarkerRadius;
+    extern const Scalar trackingMarkerColor;
+    extern const int trackingMarkerThickness;
     extern const float noteRange[2];
     extern const size_t totalNotes;
 }
