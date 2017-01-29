@@ -18,15 +18,15 @@ DynamicConfiguration::DynamicConfiguration(const Size& fsz) {
     size_t pixelsPerNote = frameSize.height / StaticConfiguration::totalNotes;
 
     /* Denotes the region of the screen where motion tracking happens */
+    size_t playingRegionHeight = pixelsPerNote * StaticConfiguration::totalNotes;
+    size_t playingRegionVerticalMargin = (frameSize.height - playingRegionHeight)/2;
+
     playingRegion = Rect ( // TODO hardcoded
         frameSize.width*(41/48.0),
-        0,
+        playingRegionVerticalMargin,
         frameSize.width*(2/48.0),
-        pixelsPerNote * StaticConfiguration::totalNotes
+        playingRegionHeight
     );
-
-    size_t playingRegionVertMargin = (frameSize.height - playingRegion.height)/2;
-    playingRegion += Point(0, playingRegionVertMargin);
 
     /* A collection of rectangles denoting the rest of the screen */
     inactiveRegions = {
@@ -43,12 +43,12 @@ DynamicConfiguration::DynamicConfiguration(const Size& fsz) {
         Rect ( // above playingRegion
             playingRegion.x, 0,
             playingRegion.width,
-            playingRegionVertMargin
+            playingRegionVerticalMargin
         ),
         Rect ( // below playingRegion
             playingRegion.x, playingRegion.y + playingRegion.height,
             playingRegion.width,
-            playingRegionVertMargin
+            playingRegionVerticalMargin
         )
     };
 
