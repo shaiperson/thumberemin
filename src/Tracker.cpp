@@ -16,7 +16,7 @@ void Tracker::update(const Mat& frame) {
     Mat roi = frame(dynconf.playingRegion);
     calcBackProject(&roi, nimages, channels, sample, backProjection, ranges);
 
-    Point windowShift = Point(-dynconf.inactiveRegions[0].width, dynconf.playingRegion.y);
+    Point windowShift = Point(-dynconf.inactiveRegions[0].width, -dynconf.playingRegion.y);
     window += windowShift; // shift to playingRegion-relative position
     meanShift(backProjection, window, termCriteria);
     window -= windowShift; // shift back to frame-relative position
