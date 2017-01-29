@@ -8,8 +8,9 @@ Theremin::Theremin() :
     // Has to be defined before screen object is created
     dynconf = DynamicConfiguration(capture.frameSize());
 
-    screen = new InitialScreen();
-    tracker = new ColorSampler();
+    screen = new InitialScreen;
+    tracker = new ColorSampler;
+    sound = new SilentSoundGenerator;
 }
 
 Theremin::~Theremin() {
@@ -62,7 +63,7 @@ void Theremin::switchToPlayingMode() {
 
     /* replace inital screen with playing screen */
     delete screen;
-    screen = new PlayingScreen();
+    screen = new PlayingScreen;
 
     /* take color sample from samplingRegion and replace ColorSampler with Tracker */
     Mat frameForSampling;
@@ -71,4 +72,8 @@ void Theremin::switchToPlayingMode() {
 
     delete tracker;
     tracker = new Tracker(sampleHistogram);
+
+    /* replace silent sound generator with range sound generator */
+    delete sound;
+    sound = new RangeSoundGenerator;
 }

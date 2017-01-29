@@ -41,7 +41,9 @@ add_executable (
     ../src/Theremin.cpp
     ../src/Screen.cpp
     ../src/ColorSampler.cpp
-    ../src/Tracker.cpp)
+    ../src/Tracker.cpp
+    ../src/SilentSoundGenerator.cpp
+    ../src/RangeSoundGenerator.cpp)
 
 # Link your application with OpenCV libraries
 target_link_libraries(prueba ${OpenCV_LIBS})
