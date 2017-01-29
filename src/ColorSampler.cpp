@@ -5,7 +5,7 @@ void ColorSampler::update(const Mat& frame) {
 }
 
 Point ColorSampler::current() const {
-    return dynconf.samplingRegion.tl();
+    return dynconf.samplingRegion.tl() + Point(dynconf.samplingRegion.width/2, dynconf.samplingRegion.height/2);
 }
 
 Mat ColorSampler::takeSample(Mat& frame) {

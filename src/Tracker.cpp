@@ -13,7 +13,7 @@ void Tracker::update(const Mat& frame) {
     const float* ranges[3] = {singleBinRange, singleBinRange, singleBinRange};
 
     Mat backProjection;
-    
+
     Mat roi = frame(dynconf.playingRegion);
     calcBackProject(&roi, nimages, channels, sample, backProjection, ranges);
 
@@ -23,7 +23,7 @@ void Tracker::update(const Mat& frame) {
 }
 
 Point Tracker::current() const {
-    return window.tl();
+    return window.tl() + Point(window.width/2, window.height/2); // center point
 }
 
 Mat Tracker::takeSample(Mat& frame) {
