@@ -1,7 +1,7 @@
 #include "../include/Theremin.h"
 
 Theremin::Theremin() :
-    capture(StaticConfiguation::defaultCamera)
+    capture(StaticConfiguration::defaultCamera)
 {
     if(!capture.isOpened()) throw runtime_error("Error initializing camera");
 

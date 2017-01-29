@@ -3,12 +3,13 @@
 
 #include "global.h"
 
-namespace StaticConfiguation {
+namespace StaticConfiguration {
     extern const int defaultCamera;
     extern const string gameWindowName;
     extern const double dimmingFactor;
     extern const Scalar trackingWindowColor;
     extern const int trackingWindowThickness;
+    extern const int octaves;
 }
 
 struct DynamicConfiguration {

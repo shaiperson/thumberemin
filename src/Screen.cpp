@@ -2,22 +2,22 @@
 
 void Screen::update(Mat& frame, const TrackingInfo& tracker) const {
     /* darken inactive regions */
-    dimRegions(frame, dynconf.inactiveRegions, StaticConfiguation::dimmingFactor);
+    dimRegions(frame, dynconf.inactiveRegions, StaticConfiguration::dimmingFactor);
 
     /* draw tracking window */
     Rect trackingWindow(tracker.current(), tracker.windowSize());
     rectangle (
         frame,
         trackingWindow,
-        StaticConfiguation::trackingWindowColor,
-        StaticConfiguation::trackingWindowThickness
+        StaticConfiguration::trackingWindowColor,
+        StaticConfiguration::trackingWindowThickness
     );
 
     /* additional processing to be implemented by each derived screen class */
     processFrame(frame, tracker);
 
     /* show frame */
-    imshow(StaticConfiguation::gameWindowName, frame);
+    imshow(StaticConfiguration::gameWindowName, frame);
 }
 
 void Screen::dimRegions(Mat& frame, const vector<Rect> regions, double factor) const {

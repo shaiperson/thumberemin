@@ -1,10 +1,11 @@
 #include "../include/config.h"
 
-const int StaticConfiguation::defaultCamera = 0;
-const string StaticConfiguation::gameWindowName = "Theremin";
-const double StaticConfiguation::dimmingFactor = 0.7;
-const Scalar StaticConfiguation::trackingWindowColor = Scalar(255,191,0);
-const int StaticConfiguation::trackingWindowThickness = 2;
+const int StaticConfiguration::defaultCamera = 0;
+const string StaticConfiguration::gameWindowName = "Theremin";
+const double StaticConfiguration::dimmingFactor = 0.7;
+const Scalar StaticConfiguration::trackingWindowColor = Scalar(255,191,0);
+const int StaticConfiguration::trackingWindowThickness = 2;
+const int StaticConfiguration::octaves = 2;
 
 DynamicConfiguration::DynamicConfiguration(const Size& fsz) {
     /* Size of the frames fed by the camera in use */
