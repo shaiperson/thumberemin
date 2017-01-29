@@ -19,6 +19,8 @@ void InstructionsText::write(Mat& frame, const Point& bottomLeft) const {
             Point(bottomLeft.x, bottomLeft.y - (totalLines-lineIndex++)*(firstLineSize.height)),
             fontFace,
             fontScale,
-            color
+            color,
+            1,
+            CV_AA
         );
 }
