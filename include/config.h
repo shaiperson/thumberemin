@@ -9,11 +9,13 @@ namespace StaticConfiguration {
     extern const double dimmingFactor;
     extern const Scalar trackingWindowColor;
     extern const int trackingWindowThickness;
-    extern const int octaves;
+    extern const float noteRange[2];
+    extern const size_t totalNotes;
 }
 
 struct DynamicConfiguration {
     Size frameSize;
+    map<size_t, float> freqs;
     Rect playingRegion;
     vector<Rect> inactiveRegions;
     Rect samplingRegion;
