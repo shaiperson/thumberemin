@@ -5,11 +5,10 @@ void ColorSampler::update(const Mat& frame) {
 }
 
 Point ColorSampler::current() const {
-    return dynconf.samplingRegion.tl() + Point(dynconf.samplingRegion.width/2, dynconf.samplingRegion.height/2);
+    return window.tl() + Point(window.width/2, window.height/2);
 }
 
 Mat ColorSampler::takeSample(Mat& frame) {
-    /* INTENTO DE HISTOGRAMA 3D */
     Mat roi = frame(dynconf.samplingRegion);
 
     int nimages = 1; // only one 3-channel image

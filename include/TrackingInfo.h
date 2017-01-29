@@ -5,7 +5,7 @@
 
 class TrackingInfo {
 public:
-    TrackingInfo() { }
+    TrackingInfo() : window(dynconf.samplingRegion) { }
     virtual ~TrackingInfo() { };
 
     virtual void update(const Mat& frame) = 0;
@@ -15,7 +15,7 @@ public:
     Size windowSize() const { return dynconf.trackingWindowSize; }
 
 protected:
-    // tracking state (current position for example)
+    Rect window;
 };
 
 #endif

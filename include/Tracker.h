@@ -13,8 +13,8 @@ public:
     Mat takeSample(Mat&); // conforming
 
 private:
+    using TrackingInfo::window;
     Mat sample;
-    Rect window;
     TermCriteria termCriteria;
 };
 

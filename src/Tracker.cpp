@@ -1,8 +1,7 @@
 #include "../include/Tracker.h"
 
 Tracker::Tracker(Mat& histogram) :
-    sample(histogram),
-    window(dynconf.samplingRegion), // begin with samplingRegion as initial window
+    sample(histogram), // begin with samplingRegion as initial window
     termCriteria(TermCriteria::COUNT, 10, 0) // terminate after 10 iterations
     { }
 
@@ -17,9 +16,10 @@ void Tracker::update(const Mat& frame) {
     Mat roi = frame(dynconf.playingRegion);
     calcBackProject(&roi, nimages, channels, sample, backProjection, ranges);
 
-    window -= Point((dynconf.inactiveRegions[0]).width, 0); // shift to playingRegion-relative position
+    Point windowShift = Point(-dynconf.inactiveRegions[0].width, dynconf.playingRegion.y);
+    window += windowShift; // shift to playingRegion-relative position
     meanShift(backProjection, window, termCriteria);
-    window += Point((dynconf.inactiveRegions[0]).width, 0); // shift back to frame-relative position
+    window -= windowShift; // shift back to frame-relative position
 }
 
 Point Tracker::current() const {
