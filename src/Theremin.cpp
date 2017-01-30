@@ -25,7 +25,7 @@ void Theremin::run() {
         capture >> frame;
         tracker->update(frame);
         screen->update(frame, *tracker);
-        // sound->update(*tracker);
+        sound->update(*tracker);
     }
 
     if (playingMode) {
@@ -33,7 +33,7 @@ void Theremin::run() {
             capture >> frame;
             tracker->update(frame);
             screen->update(frame, *tracker);
-            // sound->update(*tracker);
+            sound->update(*tracker);
         }
     }
 }

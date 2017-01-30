@@ -5,7 +5,7 @@
 
 class RangeSoundGenerator : public SoundGenerator {
 public:
-    void update(const Tracker& tracker);
+    void update(const TrackingInfo& tracker);
 };
 
 #endif

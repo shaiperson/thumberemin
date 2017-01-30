@@ -9,7 +9,7 @@
 class SoundGenerator {
 public:
     virtual ~SoundGenerator() { };
-    virtual void update(const Tracker& tracker) = 0;
+    virtual void update(const TrackingInfo& tracker) = 0;
 };
 
 #endif
