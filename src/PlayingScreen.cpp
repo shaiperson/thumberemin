@@ -6,6 +6,8 @@ void PlayingScreen::processFrame(Mat& frame, const TrackingInfo& tracker) const 
         frame,
         tracker.current()
     );
+
+    drawKeyboard(frame);
 }
 
 void PlayingScreen::drawNoteMarker(Mat& frame, const Point& center) const {
@@ -19,8 +21,8 @@ void PlayingScreen::drawNoteMarker(Mat& frame, const Point& center) const {
         CV_AA
     );
 
-    Point freqPoint(center - Point(dynconf.trackingMarkerRadius * 3, 0));
-    line (
+    Point freqPoint(center - Point(dynconf.trackingMarkerRadius * 2, 0));
+    arrowedLine (
         frame,
         center,
         freqPoint,
@@ -30,11 +32,11 @@ void PlayingScreen::drawNoteMarker(Mat& frame, const Point& center) const {
     );
 
     /* print frequency */
-    float freq = dynconf.pixel2Freq[center.y];
-    stringstream stream;
-    stream << fixed << setprecision(1) << freq;
+    // float freq = dynconf.pixel2Freq[center.y];
+    // stringstream stream;
+    // stream << fixed << setprecision(1) << freq;
 
-    putText(frame, stream.str(), freqPoint - Point(0, 5), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(255,255,255));
+    // putText(frame, stream.str(), freqPoint - Point(0, 5), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(255,255,255));
 
     /* ENCLOSING CIRCLES */
     circle ( // inner
@@ -53,5 +55,36 @@ void PlayingScreen::drawNoteMarker(Mat& frame, const Point& center) const {
         StaticConfiguration::trackingMarkerColor,
         StaticConfiguration::trackingMarkerThickness,
         CV_AA
+    );
+}
+
+void PlayingScreen::drawKeyboard(Mat& frame) const {
+    for (auto it = dynconf.whiteKeysRects.cbegin(); it != dynconf.whiteKeysRects.cend(); ++it) {
+        rectangle (
+            frame,
+            *it,
+            StaticConfiguration::keyboardContourColor,
+            StaticConfiguration::keyboardContourThickness
+        );
+    }
+
+    for (auto it = dynconf.blackKeysRects.cbegin(); it != dynconf.blackKeysRects.cend(); ++it) {
+        rectangle (
+            frame,
+            *it,
+            Scalar(0,0,0),
+            CV_FILLED
+        );
+    }
+
+    putText (
+        frame,
+        "C4",
+        dynconf.whiteKeysRects[0].br()
+            - Point(dynconf.whiteKeysRects[0].width)
+            + Point(7, -7),
+        FONT_HERSHEY_SIMPLEX,
+        0.5,
+        Scalar(255,255,255)
     );
 }

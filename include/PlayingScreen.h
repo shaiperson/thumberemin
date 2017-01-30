@@ -11,6 +11,7 @@ private:
     using Screen::dimRegions;
 
     void drawNoteMarker(Mat& frame, const Point& center) const;
+    void drawKeyboard(Mat& frame) const;
 };
 
 #endif

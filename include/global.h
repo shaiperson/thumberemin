@@ -13,6 +13,7 @@
 #include <cmath>
 #include <iomanip> // setprecision
 #include <sstream> // stringstream
+#include <set>
 
 using namespace cv;
 using namespace std;

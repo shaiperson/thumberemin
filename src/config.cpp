@@ -13,7 +13,10 @@ const int StaticConfiguration::samplingWindowThickness = 2;
 const Scalar StaticConfiguration::trackingMarkerColor = Scalar(255,191,0);
 const int StaticConfiguration::trackingMarkerThickness = 1;
 
-const float StaticConfiguration::noteRange[2] = {220, 880};
+const Scalar StaticConfiguration::keyboardContourColor = Scalar(255,255,255);
+const int StaticConfiguration::keyboardContourThickness = 2;
+
+const float StaticConfiguration::noteRange[2] = {261.63, 1046.50};
 const size_t StaticConfiguration::totalNotes = 24;
 
 const size_t StaticConfiguration::sampleRate = 44000;
@@ -77,6 +80,9 @@ DynamicConfiguration::DynamicConfiguration(const Size& fsz) {
 
     /* Pixel row -> frequency */
     initializePixel2Freq();
+
+    /* Graphics: keyboard */
+    initializeKeyboardRectangles();
 }
 
 void DynamicConfiguration::initializePixel2Freq() {
@@ -92,6 +98,48 @@ void DynamicConfiguration::initializePixel2Freq() {
         for (size_t counter = 0; counter < pixelsPerNote; ++counter) {
             pixel2Freq[pixelRow--] = exp2(freq0log + ((float)i / StaticConfiguration::totalNotes));
         }
+    }
+}
+
+void DynamicConfiguration::initializeKeyboardRectangles() {
+    Rect keyboardContour = playingRegion - Point(playingRegion.width*1.5, 0);
+    whiteKeysRects.push_back(keyboardContour);
+
+    size_t whiteKeyHeight = playingRegion.height / 15;
+    size_t whiteKeyWidth = playingRegion.width;
+    size_t currWhiteKeyBaseY = playingRegion.br().y - 1;
+
+    for (size_t t = 0; t < 15; ++t) {
+        whiteKeysRects.push_back (
+            Rect (
+                keyboardContour.x,
+                currWhiteKeyBaseY-whiteKeyHeight,
+                whiteKeyWidth,
+                whiteKeyHeight
+            )
+        );
+        currWhiteKeyBaseY -= whiteKeyHeight;
+    }
+
+    size_t blackKeyHeight = whiteKeyHeight*0.5;
+    size_t blackKeyWidth = whiteKeyWidth/2;
+    size_t currBlackKeyBaseY = playingRegion.br().y - 1 - whiteKeyHeight*(3/4.0);
+
+    // index of white keys whose "sharp" is a black key on the keyboard
+    set<int> whiteKeyIdsWithSharpBlackKey = {0,1,3,4,5,7,8,10,11,12};
+
+    for (size_t i = 0; i < 15; ++i) {
+        if (whiteKeyIdsWithSharpBlackKey.count(i)) {
+            blackKeysRects.push_back (
+                Rect (
+                    keyboardContour.x,
+                    currBlackKeyBaseY-blackKeyHeight,
+                    blackKeyWidth,
+                    blackKeyHeight
+                )
+            );
+        }
+        currBlackKeyBaseY -= whiteKeyHeight;
     }
 }
 

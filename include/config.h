@@ -13,6 +13,8 @@ namespace StaticConfiguration {
     extern const int samplingWindowThickness;
     extern const Scalar trackingMarkerColor;
     extern const int trackingMarkerThickness;
+    extern const Scalar keyboardContourColor;
+    extern const int keyboardContourThickness;
     extern const float noteRange[2];
     extern const size_t totalNotes;
     extern const size_t sampleRate;
@@ -21,6 +23,9 @@ namespace StaticConfiguration {
 
 class DynamicConfiguration {
 public:
+    DynamicConfiguration(const Size&);
+    DynamicConfiguration() { }
+
     Size frameSize;
     size_t pixelsPerNote;
     map<size_t, float> freqs;
@@ -30,11 +35,12 @@ public:
     int trackingMarkerRadius;
     unordered_map<size_t, float> pixel2Freq;
 
-    DynamicConfiguration(const Size&);
-    DynamicConfiguration() { }
+    vector<Rect> whiteKeysRects;
+    vector<Rect> blackKeysRects;
 
 private:
     void initializePixel2Freq();
+    void initializeKeyboardRectangles();
 };
 
 extern DynamicConfiguration dynconf;
