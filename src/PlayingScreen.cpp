@@ -20,7 +20,7 @@ void PlayingScreen::drawNoteMarker(Mat& frame, const Point& center) const {
     );
 
     Point freqPoint(center - Point(dynconf.trackingMarkerRadius * 2, 0));
-    arrowedLine (
+    line (
         frame,
         center,
         freqPoint,

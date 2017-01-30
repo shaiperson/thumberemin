@@ -19,7 +19,8 @@ namespace StaticConfiguration {
     extern const size_t numberOfChannels;
 }
 
-struct DynamicConfiguration {
+class DynamicConfiguration {
+public:
     Size frameSize;
     size_t pixelsPerNote;
     map<size_t, float> freqs;
@@ -27,9 +28,13 @@ struct DynamicConfiguration {
     vector<Rect> inactiveRegions;
     Rect samplingRegion;
     int trackingMarkerRadius;
+    unordered_map<size_t, float> pixel2Freq;
 
     DynamicConfiguration(const Size&);
     DynamicConfiguration() { }
+
+private:
+    void initializePixel2Freq();
 };
 
 extern DynamicConfiguration dynconf;

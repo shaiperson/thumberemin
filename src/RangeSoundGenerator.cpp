@@ -2,8 +2,6 @@
 
 RangeSoundGenerator::RangeSoundGenerator() {
     PaError err;
-    initializePixel2Freq();
-
     err = Pa_Initialize();
     initializeOutputParameters();
     err = Pa_OpenStream (
@@ -19,13 +17,13 @@ RangeSoundGenerator::RangeSoundGenerator() {
 
     // fill data samples table with first note, corresponding to sampling region center position
     size_t samplingRegionCenterRow = dynconf.samplingRegion.y + dynconf.samplingRegion.height/2;
-    data.samples = createTable(pixel2Freq[samplingRegionCenterRow]);
+    data.samples = createTable(dynconf.pixel2Freq[samplingRegionCenterRow]);
 
     err = Pa_StartStream(stream);
 }
 
 void RangeSoundGenerator::update(const TrackingInfo& tracker) {
-    float currentFreq = pixel2Freq[tracker.current().y];
+    float currentFreq = dynconf.pixel2Freq[tracker.current().y];
     data.samples = createTable(currentFreq);
 }
 
@@ -61,22 +59,6 @@ int RangeSoundGenerator::callback (
 
     data->nextSampleIdx = nextSampleIdx;
     return paContinue;
-}
-
-void RangeSoundGenerator::initializePixel2Freq() {
-    float freq0 = StaticConfiguration::noteRange[0];
-    float freq1 = StaticConfiguration::noteRange[1];
-
-    float freq0log = log2(freq0);
-    float freq1log = log2(freq1);
-    float d = freq1log-freq0log;
-
-    size_t pixelRow = dynconf.playingRegion.y + dynconf.playingRegion.height - 1;
-    for (size_t i = 0; i < StaticConfiguration::totalNotes; ++i) {
-        for (size_t counter = 0; counter < dynconf.pixelsPerNote; ++counter) {
-            pixel2Freq[pixelRow--] = exp2(freq0log + ((float)i / StaticConfiguration::totalNotes));
-        }
-    }
 }
 
 void RangeSoundGenerator::initializeOutputParameters() {

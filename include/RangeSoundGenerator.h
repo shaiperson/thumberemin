@@ -15,7 +15,6 @@ private:
         callbackData() : nextSampleIdx(0) {}
     };
 
-    unordered_map<size_t, float> pixel2Freq;
     PaStreamParameters outputParameters;
     PaStream* stream;
     callbackData data;
@@ -31,7 +30,6 @@ private:
         void* data_
     );
 
-    void initializePixel2Freq();
     void initializeOutputParameters();
 
 };
