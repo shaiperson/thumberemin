@@ -15,6 +15,8 @@ namespace StaticConfiguration {
     extern const int trackingMarkerThickness;
     extern const float noteRange[2];
     extern const size_t totalNotes;
+    extern const size_t sampleRate;
+    extern const size_t numberOfChannels;
 }
 
 struct DynamicConfiguration {

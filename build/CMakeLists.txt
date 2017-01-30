@@ -47,3 +47,4 @@ add_executable (
 
 # Link your application with OpenCV libraries
 target_link_libraries(prueba ${OpenCV_LIBS})
+target_link_libraries(prueba portaudio)

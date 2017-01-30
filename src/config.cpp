@@ -14,7 +14,10 @@ const Scalar StaticConfiguration::trackingMarkerColor = Scalar(255,191,0);
 const int StaticConfiguration::trackingMarkerThickness = 1;
 
 const float StaticConfiguration::noteRange[2] = {220, 880};
-const size_t StaticConfiguration::totalNotes = 72;
+const size_t StaticConfiguration::totalNotes = 24;
+
+const size_t StaticConfiguration::sampleRate = 44000;
+const size_t StaticConfiguration::numberOfChannels = 1;
 
 DynamicConfiguration::DynamicConfiguration(const Size& fsz) {
     /* Size of the frames fed by the camera in use */
