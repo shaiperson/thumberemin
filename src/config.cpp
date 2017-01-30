@@ -33,7 +33,7 @@ DynamicConfiguration::DynamicConfiguration(const Size& fsz) {
     playingRegion = Rect ( // TODO hardcoded
         frameSize.width*(41 / StaticConfiguration::screenDivisionFactor),
         actual_playingRegionVerticalMargin,
-        frameSize.width*(2 / StaticConfiguration::screenDivisionFactor),
+        StaticConfiguration::trackingWindowSize.width,
         actual_playingRegionHeight
     );
 
