@@ -24,7 +24,7 @@ DynamicConfiguration::DynamicConfiguration(const Size& fsz) {
     size_t min_playingRegionMargin = StaticConfiguration::trackingWindowSize.height / 2;
     size_t max_playingRegionHeight = frameSize.height - 2*min_playingRegionMargin;
 
-    size_t pixelsPerNote = max_playingRegionHeight / StaticConfiguration::totalNotes;
+    pixelsPerNote = max_playingRegionHeight / StaticConfiguration::totalNotes;
     size_t actual_playingRegionHeight = pixelsPerNote * StaticConfiguration::totalNotes;
 
     size_t actual_playingRegionVerticalMargin = (frameSize.height - actual_playingRegionHeight)/2;

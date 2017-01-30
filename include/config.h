@@ -19,6 +19,7 @@ namespace StaticConfiguration {
 
 struct DynamicConfiguration {
     Size frameSize;
+    size_t pixelsPerNote;
     map<size_t, float> freqs;
     Rect playingRegion;
     vector<Rect> inactiveRegions;

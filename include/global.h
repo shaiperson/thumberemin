@@ -9,6 +9,8 @@
 #include <exception>
 #include <vector>
 #include <string>
+#include <unordered_map>
+#include <cmath>
 
 using namespace cv;
 using namespace std;
