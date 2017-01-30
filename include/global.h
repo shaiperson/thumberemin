@@ -11,6 +11,8 @@
 #include <string>
 #include <unordered_map>
 #include <cmath>
+#include <iomanip> // setprecision
+#include <sstream> // stringstream
 
 using namespace cv;
 using namespace std;
