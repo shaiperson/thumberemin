@@ -17,14 +17,21 @@ RangeSoundGenerator::RangeSoundGenerator() {
 
     // fill data samples table with first note, corresponding to sampling region center position
     size_t samplingRegionCenterRow = dynconf.samplingRegion.y + dynconf.samplingRegion.height/2;
-    data.samples = createTable(dynconf.pixel2Freq[samplingRegionCenterRow]);
+    size_t samplingRegionCenterFreq = dynconf.pixel2Freq[samplingRegionCenterRow];
+    data.freq = samplingRegionCenterFreq;
+    data.samples = createTable(samplingRegionCenterFreq);
 
     err = Pa_StartStream(stream);
 }
 
 void RangeSoundGenerator::update(const TrackingInfo& tracker) {
-    float currentFreq = dynconf.pixel2Freq[tracker.current().y];
-    data.samples = createTable(currentFreq);
+    float newFreq = dynconf.pixel2Freq[tracker.current().y];
+    /* Update frequency information only if necessary.
+    Comparing these floats by operator!= is OK since frequencies are fixed */
+    if (data.freq != newFreq) {
+        data.freq = newFreq;
+        data.samples = createTable(newFreq);
+    }
 }
 
 vector<float> RangeSoundGenerator::createTable(float freq) {

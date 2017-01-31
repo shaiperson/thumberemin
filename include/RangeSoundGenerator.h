@@ -12,6 +12,7 @@ private:
     struct callbackData {
         size_t nextSampleIdx;
         vector<float> samples;
+        float freq;
         callbackData() : nextSampleIdx(0) {}
     };
 
