@@ -11,7 +11,8 @@ public:
 private:
     struct callbackData {
         size_t nextSampleIdx;
-        vector<float> samples;
+        vector<float> prevSamples;
+        vector<float> currSamples;
         callbackData() : nextSampleIdx(0) {}
     };
 

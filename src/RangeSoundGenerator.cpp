@@ -19,14 +19,9 @@ RangeSoundGenerator::RangeSoundGenerator() {
 
     // fill data samples table with first note, corresponding to sampling region center position
     size_t samplingRegionCenterRow = dynconf.samplingRegion.y + dynconf.samplingRegion.height/2;
-    data.samples = createTable(pixel2Freq[samplingRegionCenterRow]);
+    data.currSamples = createTable(pixel2Freq[samplingRegionCenterRow]);
 
     err = Pa_StartStream(stream);
-}
-
-void RangeSoundGenerator::update(const TrackingInfo& tracker) {
-    float currentFreq = pixel2Freq[tracker.current().y];
-    data.samples = createTable(currentFreq);
 }
 
 vector<float> RangeSoundGenerator::createTable(float freq) {
@@ -40,6 +35,12 @@ vector<float> RangeSoundGenerator::createTable(float freq) {
     return result;
 }
 
+void RangeSoundGenerator::update(const TrackingInfo& tracker) {
+    float currentFreq = pixel2Freq[tracker.current().y];
+    data.prevSamples = data.currSamples;
+    data.currSamples = createTable(currentFreq);
+}
+
 int RangeSoundGenerator::callback (
                 const void* input,
                 void* output_,
@@ -51,15 +52,25 @@ int RangeSoundGenerator::callback (
     callbackData* data = (callbackData*)data_;
     float* output = (float*)output_;
 
-    size_t tableSize = data->samples.size();
-    size_t nextSampleIdx = data->nextSampleIdx;
+    size_t prevTableSize = data->prevSamples.size();
+    size_t currTableSize = data->currSamples.size();
+    size_t oldNextSampleIdx = data->nextSampleIdx;
 
-    for (size_t i = 0; i < frameCount; ++i) {
-        output[i] = data->samples[nextSampleIdx++];
-        nextSampleIdx %= tableSize;
+    // Start by finishing previous frequency's samples
+    size_t j;
+    for (j = oldNextSampleIdx; j < prevTableSize && j-oldNextSampleIdx < frameCount; ++j) {
+        output[j-oldNextSampleIdx] = data->prevSamples[j];
     }
 
-    data->nextSampleIdx = nextSampleIdx;
+    // Continue with current frequency's samples
+    size_t framesSoFar = j - oldNextSampleIdx;
+    size_t newNextSampleIdx = 0;
+    for (size_t i = framesSoFar; i < frameCount; ++i) {
+        output[i] = data->currSamples[newNextSampleIdx++];
+        newNextSampleIdx %= currTableSize;
+    }
+
+    data->nextSampleIdx = newNextSampleIdx;
     return paContinue;
 }
 
