@@ -12,6 +12,7 @@ public:
     bool isOpened();
     Capture& operator>>(Mat& image);
     bool read(Mat& image);
+    void release();
 
 private:
     VideoCapture cvcapture;

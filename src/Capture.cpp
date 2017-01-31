@@ -21,3 +21,7 @@ Capture& Capture::operator>>(Mat& image) {
 bool Capture::read(Mat& image) {
     return cvcapture.read(image);
 }
+
+void Capture::release() {
+    cvcapture.release();
+}
