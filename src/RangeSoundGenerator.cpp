@@ -29,8 +29,10 @@ void RangeSoundGenerator::update(const TrackingInfo& tracker) {
     /* Update frequency information only if necessary.
     Comparing these floats by operator!= is OK since frequencies are fixed */
     if (data.freq != newFreq) {
+        double prop = (double) data.nextSampleIdx / (double) data.samples.size();
         data.freq = newFreq;
         data.samples = createTable(newFreq);
+        data.nextSampleIdx = (size_t) ceil(prop * data.samples.size());
     }
 }
 
