@@ -11,8 +11,6 @@
 #include <string>
 #include <unordered_map>
 #include <cmath>
-#include <iomanip> // setprecision
-#include <sstream> // stringstream
 #include <utility>
 #include <boost/math/tools/roots.hpp>
 
