@@ -27,12 +27,12 @@ void RangeSoundGenerator::update(const TrackingInfo& tracker) {
 }
 
 int RangeSoundGenerator::callback (
-                const void* input,
-                void* output_,
-                unsigned long frameCount,
-                const PaStreamCallbackTimeInfo* timeInfo,
-                PaStreamCallbackFlags statusFlags,
-                void* wave_ ) {
+        const void* input,
+        void* output_,
+        unsigned long frameCount,
+        const PaStreamCallbackTimeInfo* timeInfo,
+        PaStreamCallbackFlags statusFlags,
+        void* wave_ ) {
 
     ContinuousSineWave* wavegen = (ContinuousSineWave*)wave_;
     float* output = (float*)output_;

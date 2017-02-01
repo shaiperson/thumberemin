@@ -1,4 +1,5 @@
 #include "../include/ContinuousSineWave.h"
+
 ContinuousSineWave::ContinuousSineWave(float f) :
     increment(0),
     currFrequency(f),
@@ -6,7 +7,8 @@ ContinuousSineWave::ContinuousSineWave(float f) :
     amplitude(1),
     phase(0),
     freqChange(false),
-    phaseFunctor(*this) { }
+    phaseFunctor(*this),
+    maxBisectionIterations(50) { }
 
 float ContinuousSineWave::nextSample() {
     if (freqChange) {

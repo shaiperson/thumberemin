@@ -17,10 +17,6 @@ private:
         return amplitude * sin ( phi + (2*M_PI*increment*fq) / StaticConfiguration::sampleRate );
     }
 
-    // static float phaseRooted (float PHI) {
-    //     return f(currFrequency, PHI) - f (prevFrequency, phase);
-    // }
-
     float prevPeriod() {
         return 1/prevFrequency;
     }
@@ -46,13 +42,10 @@ private:
     float amplitude;
     float phase;
     bool freqChange;
-    boost::uintmax_t maxBisectionIterations = 10;
+    boost::uintmax_t maxBisectionIterations;;
 
     PhaseFunctor phaseFunctor;
     TolFunctor tolFunctor;
-
-    // Dummy termination condition. TODO evaluate necessity for real one
-    // static bool tol (float,float) { return false; }
 };
 
 #endif
