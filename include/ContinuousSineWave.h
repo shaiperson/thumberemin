@@ -42,7 +42,7 @@ private:
     float amplitude;
     float phase;
     bool freqChange;
-    boost::uintmax_t maxBisectionIterations;;
+    const size_t maxBisectionIterations;
 
     PhaseFunctor phaseFunctor;
     TolFunctor tolFunctor;

@@ -33,13 +33,15 @@ void ContinuousSineWave::updatePhase() {
     float bracketMax = max(prevPeriod(), currPeriod());
     float mid = bracketMax/2;
 
+    boost::uintmax_t maxiters = maxBisectionIterations;
+    
     pair<float,float> bracket =
         boost::math::tools::bisect (
             phaseFunctor,
             bracketMin,
             bracketMax,
             tolFunctor,
-            maxBisectionIterations
+            maxiters
         );
 
     // TODO evaluate possibility of using additional Newton iterations
