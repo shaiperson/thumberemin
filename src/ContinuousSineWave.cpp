@@ -1,9 +1,9 @@
 #include "../include/ContinuousSineWave.h"
 
-ContinuousSineWave::ContinuousSineWave(float f) :
+ContinuousSineWave::ContinuousSineWave(float frequency) :
     increment(0),
-    currFrequency(f),
-    prevFrequency(f),
+    currFrequency(frequency),
+    prevFrequency(frequency),
     amplitude(1),
     phase(0),
     freqChange(false),
@@ -21,6 +21,15 @@ float ContinuousSineWave::nextSample() {
     return result;
 }
 
+vector<float> ContinuousSineWave::nextCycle() {
+    size_t tableSize = StaticConfiguration::sampleRate / currFrequency;
+    vector<float> result(tableSize);
+    for (size_t i = 0; i < tableSize; ++i) {
+        result[i] = nextSample();
+    }
+    return result;
+}
+
 void ContinuousSineWave::updateFrequency(float freq) {
     prevFrequency = currFrequency;
     currFrequency = freq;
@@ -34,7 +43,7 @@ void ContinuousSineWave::updatePhase() {
     float mid = bracketMax/2;
 
     boost::uintmax_t maxiters = maxBisectionIterations;
-    
+
     pair<float,float> bracket =
         boost::math::tools::bisect (
             phaseFunctor,

@@ -6,15 +6,18 @@
 
 class ContinuousSineWave {
 public:
-    ContinuousSineWave(float f);
+    ContinuousSineWave(float frequency);
+
     float nextSample();
-    void updateFrequency(float freq);
+    vector<float> nextCycle();
+
+    void updateFrequency(float frequency);
 
 private:
     void updatePhase();
 
     float f (float fq, float phi) {
-        return amplitude * sin ( phi + (2*M_PI*increment*fq) / StaticConfiguration::sampleRate );
+        return amplitude * sin ( phi + (2*M_PI*fq) * (increment / StaticConfiguration::sampleRate) );
     }
 
     float prevPeriod() {
@@ -36,13 +39,16 @@ private:
         bool operator()(float,float) { return false; }
     };
 
-    unsigned long long int increment;
     float currFrequency;
     float prevFrequency;
     float amplitude;
     float phase;
+
+    unsigned long long int increment;
     bool freqChange;
+
     const size_t maxBisectionIterations;
+
 
     PhaseFunctor phaseFunctor;
     TolFunctor tolFunctor;
