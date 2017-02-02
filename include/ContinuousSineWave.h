@@ -17,7 +17,7 @@ private:
     void updatePhase();
 
     float f (float fq, float phi) {
-        return amplitude * sin ( phi + (2*M_PI*fq) * (increment / StaticConfiguration::sampleRate) );
+        return amplitude * sin ( phi + (2*M_PI*fq*increment) / StaticConfiguration::sampleRate );
     }
 
     float prevPeriod() {
