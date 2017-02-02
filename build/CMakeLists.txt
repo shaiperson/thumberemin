@@ -44,8 +44,28 @@ add_executable (
     ../src/Tracker.cpp
     ../src/SilentSoundGenerator.cpp
     ../src/RangeSoundGenerator.cpp
-    ../src/ContinuousSineWave.cpp)
+    ../src/ContinuousSineWave.cpp
+)
+
+add_executable (
+    tests
+    ../test/test.cpp
+    ../test/ContinuousSineWaveTest.cpp
+    ../src/config.cpp
+    ../src/Capture.cpp
+    ../src/InitialScreen.cpp
+    ../src/PlayingScreen.cpp
+    ../src/InstructionsText.cpp
+    ../src/Theremin.cpp
+    ../src/Screen.cpp
+    ../src/ColorSampler.cpp
+    ../src/Tracker.cpp
+    ../src/SilentSoundGenerator.cpp
+    ../src/RangeSoundGenerator.cpp
+    ../src/ContinuousSineWave.cpp
+)
 
 # Link your application with OpenCV libraries
-target_link_libraries(prueba ${OpenCV_LIBS})
-target_link_libraries(prueba portaudio)
+target_link_libraries(prueba ${OpenCV_LIBS} portaudio)
+target_link_libraries(tests ${OpenCV_LIBS} portaudio)
+# target_link_libraries(prueba portaudio)
