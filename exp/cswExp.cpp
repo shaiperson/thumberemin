@@ -26,15 +26,12 @@ void cswExp() {
 
     vector<float> wave;
 
-    /* Advance without reading */
-    for (size_t i = 0; i < (1/3.0)*cycleSize; ++i) csw.nextSample();
-
-    /* Read some */
-    for (size_t i = 0; i < (1/3.0)*cycleSize; ++i) wave.push_back(csw.nextSample());
+    /* Read some samples */
+    for (size_t i = 0; i < (2/3.0)*cycleSize; ++i) wave.push_back(csw.nextSample());
 
     /* Start with second wave */
     csw.updateFrequency(2);
-    cerr << "Joining point: " << wave.size()-1 << endl;
+    cerr << "Joining index " << wave.size()-1 << " with value " << wave[wave.size()-1] << endl;
 
     /* Read some more */
     for (size_t i = 0; i < (1/3.0)*cycleSize; ++i) wave.push_back(csw.nextSample());
