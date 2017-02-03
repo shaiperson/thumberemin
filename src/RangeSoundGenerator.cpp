@@ -1,7 +1,10 @@
 #include "../include/RangeSoundGenerator.h"
 
 RangeSoundGenerator::RangeSoundGenerator()
-    : wave (dynconf.pixel2Freq[dynconf.samplingRegion.y + dynconf.samplingRegion.height/2])
+    : wave (
+        dynconf.pixel2Freq[dynconf.samplingRegion.y + dynconf.samplingRegion.height/2],
+        StaticConfiguration::sampleRate
+    )
 {
     PaError err;
 

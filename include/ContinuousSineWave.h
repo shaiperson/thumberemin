@@ -6,10 +6,14 @@
 
 class ContinuousSineWave {
 public:
-    ContinuousSineWave(float frequency);
+    ContinuousSineWave(float frequency, size_t sampleRate);
 
     float nextSample();
     vector<float> nextCycle();
+
+    size_t cycleSize() {
+        return sampleRate / currFrequency;
+    }
 
     void updateFrequency(float frequency);
 
@@ -17,7 +21,7 @@ private:
     void updatePhase();
 
     float f (float fq, float phi) {
-        return amplitude * sin ( phi + (2*M_PI*fq*increment) / StaticConfiguration::sampleRate );
+        return amplitude * sin ( phi + (2*M_PI*fq*increment) / sampleRate );
     }
 
     float prevPeriod() {
@@ -39,6 +43,7 @@ private:
         bool operator()(float,float) { return false; }
     };
 
+    size_t sampleRate;
     float currFrequency;
     float prevFrequency;
     float amplitude;

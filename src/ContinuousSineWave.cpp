@@ -1,6 +1,7 @@
 #include "../include/ContinuousSineWave.h"
 
-ContinuousSineWave::ContinuousSineWave(float frequency) :
+ContinuousSineWave::ContinuousSineWave(float frequency, size_t sampleRate) :
+    sampleRate(sampleRate),
     increment(0),
     currFrequency(frequency),
     prevFrequency(frequency),
@@ -22,7 +23,7 @@ float ContinuousSineWave::nextSample() {
 }
 
 vector<float> ContinuousSineWave::nextCycle() {
-    size_t tableSize = StaticConfiguration::sampleRate / currFrequency;
+    size_t tableSize = cycleSize();
     vector<float> result(tableSize);
     for (size_t i = 0; i < tableSize; ++i) {
         result[i] = nextSample();
