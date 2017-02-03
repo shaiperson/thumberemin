@@ -19,9 +19,12 @@ size_t ContinuousSineWave::cycleSize() {
 }
 
 void ContinuousSineWave::updateFrequency(float freq) {
-    prevFrequency = currFrequency;
-    currFrequency = freq;
-    updatePhase();
+    if (freq != currFrequency) { // comparison by != is OK since frequencies are fixed at runtime
+        prevFrequency = currFrequency;
+        currFrequency = freq;
+        cerr << prevFrequency << " " << currFrequency << endl;
+        updatePhase();
+    }
 }
 
 float ContinuousSineWave::k() {
