@@ -1,17 +1,18 @@
-#ifndef TEST_H
-#define TEST_H
+#ifndef EXP_H
+#define EXP_H
 
 #include "../include/ContinuousSineWave.h"
 #include "../include/global.h"
 
 #include <iomanip>
 
-void ContinuousSineWaveTest();
-
 struct twoWaveCase {
     float freq1, freq2;
     float cuttingPoint1, cuttingPoint2;
 };
+
+void cswExp();
+vector<pair<size_t, size_t>> findNaNRanges(const vector<float>& wave);
 
 // twoWaveCase case1 = {220, 246.94, 1, 1}; // se rompe
 // cout << joinWaves(case1) << endl;

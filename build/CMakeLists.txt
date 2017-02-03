@@ -63,6 +63,7 @@ add_executable (
 add_executable (
     exp
     ../exp/cswExp.cpp
+    ../exp/exp.cpp
     ${COMMON_CPPS}
 )
 
