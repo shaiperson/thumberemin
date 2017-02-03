@@ -16,6 +16,7 @@ Theremin::Theremin() :
 Theremin::~Theremin() {
     delete screen;
     delete tracker;
+    capture.release();
 }
 
 void Theremin::run() {

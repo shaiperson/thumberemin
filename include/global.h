@@ -11,6 +11,8 @@
 #include <string>
 #include <unordered_map>
 #include <cmath>
+#include <utility>
+#include <boost/math/tools/roots.hpp>
 
 using namespace cv;
 using namespace std;

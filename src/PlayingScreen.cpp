@@ -19,8 +19,8 @@ void PlayingScreen::drawNoteMarker(Mat& frame, const Point& center) const {
         CV_AA
     );
 
-    Point freqPoint(center - Point(dynconf.trackingMarkerRadius * 2, 0));
-    arrowedLine (
+    Point freqPoint(center - Point(dynconf.trackingMarkerRadius * 3, 0));
+    line (
         frame,
         center,
         freqPoint,
@@ -29,7 +29,12 @@ void PlayingScreen::drawNoteMarker(Mat& frame, const Point& center) const {
         CV_AA
     );
 
-    putText(frame, to_string(freqPoint.y), freqPoint - Point(0, 5), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(255,255,255));
+    /* print frequency */
+    float freq = dynconf.pixel2Freq[center.y];
+    stringstream stream;
+    stream << fixed << setprecision(1) << freq;
+
+    putText(frame, stream.str(), freqPoint - Point(0, 5), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(255,255,255));
 
     /* ENCLOSING CIRCLES */
     circle ( // inner

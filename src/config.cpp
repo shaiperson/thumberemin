@@ -14,7 +14,7 @@ const Scalar StaticConfiguration::trackingMarkerColor = Scalar(255,191,0);
 const int StaticConfiguration::trackingMarkerThickness = 1;
 
 const float StaticConfiguration::noteRange[2] = {220, 880};
-const size_t StaticConfiguration::totalNotes = 24;
+const size_t StaticConfiguration::totalNotes = 648;
 
 const size_t StaticConfiguration::sampleRate = 44000;
 const size_t StaticConfiguration::numberOfChannels = 1;
@@ -74,6 +74,25 @@ DynamicConfiguration::DynamicConfiguration(const Size& fsz) {
 
     /* Radius of circular tracking marker */
     trackingMarkerRadius = StaticConfiguration::trackingWindowSize.width / 2;
+
+    /* Pixel row -> frequency */
+    initializePixel2Freq();
+}
+
+void DynamicConfiguration::initializePixel2Freq() {
+    float freq0 = StaticConfiguration::noteRange[0];
+    float freq1 = StaticConfiguration::noteRange[1];
+
+    float freq0log = log2(freq0);
+    float freq1log = log2(freq1);
+    float d = freq1log-freq0log;
+
+    size_t pixelRow = playingRegion.y + playingRegion.height - 1;
+    for (size_t i = 0; i < StaticConfiguration::totalNotes; ++i) {
+        for (size_t counter = 0; counter < pixelsPerNote; ++counter) {
+            pixel2Freq[pixelRow--] = exp2(freq0log + ((float)i / StaticConfiguration::totalNotes));
+        }
+    }
 }
 
 DynamicConfiguration dynconf;
