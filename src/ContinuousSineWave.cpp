@@ -9,18 +9,13 @@ ContinuousSineWave::ContinuousSineWave(float frequency, size_t sampleRate) :
     phase(0) { }
 
 float ContinuousSineWave::nextSample() {
-    float result = g(currFrequency, phase); // call f with current frequency and phase
+    float result = sin ( k()*currFrequency + phase );
     increment++;
     return result;
 }
 
-vector<float> ContinuousSineWave::nextCycle() {
-    size_t tableSize = cycleSize();
-    vector<float> result(tableSize);
-    for (size_t i = 0; i < tableSize; ++i) {
-        result[i] = nextSample();
-    }
-    return result;
+size_t ContinuousSineWave::cycleSize() {
+    return sampleRate / currFrequency;
 }
 
 void ContinuousSineWave::updateFrequency(float freq) {
@@ -29,6 +24,10 @@ void ContinuousSineWave::updateFrequency(float freq) {
     updatePhase();
 }
 
+float ContinuousSineWave::k() {
+    return (2*M_PI * increment) / sampleRate;
+}
+
 void ContinuousSineWave::updatePhase() {
-    phase = phase + (2*M_PI * increment * (prevFrequency - currFrequency)) / sampleRate;
+    phase = k()*(prevFrequency - currFrequency) + phase;
 }
