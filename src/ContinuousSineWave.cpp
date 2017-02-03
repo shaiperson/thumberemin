@@ -30,5 +30,13 @@ void ContinuousSineWave::updateFrequency(float freq) {
 }
 
 void ContinuousSineWave::updatePhase() {
+    float prevPhase = phase;
     phase = phase + (2*M_PI * increment * (prevFrequency - currFrequency)) / sampleRate;
+
+    /* Check derivative sign at cutting point */
+    float prevDerivative = amplitude * cos ( prevPhase + (2*M_PI * prevFrequency * increment) / sampleRate );
+    float currDerivative = amplitude * cos ( phase + (2*M_PI * currFrequency * increment) / sampleRate );
+
+    if (prevDerivative * currDerivative < 0)
+        phase += period(currFrequency) / 2;
 }

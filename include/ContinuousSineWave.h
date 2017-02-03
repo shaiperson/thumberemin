@@ -24,6 +24,10 @@ private:
         return amplitude * sin ( phi + (2*M_PI*fq*increment) / sampleRate );
     }
 
+    float period(float frequency) {
+        return 1/frequency;
+    }
+
     size_t sampleRate;
     float currFrequency;
     float prevFrequency;
