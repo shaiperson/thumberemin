@@ -12,10 +12,10 @@ ContinuousSineWave::ContinuousSineWave(float frequency, size_t sampleRate) :
     maxBisectionIterations(50) { }
 
 float ContinuousSineWave::nextSample() {
-    if (freqChange) {
-        freqChange = false;
-        updatePhase();
-    }
+    // if (freqChange) {
+    //     freqChange = false;
+    //     updatePhase();
+    // }
 
     float result = g(currFrequency, phase); // call f with current frequency and phase
     increment++;
@@ -34,27 +34,9 @@ vector<float> ContinuousSineWave::nextCycle() {
 void ContinuousSineWave::updateFrequency(float freq) {
     prevFrequency = currFrequency;
     currFrequency = freq;
-    freqChange = true;
+    /* freqChange = true; */ updatePhase();
 }
 
 void ContinuousSineWave::updatePhase() {
-    /* Perform bisection */
-    float bracketMin = -period(currFrequency) / 2 - 0.001; // Something just left of zero
-    cerr << "bracketMin " << bracketMin << endl;
-    float bracketMax = period(currFrequency) / 2 + 0.001;
-
-    boost::uintmax_t maxiters = maxBisectionIterations;
-
-    pair<float,float> bracket =
-        boost::math::tools::bisect (
-            phaseFunctor,
-            bracketMin,
-            bracketMax,
-            tolFunctor,
-            maxiters
-        );
-
-    // TODO evaluate possibility of using additional Newton iterations
-
-    phase = (bracket.second - bracket.first) / 2;
+    phase = phase + (2*M_PI * increment * (prevFrequency - currFrequency)) / sampleRate;
 }
