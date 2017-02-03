@@ -1,35 +1,59 @@
+// #include "catch.hpp"
 #include "test.h"
 
 // OK entonces parece que hay algo mal con la cuenta del phase. Porque tira errores. No debería.
 
+// twoWaveCase case1 = {220, 246.94, 1, 1}; // se rompe
+// cout << joinWaves(case1) << endl;
+//
+// twoWaveCase case2 = {1, 1, 0, 2}; // se rompe para cuttingPoint1 0.325, para 0.335 no
+// cout << joinWaves(case2) << endl;
+
+// TEST_CASE("Single wave cycles generated correctly") {
+//     ContinuousSineWave csw(1/(2*M_PI));
+//
+//     SECTION("Cycle size is correct given sample rate") {
+//         size_t cycleSize = csw.nextCycle().size();
+//         REQUIRE(c)
+//     }
+// }
+
 void ContinuousSineWaveTest() {
-    twoWaveCase case1 = {220, 246.94, 1, 1};
-    cout << joinWaves(case1) << endl;
-}
+    /* Cycle test */
+    ContinuousSineWave csw(1.0/(4*M_PI));
 
-vector<float> joinWaves(const twoWaveCase& c) {
-    ContinuousSineWave csw(c.freq1);
+    size_t cycleSize = csw.nextCycle().size();
 
-    cerr << c.freq1 << " " << c.freq2 << endl;
+    vector<float> lol;
 
-    vector<float> wave1(c.cuttingPoint1 * (StaticConfiguration::sampleRate / c.freq1));
-    vector<float> wave2(c.cuttingPoint2 * (StaticConfiguration::sampleRate / c.freq2));
+    /* Advance without reading */
+    for (size_t i = 0; i < (1/3.0)*cycleSize; ++i) csw.nextSample();
 
-    for (size_t i = 0; i < wave1.size(); ++i)
-        wave1.at(i) = csw.nextSample();
+    /* Read some */
+    for (size_t i = 0; i < (1/3.0)*cycleSize; ++i) lol.push_back(csw.nextSample());
 
-    cerr << wave1 << endl;
+    /* Start with second wave */
+    csw.updateFrequency(0.125*M_PI);
+    cerr << "Joining point: " << lol.size()-1 << endl;
 
-    csw.updateFrequency(c.freq2);
+    /* Read some more */
+    for (size_t i = 0; i < (1/3.0)*cycleSize; ++i) lol.push_back(csw.nextSample());
 
-    for (size_t i = 0; i < wave2.size(); ++i)
-        wave2.at(i) = csw.nextSample();
+    /* Check for NaNs */
+    vector<pair<size_t, size_t>> nanranges;
+    for (size_t i = 0; i < lol.size(); ++i) {
+        if (lol.at(i) != lol.at(i)) {
+            pair<size_t, size_t> range;
+            range.first = i;
+            i++;
+            while (i < lol.size() && lol.at(i) != lol.at(i))
+                i++;
+            range.second = i-1;
+            nanranges.push_back(range);
+        }
+    }
 
-    vector<float> wave(wave1.size() + wave2.size());
+    cerr << "Ranges with NaNs: " << nanranges << endl;
 
-    auto copyiter = wave.begin();
-    copy(wave1.cbegin(), wave1.cend(), copyiter);
-    copy(wave2.cbegin(), wave2.cend(), copyiter);
-
-    return wave;
+    cout << lol << endl;
 }
