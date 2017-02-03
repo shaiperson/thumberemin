@@ -20,7 +20,7 @@ public:
 private:
     void updatePhase();
 
-    float f (float fq, float phi) {
+    float g (float fq, float phi) {
         return amplitude * sin ( phi + (2*M_PI*fq*increment) / sampleRate );
     }
 
@@ -34,7 +34,7 @@ private:
 
     struct PhaseFunctor {
         PhaseFunctor(ContinuousSineWave& x) : c(x) { }
-        float operator()(float PHI) { return c.f (c.currFrequency, PHI) - c.f (c.prevFrequency, c.phase); }
+        float operator()(float PHI) { return c.g (c.currFrequency, PHI) - c.g (c.prevFrequency, c.phase); }
     private:
         ContinuousSineWave& c;
     };
