@@ -17,7 +17,7 @@ float ContinuousSineWave::nextSample() {
         updatePhase();
     }
 
-    float result = f(currFrequency, phase); // call f with current frequency and phase
+    float result = g(currFrequency, phase); // call f with current frequency and phase
     increment++;
     return result;
 }
@@ -39,9 +39,9 @@ void ContinuousSineWave::updateFrequency(float freq) {
 
 void ContinuousSineWave::updatePhase() {
     /* Perform bisection */
-    float bracketMin = 0;
-    float bracketMax = max(prevPeriod(), currPeriod());
-    float mid = bracketMax/2;
+    float bracketMin = -period(currFrequency) / 2 - 0.001; // Something just left of zero
+    cerr << "bracketMin " << bracketMin << endl;
+    float bracketMax = period(currFrequency) / 2 + 0.001;
 
     boost::uintmax_t maxiters = maxBisectionIterations;
 

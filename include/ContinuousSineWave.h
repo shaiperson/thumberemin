@@ -24,12 +24,8 @@ private:
         return amplitude * sin ( phi + (2*M_PI*fq*increment) / sampleRate );
     }
 
-    float prevPeriod() {
-        return 1/prevFrequency;
-    }
-
-    float currPeriod() {
-        return 1/currFrequency;
+    float period(float frequency) {
+        return 1/frequency;
     }
 
     struct PhaseFunctor {
