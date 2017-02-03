@@ -6,17 +6,9 @@ ContinuousSineWave::ContinuousSineWave(float frequency, size_t sampleRate) :
     currFrequency(frequency),
     prevFrequency(frequency),
     amplitude(1),
-    phase(0),
-    freqChange(false),
-    phaseFunctor(*this),
-    maxBisectionIterations(50) { }
+    phase(0) { }
 
 float ContinuousSineWave::nextSample() {
-    // if (freqChange) {
-    //     freqChange = false;
-    //     updatePhase();
-    // }
-
     float result = g(currFrequency, phase); // call f with current frequency and phase
     increment++;
     return result;
@@ -34,7 +26,7 @@ vector<float> ContinuousSineWave::nextCycle() {
 void ContinuousSineWave::updateFrequency(float freq) {
     prevFrequency = currFrequency;
     currFrequency = freq;
-    /* freqChange = true; */ updatePhase();
+    updatePhase();
 }
 
 void ContinuousSineWave::updatePhase() {
