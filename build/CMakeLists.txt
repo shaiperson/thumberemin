@@ -4,8 +4,25 @@ cmake_minimum_required(VERSION 2.8)
 # Define project name
 project(opencv_example_project)
 
-#juancho
+# Output for binaries
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin/)
+
+# Define common cpps
+set (
+    COMMON_CPPS
+    ../src/config.cpp
+    ../src/Capture.cpp
+    ../src/InitialScreen.cpp
+    ../src/PlayingScreen.cpp
+    ../src/InstructionsText.cpp
+    ../src/Theremin.cpp
+    ../src/Screen.cpp
+    ../src/ColorSampler.cpp
+    ../src/Tracker.cpp
+    ../src/SilentSoundGenerator.cpp
+    ../src/RangeSoundGenerator.cpp
+    ../src/ContinuousSineWave.cpp
+)
 
 # Find OpenCV, you may need to set OpenCV_DIR variable
 # to the absolute path to the directory containing OpenCVConfig.cmake file
@@ -33,53 +50,20 @@ endif()
 add_executable (
     prueba
     ../src/main.cpp
-    ../src/config.cpp
-    ../src/Capture.cpp
-    ../src/InitialScreen.cpp
-    ../src/PlayingScreen.cpp
-    ../src/InstructionsText.cpp
-    ../src/Theremin.cpp
-    ../src/Screen.cpp
-    ../src/ColorSampler.cpp
-    ../src/Tracker.cpp
-    ../src/SilentSoundGenerator.cpp
-    ../src/RangeSoundGenerator.cpp
-    ../src/ContinuousSineWave.cpp
+    ${COMMON_CPPS}
 )
 
 add_executable (
     tests
     ../test/catch.cpp
     ../test/ContinuousSineWaveTest.cpp
-    ../src/config.cpp
-    ../src/Capture.cpp
-    ../src/InitialScreen.cpp
-    ../src/PlayingScreen.cpp
-    ../src/InstructionsText.cpp
-    ../src/Theremin.cpp
-    ../src/Screen.cpp
-    ../src/ColorSampler.cpp
-    ../src/Tracker.cpp
-    ../src/SilentSoundGenerator.cpp
-    ../src/RangeSoundGenerator.cpp
-    ../src/ContinuousSineWave.cpp
+    ${COMMON_CPPS}
 )
 
 add_executable (
     exp
     ../test/cswExp.cpp
-    ../src/config.cpp
-    ../src/Capture.cpp
-    ../src/InitialScreen.cpp
-    ../src/PlayingScreen.cpp
-    ../src/InstructionsText.cpp
-    ../src/Theremin.cpp
-    ../src/Screen.cpp
-    ../src/ColorSampler.cpp
-    ../src/Tracker.cpp
-    ../src/SilentSoundGenerator.cpp
-    ../src/RangeSoundGenerator.cpp
-    ../src/ContinuousSineWave.cpp
+    ${COMMON_CPPS}
 )
 
 # Link your application with OpenCV libraries
