@@ -11,7 +11,13 @@ struct twoWaveCase {
     float cuttingPoint1, cuttingPoint2;
 };
 
+struct wholeWaveCase {
+    float freq1, freq2;
+    size_t numSamples;
+};
+
 void cswExp();
+void traceWave(const vector<wholeWaveCase>&);
 vector<pair<size_t, size_t>> findNaNRanges(const vector<float>& wave);
 
 // twoWaveCase case1 = {220, 246.94, 1, 1}; // se rompe

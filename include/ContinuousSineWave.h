@@ -20,7 +20,8 @@ private:
     float prevFrequency;
     float amplitude;
     float phase;
-    unsigned long long int increment;
+    long long int increment;
+    long long int lastIncrement;
 };
 
 #endif
