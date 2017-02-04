@@ -22,7 +22,6 @@ void ContinuousSineWave::updateFrequency(float freq) {
     if (freq != currFrequency) { // comparison by != is OK since frequencies are fixed at runtime
         prevFrequency = currFrequency;
         currFrequency = freq;
-        cerr << prevFrequency << " " << currFrequency << endl;
         updatePhase();
     }
 }
