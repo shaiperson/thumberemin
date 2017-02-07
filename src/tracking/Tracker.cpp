@@ -1,4 +1,4 @@
-#include "../include/Tracker.h"
+#include "../../include/tracking/Tracker.h"
 
 Tracker::Tracker(Mat& histogram) :
     sample(histogram), // begin with samplingRegion as initial window

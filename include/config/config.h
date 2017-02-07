@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include "global.h"
+#include "../global.h"
 
 namespace StaticConfiguration {
     extern const int defaultCamera;

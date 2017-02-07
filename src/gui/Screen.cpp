@@ -1,4 +1,4 @@
-#include "../include/Screen.h"
+#include "../../include/gui/Screen.h"
 
 void Screen::update(Mat& frame, const TrackingInfo& tracker) const {
     /* darken inactive regions */

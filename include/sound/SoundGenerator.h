@@ -1,9 +1,9 @@
 #ifndef SOUNDGENERATOR_H
 #define SOUNDGENERATOR_H
 
-#include "global.h"
-#include "config.h"
-#include "Tracker.h"
+#include "../global.h"
+#include "../config/config.h"
+#include "../tracking/Tracker.h"
 #include <portaudio.h>
 
 class SoundGenerator {

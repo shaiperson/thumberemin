@@ -1,7 +1,7 @@
 #ifndef TRACKINGINFO_H
 #define TRACKINGINFO_H
 
-#include "config.h"
+#include "../config/config.h"
 
 class TrackingInfo {
 public:

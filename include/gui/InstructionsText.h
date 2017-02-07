@@ -1,7 +1,7 @@
 #ifndef INSTRUCTIONSTEXT_H
 #define INSTRUCTIONSTEXT_H
 
-#include "global.h"
+#include "../global.h"
 
 struct InstructionsText {
     vector<string> lines;

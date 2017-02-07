@@ -1,7 +1,7 @@
 #ifndef EXP_H
 #define EXP_H
 
-#include "../include/ContinuousSineWave.h"
+#include "../include/sound/ContinuousSineWave.h"
 #include "../include/global.h"
 
 #include <iomanip>

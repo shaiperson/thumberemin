@@ -1,8 +1,8 @@
 #ifndef CONTINUOUSSINEWAVE_H
 #define CONTINUOUSSINEWAVE_H
 
-#include "global.h"
-#include "config.h"
+#include "../global.h"
+#include "../config/config.h"
 
 class ContinuousSineWave {
 public:

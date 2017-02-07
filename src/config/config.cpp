@@ -1,4 +1,4 @@
-#include "../include/config.h"
+#include "../../include/config/config.h"
 
 const int StaticConfiguration::defaultCamera = 0;
 const string StaticConfiguration::gameWindowName = "Theremin";

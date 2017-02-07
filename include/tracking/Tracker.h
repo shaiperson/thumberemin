@@ -1,7 +1,7 @@
 #ifndef TRACKER_H
 #define TRACKER_H
 
-#include "global.h"
+#include "../global.h"
 #include "TrackingInfo.h"
 
 class Tracker : public TrackingInfo {

@@ -1,7 +1,7 @@
 #ifndef COLORSAMPLER_H
 #define COLORSAMPLER_H
 
-#include "global.h"
+#include "../global.h"
 #include "TrackingInfo.h"
 
 class ColorSampler : public TrackingInfo {

@@ -1,4 +1,4 @@
-#include "../include/RangeSoundGenerator.h"
+#include "../../include/sound/RangeSoundGenerator.h"
 
 RangeSoundGenerator::RangeSoundGenerator()
     : wave (
@@ -42,7 +42,7 @@ int RangeSoundGenerator::callback (
     for (size_t i = 0; i < frameCount; ++i) {
         output[i] = wavegen->nextSample();
     }
-    
+
     return paContinue;
 }
 

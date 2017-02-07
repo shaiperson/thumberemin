@@ -1,4 +1,4 @@
-#include "../include/ColorSampler.h"
+#include "../../include/tracking/ColorSampler.h"
 
 void ColorSampler::update(const Mat& frame) {
     // empty as fuck

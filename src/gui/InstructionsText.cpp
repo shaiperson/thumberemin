@@ -1,4 +1,4 @@
-#include "../include/InstructionsText.h"
+#include "../../include/gui/InstructionsText.h"
 
 InstructionsText::InstructionsText(const vector<string>& lines)
 : lines(lines) {
