@@ -8,7 +8,7 @@ Point ColorSampler::current() const {
     return window.tl() + Point(window.width/2, window.height/2);
 }
 
-Mat ColorSampler::takeSample(Mat& frame) {
+SparseMat ColorSampler::takeSample(Mat& frame) {
     Mat samplingData = frame(dynconf.samplingRegion);
 
     int nimages = 1; // only one 3-channel image
@@ -18,7 +18,7 @@ Mat ColorSampler::takeSample(Mat& frame) {
     float singleBinRange[2] = {0, 256};
     const float* ranges[3] = {singleBinRange, singleBinRange, singleBinRange};
 
-    Mat hist;
+    SparseMat hist;
     calcHist(&samplingData, nimages, channels, Mat(), hist, dims, histSize, ranges);
 
     return hist;

@@ -1,6 +1,6 @@
 #include "../../include/tracking/Tracker.h"
 
-Tracker::Tracker(Mat& histogram) :
+Tracker::Tracker(SparseMat& histogram) :
     sample(histogram), // begin with samplingRegion as initial window
     termCriteria(TermCriteria::COUNT, 10, 0) // terminate after 10 iterations
     { }
@@ -34,6 +34,6 @@ Point Tracker::current() const {
     return window.tl() + Point(window.width/2, window.height/2); // center point
 }
 
-Mat Tracker::takeSample(Mat& frame) {
-    return Mat();
+SparseMat Tracker::takeSample(Mat& frame) {
+    return SparseMat();
 }

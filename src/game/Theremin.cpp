@@ -69,7 +69,7 @@ void Theremin::switchToPlayingMode() {
     /* take color sample from samplingRegion and replace ColorSampler with Tracker */
     Mat frameForSampling;
     capture >> frameForSampling;
-    Mat sampleHistogram = tracker->takeSample(frameForSampling);
+    SparseMat sampleHistogram = tracker->takeSample(frameForSampling);
 
     delete tracker;
     tracker = new Tracker(sampleHistogram);

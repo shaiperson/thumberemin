@@ -10,7 +10,7 @@ public:
 
     virtual void update(const Mat& frame) = 0;
     virtual Point current() const = 0;
-    virtual Mat takeSample(Mat& frame) = 0;
+    virtual SparseMat takeSample(Mat& frame) = 0;
 
     Size windowSize() const { return StaticConfiguration::trackingWindowSize; }
 
