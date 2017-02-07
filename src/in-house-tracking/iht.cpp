@@ -3,7 +3,7 @@
 #include "../../include/in-house-tracking/iht.h"
 
 /* Supone image e hist continuas, hist inicializada en 0 */
-void IHT_calc3DByteDepthUniformHist(Mat* image, Mat* hist) {
+void IHT_calc3DByteDepthUniformHist(Mat* image, SparseMat* hist) {
     // eventualmente volar
     // CV_Assert(image->isContinuous());
     // CV_Assert(hist->isContinuous());
@@ -11,7 +11,7 @@ void IHT_calc3DByteDepthUniformHist(Mat* image, Mat* hist) {
     for (size_t i = 0; i < image->rows; ++i) {
         for (size_t j = 0; j < image->cols; ++j) {
             Vec3b& pixel = image->at<Vec3b>(i,j);
-            hist->at<float>(pixel[0], pixel[1], pixel[2]) += 1;
+            *( (float*) ( hist->ptr(pixel[0], pixel[1], pixel[2], true) ) ) += 1;
         }
     }
 }
@@ -20,7 +20,7 @@ void IHT_calc3DByteDepthUniformHist(Mat* image, Mat* hist) {
 
 /* aux */
 
-Mat IHT_createHistArgument() {
+SparseMat IHT_createHistArgument() {
     int histSize[] = {256, 256, 256}; // each color is in uchar range 0..255
-    return Mat(3, histSize, CV_32FC1, Scalar::all(0));
+    return SparseMat(3, histSize, CV_32FC1);
 }

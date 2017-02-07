@@ -22,6 +22,7 @@ set (
     ../src/sound/SilentSoundGenerator.cpp
     ../src/sound/RangeSoundGenerator.cpp
     ../src/sound/ContinuousSineWave.cpp
+    ../src/in-house-tracking/iht.cpp
 )
 
 # Find OpenCV, you may need to set OpenCV_DIR variable
@@ -57,6 +58,7 @@ add_executable (
     tests
     ../test/catch.cpp
     ../test/ContinuousSineWaveTest.cpp
+    ../test/ihtTests.cpp
     ${COMMON_CPPS}
 )
 
