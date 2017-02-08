@@ -3,9 +3,9 @@
 
 #include "../global.h"
 
-void IHT_calc3DByteDepthUniformHist(Mat* image, SparseMat* hist);
+void IHT_calc3DByteDepthUniformHist(Mat* image, Mat* hist);
 
 /* aux */
-SparseMat IHT_createHistArgument();
+Mat IHT_createHistArgument();
 
 #endif

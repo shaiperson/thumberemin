@@ -6,15 +6,15 @@
 
 class Tracker : public TrackingInfo {
 public:
-    Tracker(SparseMat& histogram);
+    Tracker(Mat& histogram);
     void update(const Mat& frame); // do actual tracking and update state accordingly
     Point current() const; // returns position according to tracker state as updated by update()
 
-    SparseMat takeSample(Mat&); // conforming
+    Mat takeSample(Mat&); // conforming
 
 private:
     using TrackingInfo::window;
-    SparseMat sample;
+    Mat sample;
     TermCriteria termCriteria;
 };
 

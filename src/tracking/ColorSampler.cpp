@@ -8,9 +8,9 @@ Point ColorSampler::current() const {
     return window.tl() + Point(window.width/2, window.height/2);
 }
 
-SparseMat ColorSampler::takeSample(Mat& frame) {
+Mat ColorSampler::takeSample(Mat& frame) {
     Mat samplingData = frame(dynconf.samplingRegion);
-    SparseMat hist = IHT_createHistArgument();
+    Mat hist = IHT_createHistArgument();
     IHT_calc3DByteDepthUniformHist(&samplingData, &hist);
     return hist;
 }
