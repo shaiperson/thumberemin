@@ -3,16 +3,42 @@
 #include "../../include/in-house-tracking/iht.h"
 
 /* Supone image e hist continuas, hist inicializada en 0 */
-void IHT_calc3DByteDepthUniformHist(Mat* image, Mat* hist) {
+void IHT_calc3DByteDepthUniformHist(const Mat* image, Mat* hist) {
     // eventualmente volar
     // CV_Assert(image->isContinuous());
     // CV_Assert(hist->isContinuous());
 
-    for (size_t i = 0; i < image->rows; ++i) {
-        for (size_t j = 0; j < image->cols; ++j) {
-            Vec3b& pixel = image->at<Vec3b>(i,j);
-            hist->at<float>(pixel[0], pixel[1], pixel[2]) += 1;
+    unsigned char* imgdata = image->data;
+    unsigned char* histdata = hist->data;
+    unsigned char* pixel;
+
+    size_t chs = 3; // should be == image->channels()
+
+    size_t imgrows = image->rows;
+    size_t imgcols = image->cols;
+
+    size_t imgstep = image->step;
+    size_t padding = imgstep - imgcols * chs * sizeof(uchar);
+
+    size_t dimSize = 256;
+    size_t planeSize = dimSize * dimSize;
+
+    size_t i = 0;
+    while (i < imgrows) {
+        size_t j = 0;
+        while (j < imgcols) {
+            * (float*) (
+                histdata +
+                imgdata [0 * sizeof(uchar)] * planeSize * sizeof(float) +
+                imgdata [1 * sizeof(uchar)] * dimSize * sizeof(float) +
+                imgdata [2 * sizeof(uchar)] * sizeof(float)
+            ) += 1;
+
+            imgdata += chs * sizeof(uchar);
+            j += 1;
         }
+        imgdata += padding;
+        i += 1;
     }
 }
 
