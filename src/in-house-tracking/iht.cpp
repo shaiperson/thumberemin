@@ -81,15 +81,6 @@ void IHT_calc3DByteDepthBackProject(const Mat* image, const Mat* hist, Mat* resu
         imgdata += padding;
         i += 1;
     }
-
-    for (size_t i = 0; i < image->rows; ++i) {
-        for (size_t j = 0; j < image->cols; ++j) {
-
-
-            Vec3b pixel = image->at<Vec3b>(i,j);
-            result->at<float>(i,j) = hist->at<float>(pixel[0], pixel[1], pixel[2]);
-        }
-    }
 }
 
 /* ================================================================= */
