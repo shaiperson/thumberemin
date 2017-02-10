@@ -3,6 +3,9 @@
 Capture::Capture(int cameraId) :
     cvcapture(cameraId) { }
 
+Capture::Capture(const string& filepath) :
+    cvcapture(filepath) { }
+
 Size Capture::frameSize() {
     return Size(cvcapture.get(CV_CAP_PROP_FRAME_WIDTH), cvcapture.get(CV_CAP_PROP_FRAME_HEIGHT));
 }
@@ -24,4 +27,8 @@ bool Capture::read(Mat& image) {
 
 void Capture::release() {
     cvcapture.release();
+}
+
+void Capture::operator=(Capture& another) {
+    cvcapture = another.cvcapture;
 }

@@ -8,11 +8,13 @@
 class Capture {
 public:
     Capture(int cameraId);
+    Capture(const string& filepath);
     Size frameSize();
     bool isOpened();
     Capture& operator>>(Mat& image);
     bool read(Mat& image);
     void release();
+    void operator=(Capture& another);
 
 private:
     VideoCapture cvcapture;

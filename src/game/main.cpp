@@ -1,9 +1,17 @@
 #include "../../include/game/Theremin.h"
 
-int main() {
+// ./main or ./main vid <video_file_path>
+int main(int argc, char* argv[]) {
 
-    Theremin theremin;
-    theremin.run();
+    if (argc > 1 && !(strcmp(argv[1], "vid"))) {
+        Theremin theremin(argv[2]);
+        theremin.runFromVideoSource();
+    } else {
+        Theremin theremin;
+        theremin.runLive();
+    }
+
+
 
     return 0;
 }
