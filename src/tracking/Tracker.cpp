@@ -15,7 +15,7 @@ void Tracker::update(const Mat& frame) {
     );
 
     Mat roi = frame(roiRect);
-    Mat backProjection = IHT_createBackProjectArgument(roiRect);
+    Mat backProjection = IHT_createBackProjectArgument(roiRect.size());
 
     IHT_calc3DByteDepthBackProject(&roi, &sample, &backProjection);
 

@@ -8,6 +8,6 @@ void IHT_calc3DByteDepthBackProject(const Mat* image, const Mat* hist, Mat* resu
 
 /* aux */
 Mat IHT_createHistArgument();
-Mat IHT_createBackProjectArgument(const Rect& rect);
+Mat IHT_createBackProjectArgument(const Size&);
 
 #endif

@@ -24,8 +24,9 @@ void IHT_calc3DByteDepthUniformHist(const Mat* image, Mat* hist) {
     size_t planeSize = dimSize * dimSize;
 
     size_t i = 0;
+    size_t j;
     while (i < imgrows) {
-        size_t j = 0;
+        j = 0;
         while (j < imgcols) {
             * (float*) (
                 histdata +
@@ -44,19 +45,64 @@ void IHT_calc3DByteDepthUniformHist(const Mat* image, Mat* hist) {
 
 /* ================================================================= */
 
+/* RESULT SE SUPONE INICIALIZADA EN 0 */
 void IHT_calc3DByteDepthBackProject(const Mat* image, const Mat* hist, Mat* result) {
-    cout << image->size() << " " << result->size() << endl;
+    unsigned char* imgdata = image->data;
+    unsigned char* histdata = hist->data;
+    unsigned char* resdata = result->data;
+
+    size_t imgchs = 3; // should be == image->channels()
+    size_t reschs = 1;
+
+    size_t imgrows = image->rows;
+    size_t imgcols = image->cols;
+
+    size_t imgstep = image->step;
+    size_t padding = imgstep - imgcols * imgchs * sizeof(uchar);
+
+    size_t dimSize = 256;
+    size_t planeSize = dimSize * dimSize;
+
+    size_t i = 0;
+    size_t j;
+    while (i < imgrows) {
+        j = 0;
+        while (j < imgcols) {
+            * (float*) resdata = * (float*) (
+                histdata +
+                imgdata [0 * sizeof(uchar)] * planeSize * sizeof(float) +
+                imgdata [1 * sizeof(uchar)] * dimSize * sizeof(float) +
+                imgdata [2 * sizeof(uchar)] * sizeof(float)
+            );
+            imgdata += imgchs * sizeof(uchar);
+            resdata += reschs * sizeof(float);
+            j += 1;
+        }
+        imgdata += padding;
+        i += 1;
+    }
+
+    for (size_t i = 0; i < image->rows; ++i) {
+        for (size_t j = 0; j < image->cols; ++j) {
+
+
+            Vec3b pixel = image->at<Vec3b>(i,j);
+            result->at<float>(i,j) = hist->at<float>(pixel[0], pixel[1], pixel[2]);
+        }
+    }
 }
 
 /* ================================================================= */
 
 /* aux */
 
+/* Consuming method requires 0-initialized */
 Mat IHT_createHistArgument() {
     int histSize[] = {256, 256, 256}; // each color is in uchar range 0..255
-    return Mat(3, histSize, CV_32FC1);
+    return Mat(3, histSize, CV_32FC1, Scalar(0));
 }
 
-Mat IHT_createBackProjectArgument(const Rect& rect) {
-    return Mat(rect.size(), CV_32FC1);
+/* Consuming method requires 0-initialized */
+Mat IHT_createBackProjectArgument(const Size& size) {
+    return Mat(size, CV_32FC1, Scalar(0));
 }

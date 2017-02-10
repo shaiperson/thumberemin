@@ -3,12 +3,13 @@
 #include "catch.hpp"
 #include "../include/in-house-tracking/iht.h"
 
+Mat image, hist;
+
 SCENARIO("Calculating the 3D histogram of an RGB 8-bit image", "[hist]") {
     GIVEN("A 5x5 RGB 8-bit image whose pixels are all [1,2,3]") {
         Mat imageToCropFrom(6, 6, CV_8UC3, Scalar(1,2,3));
-        Mat image = imageToCropFrom(Rect(1,1,5,5)); // crop image so that it is not continuous
-
-        Mat hist = IHT_createHistArgument();
+        image = imageToCropFrom(Rect(1,1,5,5)); // crop image so that it is not continuous
+        hist = IHT_createHistArgument();
 
         WHEN("Histogram is calculated") {
             IHT_calc3DByteDepthUniformHist(&image, &hist);
@@ -20,6 +21,28 @@ SCENARIO("Calculating the 3D histogram of an RGB 8-bit image", "[hist]") {
             THEN("And it has 0 in all other bins") {
                 SparseMat sparseHist(hist); // use a sparse matrix for testing to avoid iterating through dense-matrix histogram of size 256^3 = 2^24
                 REQUIRE(sparseHist.nzcount() == 1);
+            }
+        }
+    }
+}
+
+SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[backproject]") {
+    GIVEN("An RGB histogram with bin [1,2,3] at 10 and an image whoe pixels are all [1,2,3]") {
+        Mat image(5, 5, CV_8UC3, Scalar(1,2,3));
+
+        int histSizes[3] = {256, 256, 256};
+        Mat hist(3, histSizes, CV_32FC1, Scalar(0));
+        hist.at<float>(1,2,3) = 10;
+
+        WHEN("Back-projected") {
+            Mat backProjection = IHT_createBackProjectArgument(image.size());
+            IHT_calc3DByteDepthBackProject(&image, &hist, &backProjection);
+
+            THEN("All pixels in back projection have 10") {
+                bool allTens = true;
+                for (auto it = backProjection.begin<float>(); it != backProjection.end<float>(); ++it)
+                    allTens = allTens && *it == 10;
+                REQUIRE(allTens);
             }
         }
     }
