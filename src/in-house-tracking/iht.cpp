@@ -44,9 +44,19 @@ void IHT_calc3DByteDepthUniformHist(const Mat* image, Mat* hist) {
 
 /* ================================================================= */
 
+void IHT_calc3DByteDepthBackProject(const Mat* image, const Mat* hist, Mat* result) {
+    cout << image->size() << " " << result->size() << endl;
+}
+
+/* ================================================================= */
+
 /* aux */
 
 Mat IHT_createHistArgument() {
     int histSize[] = {256, 256, 256}; // each color is in uchar range 0..255
     return Mat(3, histSize, CV_32FC1);
+}
+
+Mat IHT_createBackProjectArgument(const Rect& rect) {
+    return Mat(rect.size(), CV_32FC1);
 }
