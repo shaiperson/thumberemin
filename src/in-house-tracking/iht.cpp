@@ -2,15 +2,10 @@
 
 #include "../../include/in-house-tracking/iht.h"
 
-/* Supone image e hist continuas, hist inicializada en 0 */
+/* Supone hist continuas, hist inicializada en 0 */
 void IHT_calc3DByteDepthUniformHist(const Mat* image, Mat* hist) {
-    // eventualmente volar
-    // CV_Assert(image->isContinuous());
-    // CV_Assert(hist->isContinuous());
-
     unsigned char* imgdata = image->data;
     unsigned char* histdata = hist->data;
-    unsigned char* pixel;
 
     size_t chs = 3; // should be == image->channels()
 
