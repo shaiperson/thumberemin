@@ -12,6 +12,7 @@
 #include <unordered_map>
 #include <cmath>
 #include <utility>
+#include <cstring>
 #include <boost/math/tools/roots.hpp>
 
 using namespace cv;

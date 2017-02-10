@@ -16,8 +16,10 @@
 class Theremin {
 public:
     Theremin();
+    Theremin(const string& filepath);
     ~Theremin();
-    void run();
+    void runFromVideoSource();
+    void runLive();
 
 private:
     Capture capture;

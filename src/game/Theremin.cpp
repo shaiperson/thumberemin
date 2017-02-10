@@ -13,13 +13,38 @@ Theremin::Theremin() :
     sound = new SilentSoundGenerator;
 }
 
+Theremin::Theremin(const string& vid) :
+    capture(vid)
+{
+    if(!capture.isOpened()) throw runtime_error("Error initializing video");
+
+    // Has to be defined before screen object is created
+    dynconf = DynamicConfiguration(capture.frameSize());
+
+    screen = new InitialScreen;
+    tracker = new ColorSampler;
+    sound = new SilentSoundGenerator;
+}
+
 Theremin::~Theremin() {
     delete screen;
     delete tracker;
     capture.release();
 }
 
-void Theremin::run() {
+void Theremin::runFromVideoSource() {
+    switchToPlayingMode();
+
+    Mat frame;
+    while (capture.read(frame)) {
+        // tracker->update(frame);
+        // screen->update(frame, *tracker);
+        // sound->update(*tracker);
+        imshow("LOL", frame);
+    }
+}
+
+void Theremin::runLive() {
     /* wait for user to choose playing mode */
     Mat frame;
     while (keyOptions()) {
