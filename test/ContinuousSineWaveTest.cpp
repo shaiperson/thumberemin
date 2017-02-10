@@ -1,6 +1,6 @@
 #include "catch.hpp"
 
-#include "../include/ContinuousSineWave.h"
+#include "../include/sound/ContinuousSineWave.h"
 #include "../include/global.h"
 
 SCENARIO ("Generating continuous wave with certain frequency and sample rate") {

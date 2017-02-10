@@ -1,4 +1,4 @@
-#include "../include/InitialScreen.h"
+#include "../../include/gui/InitialScreen.h"
 
 // TODO hardcoded values
 InitialScreen::InitialScreen() :

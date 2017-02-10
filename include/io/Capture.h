@@ -1,7 +1,7 @@
 #ifndef CAPTURE_H
 #define CAPTURE_H
 
-#include "global.h"
+#include "../global.h"
 
 /* Wrapper class for cv::VideoCapture that provides flipped frames */
 

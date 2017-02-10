@@ -1,4 +1,4 @@
-#include "../include/ContinuousSineWave.h"
+#include "../../include/sound/ContinuousSineWave.h"
 
 ContinuousSineWave::ContinuousSineWave(float frequency, size_t sampleRate) :
     sampleRate(sampleRate),

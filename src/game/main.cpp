@@ -1,4 +1,4 @@
-#include "../include/Theremin.h"
+#include "../../include/game/Theremin.h"
 
 int main() {
 

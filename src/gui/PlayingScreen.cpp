@@ -1,4 +1,4 @@
-#include "../include/PlayingScreen.h"
+#include "../../include/gui/PlayingScreen.h"
 
 /* Derived-screen-specific additional frame processing for display*/
 void PlayingScreen::processFrame(Mat& frame, const TrackingInfo& tracker) const {

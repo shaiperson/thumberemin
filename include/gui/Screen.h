@@ -1,10 +1,10 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
-#include "global.h"
-#include "config.h"
+#include "../global.h"
+#include "../config/config.h"
 #include "InstructionsText.h"
-#include "TrackingInfo.h"
+#include "../tracking/TrackingInfo.h"
 
 class Screen {
 public:

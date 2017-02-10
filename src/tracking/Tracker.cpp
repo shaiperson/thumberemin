@@ -1,4 +1,4 @@
-#include "../include/Tracker.h"
+#include "../../include/tracking/Tracker.h"
 
 Tracker::Tracker(Mat& histogram) :
     sample(histogram), // begin with samplingRegion as initial window
@@ -6,13 +6,6 @@ Tracker::Tracker(Mat& histogram) :
     { }
 
 void Tracker::update(const Mat& frame) {
-    int nimages = 1;
-    const int channels[3] = {0,1,2};
-    float singleBinRange[2] = {0, 256};
-    const float* ranges[3] = {singleBinRange, singleBinRange, singleBinRange};
-
-    Mat backProjection;
-
     /* Playing region expanded with exact margins to allow desired movement of tracking marker
     Note this strongly relies on meanShift()'s behavior with respect to tracking window reaching edges of frame*/
     Point playingRegionExpansionVector = Point(0, StaticConfiguration::trackingWindowSize.height / 2);
@@ -22,7 +15,9 @@ void Tracker::update(const Mat& frame) {
     );
 
     Mat roi = frame(roiRect);
-    calcBackProject(&roi, nimages, channels, sample, backProjection, ranges);
+    Mat backProjection = IHT_createBackProjectArgument(roiRect.size());
+
+    IHT_calc3DByteDepthBackProject(&roi, &sample, &backProjection);
 
     Point windowShiftVector = Point(-dynconf.inactiveRegions[0].width, -roiRect.y);
     window += windowShiftVector; // shift to playingRegion-relative position

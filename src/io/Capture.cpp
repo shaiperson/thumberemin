@@ -1,4 +1,4 @@
-#include "../include/Capture.h"
+#include "../../include/io/Capture.h"
 
 Capture::Capture(int cameraId) :
     cvcapture(cameraId) { }

@@ -10,18 +10,19 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin/)
 # Define common cpps
 set (
     COMMON_CPPS
-    ../src/config.cpp
-    ../src/Capture.cpp
-    ../src/InitialScreen.cpp
-    ../src/PlayingScreen.cpp
-    ../src/InstructionsText.cpp
-    ../src/Theremin.cpp
-    ../src/Screen.cpp
-    ../src/ColorSampler.cpp
-    ../src/Tracker.cpp
-    ../src/SilentSoundGenerator.cpp
-    ../src/RangeSoundGenerator.cpp
-    ../src/ContinuousSineWave.cpp
+    ../src/config/config.cpp
+    ../src/io/Capture.cpp
+    ../src/gui/InitialScreen.cpp
+    ../src/gui/PlayingScreen.cpp
+    ../src/gui/InstructionsText.cpp
+    ../src/game/Theremin.cpp
+    ../src/gui/Screen.cpp
+    ../src/tracking/ColorSampler.cpp
+    ../src/tracking/Tracker.cpp
+    ../src/sound/SilentSoundGenerator.cpp
+    ../src/sound/RangeSoundGenerator.cpp
+    ../src/sound/ContinuousSineWave.cpp
+    ../src/in-house-tracking/iht.cpp
 )
 
 # Find OpenCV, you may need to set OpenCV_DIR variable
@@ -51,7 +52,7 @@ endif()
 # Declare the executable target built from your sources
 add_executable (
     prueba
-    ../src/main.cpp
+    ../src/game/main.cpp
     ${COMMON_CPPS}
 )
 
@@ -59,6 +60,7 @@ add_executable (
     tests
     ../test/catch.cpp
     ../test/ContinuousSineWaveTest.cpp
+    ../test/ihtTests.cpp
     ${COMMON_CPPS}
 )
 
