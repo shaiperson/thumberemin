@@ -6,6 +6,7 @@
 #include <opencv2/core.hpp>
 
 #include <iostream>
+#include <iomanip>
 #include <exception>
 #include <vector>
 #include <string>
