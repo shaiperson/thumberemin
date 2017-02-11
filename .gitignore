@@ -37,6 +37,13 @@ build/CMakeCache.txt
 build/CMakeFiles/
 build/Makefile
 build/cmake_install.cmake
+test/ihtinput/gen/CMakeCache.txt
+test/ihtinput/gen/CMakeFiles/
+test/ihtinput/gen/Makefile
+test/ihtinput/gen/cmake_install.cmake
+
+# Generated test images
+test/ihtinput/gen/output.png
 
 # Notes
 notes.txt

@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+project( ihtgen )
+find_package( OpenCV REQUIRED )
+add_definitions(--std=c++11 )
+add_executable( gen gen.cpp )
+target_link_libraries( gen ${OpenCV_LIBS} )
