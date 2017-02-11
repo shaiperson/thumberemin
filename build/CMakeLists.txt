@@ -10,6 +10,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin/)
 # Define common cpps
 set (
     COMMON_CPPS
+    ../test/timer/timer.cpp
     ../src/config/config.cpp
     ../src/io/Capture.cpp
     ../src/gui/InitialScreen.cpp
@@ -47,7 +48,7 @@ message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
 if(CMAKE_VERSION VERSION_LESS "2.8.11")
   # Add OpenCV headers location to your include paths
   include_directories(${OpenCV_INCLUDE_DIRS})
-endif()	
+endif()
 
 # Declare the executable target built from your sources
 add_executable (
@@ -61,6 +62,7 @@ add_executable (
     ../test/catch.cpp
     ../test/ContinuousSineWaveTest.cpp
     ../test/ihtTests.cpp
+    ../test/times.cpp
     ${COMMON_CPPS}
 )
 
