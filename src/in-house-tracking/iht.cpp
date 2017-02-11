@@ -4,6 +4,9 @@
 
 /* Supone hist continuas, hist inicializada en 0 */
 void IHT_calc3DByteDepthUniformHist(const Mat* image, Mat* hist) {
+
+    IHT_startTimer();
+
     unsigned char* imgdata = image->data;
     unsigned char* histdata = hist->data;
 
@@ -36,6 +39,9 @@ void IHT_calc3DByteDepthUniformHist(const Mat* image, Mat* hist) {
         imgdata += padding;
         i += 1;
     }
+
+    IHT_stopTimer();
+
 }
 
 /* ================================================================= */
@@ -76,6 +82,18 @@ void IHT_calc3DByteDepthBackProject(const Mat* image, const Mat* hist, Mat* resu
         imgdata += padding;
         i += 1;
     }
+}
+
+/* ================================================================= */
+
+/* timer wrappers */
+
+void IHT_startTimer() {
+    timer::start();
+}
+
+void IHT_stopTimer() {
+    timer::stop();
 }
 
 /* ================================================================= */
