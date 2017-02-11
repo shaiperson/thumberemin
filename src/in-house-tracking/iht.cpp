@@ -23,11 +23,11 @@ void IHT_calc3DByteDepthUniformHist(const Mat* image, Mat* hist) {
     while (i < imgrows) {
         j = 0;
         while (j < imgcols) {
-            * (float*) (
+            * (short*) (
                 histdata +
-                imgdata [0 * sizeof(uchar)] * planeSize * sizeof(float) +
-                imgdata [1 * sizeof(uchar)] * dimSize * sizeof(float) +
-                imgdata [2 * sizeof(uchar)] * sizeof(float)
+                imgdata [0 * sizeof(uchar)] * planeSize * sizeof(short) +
+                imgdata [1 * sizeof(uchar)] * dimSize * sizeof(short) +
+                imgdata [2 * sizeof(uchar)] * sizeof(short)
             ) += 1;
 
             imgdata += chs * sizeof(uchar);
@@ -63,14 +63,14 @@ void IHT_calc3DByteDepthBackProject(const Mat* image, const Mat* hist, Mat* resu
     while (i < imgrows) {
         j = 0;
         while (j < imgcols) {
-            * (float*) resdata = * (float*) (
+            * (short*) resdata = * (short*) (
                 histdata +
-                imgdata [0 * sizeof(uchar)] * planeSize * sizeof(float) +
-                imgdata [1 * sizeof(uchar)] * dimSize * sizeof(float) +
-                imgdata [2 * sizeof(uchar)] * sizeof(float)
+                imgdata [0 * sizeof(uchar)] * planeSize * sizeof(short) +
+                imgdata [1 * sizeof(uchar)] * dimSize * sizeof(short) +
+                imgdata [2 * sizeof(uchar)] * sizeof(short)
             );
             imgdata += imgchs * sizeof(uchar);
-            resdata += reschs * sizeof(float);
+            resdata += reschs * sizeof(short);
             j += 1;
         }
         imgdata += padding;
@@ -83,12 +83,21 @@ void IHT_calc3DByteDepthBackProject(const Mat* image, const Mat* hist, Mat* resu
 /* aux */
 
 /* Consuming method requires 0-initialized */
-Mat IHT_createHistArgument() {
+Mat IHT_createHistArgumentFloat() {
     int histSize[] = {256, 256, 256}; // each color is in uchar range 0..255
     return Mat(3, histSize, CV_32FC1, Scalar(0));
 }
 
+Mat IHT_createHistArgumentShort() {
+    int histSize[] = {256, 256, 256}; // each color is in uchar range 0..255
+    return Mat(3, histSize, CV_16UC1, Scalar(0));
+}
+
 /* Consuming method requires 0-initialized */
-Mat IHT_createBackProjectArgument(const Size& size) {
+Mat IHT_createBackProjectArgumentFloat(const Size& size) {
     return Mat(size, CV_32FC1, Scalar(0));
+}
+
+Mat IHT_createBackProjectArgumentShort(const Size& size) {
+    return Mat(size, CV_16UC1, Scalar(0));
 }

@@ -10,7 +10,7 @@ Point ColorSampler::current() const {
 
 Mat ColorSampler::takeSample(Mat& frame) {
     Mat samplingData = frame(dynconf.samplingRegion);
-    Mat hist = IHT_createHistArgument();
+    Mat hist = IHT_createHistArgumentShort();
     IHT_calc3DByteDepthUniformHist(&samplingData, &hist);
     return hist;
 }
