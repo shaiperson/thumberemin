@@ -74,15 +74,15 @@ add_executable (
     ${COMMON_CPPS}
 )
 
-add_executable (
-    exp
-    ../exp/cswExp.cpp
-    ../exp/exp.cpp
-    ${COMMON_CPPS}
-)
+#add_executable (
+#    exp
+#    ../exp/cswExp.cpp
+#    ../exp/exp.cpp/
+#    ${COMMON_CPPS}
+#)
 
 # Link your application with OpenCV libraries
 target_link_libraries(prueba ${OpenCV_LIBS} portaudio)
 target_link_libraries(tests ${OpenCV_LIBS} portaudio)
-target_link_libraries(exp ${OpenCV_LIBS} portaudio)
+# target_link_libraries(exp ${OpenCV_LIBS} portaudio)
 # target_link_libraries(prueba portaudio)
