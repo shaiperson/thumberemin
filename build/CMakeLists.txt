@@ -50,6 +50,13 @@ if(CMAKE_VERSION VERSION_LESS "2.8.11")
   include_directories(${OpenCV_INCLUDE_DIRS})
 endif()
 
+add_custom_command (
+    OUTPUT hist.o
+    COMMAND nasm -f elf64 ../asm/hist.asm -o hist.o
+    DEPENDS ../asm/hist.asm
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
 # Declare the executable target built from your sources
 add_executable (
     prueba
@@ -59,6 +66,7 @@ add_executable (
 
 add_executable (
     tests
+    hist.o
     ../test/catch.cpp
     ../test/ContinuousSineWaveTest.cpp
     ../test/ihtTests.cpp
