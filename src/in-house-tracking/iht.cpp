@@ -3,23 +3,16 @@
 #include "../../include/in-house-tracking/iht.h"
 
 /* Supone hist continuas, hist inicializada en 0 */
-void IHT_calc3DByteDepthUniformHist(const Mat* image, Mat* hist) {
+void IHT_calc3DByteDepthUniformHist(const uchar* imgdata, uchar* histdata, size_t imgrows, size_t imgcols, size_t imgstep) {
 
     GLOBAL_startTimer();
 
-    unsigned char* imgdata = image->data;
-    unsigned char* histdata = hist->data;
+    size_t chs = 3; // CHANNELS
 
-    size_t chs = 3; // should be == image->channels()
-
-    size_t imgrows = image->rows;
-    size_t imgcols = image->cols;
-
-    size_t imgstep = image->step;
     size_t padding = imgstep - imgcols * chs * sizeof(uchar);
 
     size_t dimSize = 256;
-    size_t planeSize = dimSize * dimSize;
+    size_t planeSize = 65536;
 
     size_t i = 0;
     size_t j;
