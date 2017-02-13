@@ -26,6 +26,10 @@ set (
     ../src/in-house-tracking/iht.cpp
 )
 
+#set (
+#    CMAKE_CXX_FLAGS_DISTRIBUTION "-O3"
+#)
+
 # Find OpenCV, you may need to set OpenCV_DIR variable
 # to the absolute path to the directory containing OpenCVConfig.cmake file
 # via the command line or GUI
@@ -34,7 +38,12 @@ set (
 find_package(OpenCV REQUIRED)
 
 #juancho
-add_definitions(--std=c++11)
+add_definitions (
+    --std=c++11
+    -g
+    -m64
+    -O0
+)
 
 # If the package has been found, several variables will
 # be set, you can find the full list with descriptions
@@ -50,12 +59,21 @@ if(CMAKE_VERSION VERSION_LESS "2.8.11")
   include_directories(${OpenCV_INCLUDE_DIRS})
 endif()
 
+# assemble hist.asm
 add_custom_command (
     OUTPUT hist.o
-    COMMAND nasm -f elf64 ../asm/hist.asm -o hist.o
+    COMMAND nasm -f elf64 -g -F dwarf ../asm/hist.asm -o hist.o
     DEPENDS ../asm/hist.asm
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
+
+# compile timer functions needed in asm files
+#add_custom_command (
+#    OUTPUT timer.o
+#    COMMAND g++ -c -m64 -g ../test/timer/timer.cpp -o timer.o --std=c++11
+#    DEPENDS ../test/timer/timer.cpp
+#    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+#)
 
 # Declare the executable target built from your sources
 add_executable (
