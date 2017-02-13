@@ -1,5 +1,8 @@
 global IHT_calc3DByteDepthUniformHist_ASM
 
+extern GLOBAL_startTimer
+extern GLOBAL_stopTimer
+
 ; general constants
 %define CHANNELS 3
 %define DIMSIZE 256
@@ -10,6 +13,9 @@ global IHT_calc3DByteDepthUniformHist_ASM
 %define ZERO_DWS_1_2 0xFFFFFFFF0000000000000000FFFFFFFF
 %define ZERO_DWS_0_1_3 0x00000000FFFFFFFF0000000000000000
 %define ZERO_DWS_0_2_3 0x0000000000000000FFFFFFFF00000000
+
+; misc
+%define PIXELS_PER_ITER 5
 
 section .data
 
@@ -33,22 +39,26 @@ section .text
 ; RCX imgcols
 ; R8 imgstep ---> padding = imgstep - imgcols*3
 
-; R14 i
-; R15 j
+; R9 i
+; R10 j
 
 IHT_calc3DByteDepthUniformHist_ASM:
+
+    push rbp
+    mov rbp, rsp
+
+    call GLOBAL_startTimer
 
     ; HARDCODING imgcols * 3 <---- MODIFY if switching to HS(V)
     ; multiply imgcols by 3, number of channels
     ; shift left once and add once
-    mov r13, rcx
-    sal r13, 1
-    add r13, rcx ; r13 now contains imgcols * 3
+    mov r11, rcx
+    sal r11, 1
+    add r11, rcx ; r11 now contains imgcols * 3
 
-    sub r8, r13 ; r8 now contains padding
+    sub r8, r11 ; r8 now contains padding
 
-    ; i = 0
-    xor r14, r14
+    ; r11 is now free
 
     ; zeros for interleaving when unpacking
     pxor xmm15, xmm15
@@ -63,15 +73,12 @@ IHT_calc3DByteDepthUniformHist_ASM:
     movdqa xmm10, [zero_dws_0_1_3]
     movdqa xmm9, [zero_dws_0_2_3]
 
-    ; regigster for shifting once
-    ; YAYZ xmm8 is now free
-
+    ; i = 0
+    xor r9, r9
 
     .rows_loop:
-        xor r15, r15 ; j = 0
+        xor r10, r10 ; j = 0
         .cols_loop:
-            inc r15; j += 1
-
             ; xmm0 = x|r4|g4|b4|r3|g3|b3|r2|g2|b2|r1|g1|b1|r0|g0|b0|
             movdqu xmm0, [rdi]
 
@@ -96,8 +103,6 @@ IHT_calc3DByteDepthUniformHist_ASM:
             ; xx | r4 | g4 | b4 <-- xmm3
 
             ; calculate coordinates
-
-            mov rax, rax; >>>>> REMOVE DUMMY >>>>>
 
             ; WARNING -----------------------------------------------------------
             ; using signed packed dword mul. This is OK assuming highest possible
@@ -153,29 +158,72 @@ IHT_calc3DByteDepthUniformHist_ASM:
             pand xmm2, xmm11 ; r3 | 0 | 0 | r2
 
             por xmm0, xmm1
-            por xmm0, xmm2 ; r3 | r0 | r1 | r2 <-- xmm0
+            por xmm0, xmm2 ; r3 | r0 | r1 | r2 <-- xmm0mv
 
             ; at this point, xmm4, xmm5 and xmm0 have 'b's, 'g's and 'r's
             ; free registers: xmm6, xmm7
 
             ; shuffle xmm0 and xmm5 so they're ordered same as xmm4 (this is arbitrary)
-            ; pshufd xmm0, 1 0 3 2
-            ; pshufd xmm5, 0 3 2 1
-
-            mov rax, rax; >>>>> REMOVE DUMMY >>>>>
+            ; mask for xmm0: 1 0 3 2
+            ; mask for xmm5, 0 3 2 1
+            pshufd xmm0, xmm0, 01001110b
+            pshufd xmm5, xmm5, 00111001b
 
             ; b1+g1+r1 | b2+g2+r2 | b3+g3+r3 | b0+g0+r0 <-- xmm0
             paddd xmm0, xmm4
             paddd xmm0, xmm5
 
+            ; last but not least, xmm3 (b4 g4 r4)
             ; shift left to kill unused highest dword without changing value of
             ; horizontal sum (shift instruction fills in 0s)
-            pslldq xmm3, 4 ; SCORE this lets you use an immediate
-            phaddd xmm3, xmm3 ; xx | xx | xx | b4+g4+r4
+            pslldq xmm3, 4
+            phaddd xmm3, xmm3
             phaddd xmm3, xmm3 ; xx | xx | xx | b4+g4+r4
 
-            ; move to general purpose registers to use as increments for hist pointer
-            ; ...
+            ; use to compute histogram bin addresses and increment them
+            xor r11, r11
+            movd r11d, xmm0 ; read pixel0
+            add r11, rsi
+            inc word [r11]
 
+            psrldq xmm0, 4 ; kill pixel0
+
+            xor r11, r11
+            movd r11d, xmm0 ; read pixel1
+            add r11, rsi
+            inc word [r11]
+
+            psrldq xmm0, 4 ; kill pixel1
+
+            xor r11, r11
+            movd r11d, xmm0 ; read pixel2
+            add r11, rsi
+            inc word [r11]
+
+            psrldq xmm0, 4 ; kill pixel2
+
+            xor r11, r11
+            movd r11d, xmm0 ; read pixel3
+            add r11, rsi
+            inc word [r11]
+
+            xor r11, r11
+            movd r11d, xmm3 ; read pixel3
+            add r11, rsi
+            inc word [r11]
+
+        add rdi, 15 ; 15 = CHANNELS * PIXELS_PER_ITER * sizeof(uchar)
+        add r10, 5 ; 5 = PIXELS_PER_ITER
+        cmp r10, rcx ; cmp j, imgcols
+        jne .cols_loop
+
+    add rdi, r8 ; i += padding
+    add r9, 1 ; only add ONE row
+    cmp r9, rdx ; cmp i, imgrows
+    jne .rows_loop
+
+    call GLOBAL_stopTimer
+
+    pop rbp
 
     ret
