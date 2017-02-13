@@ -10,10 +10,6 @@ void IHT_calc3DByteDepthBackProject(const Mat* image, const Mat* hist, Mat* resu
 extern "C" int IHT_calc3DByteDepthUniformHist_ASM(const Mat* image, Mat* hist);
 extern "C" void IHT_calc3DByteDepthBackProject_ASM(const Mat* image, const Mat* hist, Mat* result);
 
-/* timer wrappers */
-void IHT_startTimer();
-void IHT_stopTimer();
-
 /* aux */
 Mat IHT_createHistArgumentFloat();
 Mat IHT_createHistArgumentShort();

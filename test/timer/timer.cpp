@@ -1,4 +1,5 @@
 #include "timer.h"
+#include <iostream>
 
 high_resolution_clock::time_point timer::t0;
 high_resolution_clock::time_point timer::t1;
@@ -13,4 +14,14 @@ void timer::stop() {
     duration<double, ratio<1,1000000>> lapse =
         duration_cast<duration<double, ratio<1,1000000>>> ( timer::t1 - timer::t0 );
     timer::t = lapse.count();
+}
+
+/* timer wrappers */
+
+void GLOBAL_startTimer() {
+    timer::start();
+}
+
+void GLOBAL_stopTimer() {
+    timer::stop();
 }

@@ -17,4 +17,10 @@ namespace timer {
     void stop();
 }
 
+/* timer wrappers - declare with C linkage to make visible from .asm */
+extern "C" {
+    void GLOBAL_startTimer();
+    void GLOBAL_stopTimer();
+}
+
 #endif
