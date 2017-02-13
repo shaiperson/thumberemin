@@ -33,30 +33,39 @@ one: dq 1
 
 section .text
 
-; RDI imgdata
-; RSI histdata
-; RDX imgrows
-; RCX imgcols
-; R8 imgstep ---> padding = imgstep - imgcols*3
+; RDI-->R12 imgdata
+; RSI-->R13 histdata
+; RDX-->R14 imgrows
+; RCX-->R15 imgcols
+; R8-->RBX imgstep ---> padding = imgstep - imgcols*3
 
 ; R9 i
 ; R10 j
 
 IHT_calc3DByteDepthUniformHist_ASM:
 
-    push rbp
-    mov rbp, rsp
+    push r12 ; aligned
+    push r13 ; unaligned
+    push r14 ; aligned
+    push r15 ; unaligned
+    push rbx ; aligned
+
+    mov r12, rdi
+    mov r13, rsi
+    mov r14, rdx
+    mov r15, rcx
+    mov rbx, r8
 
     call GLOBAL_startTimer
 
     ; HARDCODING imgcols * 3 <---- MODIFY if switching to HS(V)
     ; multiply imgcols by 3, number of channels
     ; shift left once and add once
-    mov r11, rcx
+    mov r11, r15
     sal r11, 1
-    add r11, rcx ; r11 now contains imgcols * 3
+    add r11, r15 ; r11 now contains imgcols * 3
 
-    sub r8, r11 ; r8 now contains padding
+    sub rbx, r11 ; rbx now contains padding
 
     ; r11 is now free
 
@@ -80,7 +89,7 @@ IHT_calc3DByteDepthUniformHist_ASM:
         xor r10, r10 ; j = 0
         .cols_loop:
             ; xmm0 = x|r4|g4|b4|r3|g3|b3|r2|g2|b2|r1|g1|b1|r0|g0|b0|
-            movdqu xmm0, [rdi]
+            movdqu xmm0, [r12]
 
             ; unpack byte --> word
             movdqa xmm2, xmm0
@@ -102,7 +111,7 @@ IHT_calc3DByteDepthUniformHist_ASM:
             ; r3 | g3 | b3 | r2 <-- xmm2
             ; xx | r4 | g4 | b4 <-- xmm3
 
-            ; calculate coordinates
+            ; calculate coor12nates
 
             ; WARNING -----------------------------------------------------------
             ; using signed packed dword mul. This is OK assuming highest possible
@@ -183,47 +192,51 @@ IHT_calc3DByteDepthUniformHist_ASM:
             ; use to compute histogram bin addresses and increment them
             xor r11, r11
             movd r11d, xmm0 ; read pixel0
-            add r11, rsi
+            add r11, r13
             inc word [r11]
 
             psrldq xmm0, 4 ; kill pixel0
 
             xor r11, r11
             movd r11d, xmm0 ; read pixel1
-            add r11, rsi
+            add r11, r13
             inc word [r11]
 
             psrldq xmm0, 4 ; kill pixel1
 
             xor r11, r11
             movd r11d, xmm0 ; read pixel2
-            add r11, rsi
+            add r11, r13
             inc word [r11]
 
             psrldq xmm0, 4 ; kill pixel2
 
             xor r11, r11
             movd r11d, xmm0 ; read pixel3
-            add r11, rsi
+            add r11, r13
             inc word [r11]
 
             xor r11, r11
             movd r11d, xmm3 ; read pixel3
-            add r11, rsi
+            add r11, r13
             inc word [r11]
 
-        add rdi, 15 ; 15 = CHANNELS * PIXELS_PER_ITER * sizeof(uchar)
+        add r12, 15 ; 15 = CHANNELS * PIXELS_PER_ITER * sizeof(uchar)
         add r10, 5 ; 5 = PIXELS_PER_ITER
-        cmp r10, rcx ; cmp j, imgcols
+        cmp r10, r15 ; cmp j, imgcols
         jne .cols_loop
 
-    add rdi, r8 ; i += padding
+    add r12, rbx ; i += padding
     add r9, 1 ; only add ONE row
-    cmp r9, rdx ; cmp i, imgrows
+    cmp r9, r14 ; cmp i, imgrows
     jne .rows_loop
 
     call GLOBAL_stopTimer
 
-    pop rbp
+    pop rbx
+    pop r15
+    pop r14
+    pop r13
+    pop r12
 
     ret
