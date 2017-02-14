@@ -23,12 +23,8 @@ set (
     ../src/sound/SilentSoundGenerator.cpp
     ../src/sound/RangeSoundGenerator.cpp
     ../src/sound/ContinuousSineWave.cpp
-    ../src/in-house-tracking/iht.cpp
+    iht.o
 )
-
-#set (
-#    CMAKE_CXX_FLAGS_DISTRIBUTION "-O3"
-#)
 
 # Find OpenCV, you may need to set OpenCV_DIR variable
 # to the absolute path to the directory containing OpenCVConfig.cmake file
@@ -41,8 +37,7 @@ find_package(OpenCV REQUIRED)
 add_definitions (
     --std=c++11
     -g
-    -m64
-    -O0
+    -O3
 )
 
 # If the package has been found, several variables will
@@ -67,13 +62,13 @@ add_custom_command (
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
-# compile timer functions needed in asm files
-#add_custom_command (
-#    OUTPUT timer.o
-#    COMMAND g++ -c -m64 -g ../test/timer/timer.cpp -o timer.o --std=c++11
-#    DEPENDS ../test/timer/timer.cpp
-#    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-#)
+# compile iht separately to control optimization flags
+add_custom_command (
+    OUTPUT iht.o
+    COMMAND g++ -O3 -g -c -m64 ../src/in-house-tracking/iht.cpp -o iht.o --std=c++11
+    DEPENDS ../src/in-house-tracking/iht.cpp
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
 
 # Declare the executable target built from your sources
 add_executable (
