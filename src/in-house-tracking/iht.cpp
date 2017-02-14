@@ -37,6 +37,21 @@ void IHT_calc3DByteDepthUniformHist(const uchar* imgdata, uchar* histdata, size_
 
 }
 
+void IHT_calc3DByteDepthUniformHist_CV(const Mat& image, Mat& hist) {
+
+    GLOBAL_startTimer();
+
+    for (size_t i = 0; i < image.rows; ++i) {
+        for (size_t j = 0; j < image.cols; ++j) {
+            const Vec3b& pixel = image.at<Vec3b>(i,j);
+            hist.at<short>(pixel[0], pixel[1], pixel[2]) += 1;
+        }
+    }
+
+    GLOBAL_stopTimer();
+
+}
+
 /* ================================================================= */
 
 /* RESULT SE SUPONE INICIALIZADA EN 0 */
