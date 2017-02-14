@@ -33,6 +33,10 @@ section .text
 ; R9 i
 ; R10 j
 
+; ---> FREE REGS at least as of beginning of loop <---
+; rax
+; xmm11
+
 IHT_calc3DByteDepthUniformHist_ASM:
 
     push r12 ; aligned
@@ -58,7 +62,8 @@ IHT_calc3DByteDepthUniformHist_ASM:
 
     sub rbx, r11 ; rbx now contains padding
 
-    ; r11 is now free
+    ; zero r11 to use in loop
+    xor r11, r11
 
     ; zeros for interleaving when unpacking
     pxor xmm15, xmm15
@@ -70,6 +75,12 @@ IHT_calc3DByteDepthUniformHist_ASM:
 
     ; mask for pshufb
     movdqa xmm8, [arrange_bytes]
+
+    ; move to xmm10 2 copies of histdata (r13)
+    movq xmm10, r13 ; move histdata to lower 64 bits
+    pslldq xmm10, 8 ; shift left 64 bits
+    movq xmm11, r13 ; copy histdata again. xmm0 is now histdata | histdata
+    por xmm10, xmm11
 
     ; i = 0
     xor r9, r9
@@ -114,7 +125,7 @@ IHT_calc3DByteDepthUniformHist_ASM:
             ; multiplication value here is PLANESIZE*BYTESIZE = 255*255*255
             ; which is << 2^31-1. This of course assumes image as 8-bit depth.
             ; -------------------------------------------------------------------
-            mov rax, rax
+
             pmulld xmm0, xmm14 ; multiply b's
             pmulld xmm1, xmm13 ; multiply g's
             ; xmm2 r's, they're multiplied by 1
@@ -131,34 +142,35 @@ IHT_calc3DByteDepthUniformHist_ASM:
             phaddd xmm3, xmm3
             phaddd xmm3, xmm3 ; xx | xx | xx | b4+g4+r4
 
+            ; ------------------------------------------------------------------
             ; use to compute histogram bin addresses and increment them
-            xor r11, r11
-            movd r11d, xmm0 ; read pixel0
-            add r11, r13
-            inc word [r11]
+            ; ------------------------------------------------------------------
 
-            psrldq xmm0, 4 ; kill pixel0
+            ; unpack to quadword for pointer arithmetic
+            movdqa xmm9, xmm0
+            punpckldq xmm0, xmm15
+            punpckhdq xmm9, xmm15
 
-            xor r11, r11
-            movd r11d, xmm0 ; read pixel1
-            add r11, r13
-            inc word [r11]
+            ; xmm0 and xmm9 now contain bin offsets for pixel0,1,2,3.
 
-            psrldq xmm0, 4 ; kill pixel1
+            ; add histdata to each
+            paddq xmm0, xmm10
+            paddq xmm9, xmm10
 
-            xor r11, r11
-            movd r11d, xmm0 ; read pixel2
-            add r11, r13
-            inc word [r11]
+            ; xmm0 and xmm9 now contain bin addresses for pixel0,1,2,3.
 
-            psrldq xmm0, 4 ; kill pixel2
+            ; move to r64 to perform memory write
+            movq rax, xmm0 ; pixel in xmm0
+            inc word [rax]
+            psrldq xmm0, 8
+            movq rax, xmm0 ; the other pixel in xmm0
+            inc word [rax]
+            movq rax, xmm9 ; pixel in xmm9
+            inc word [rax]
+            psrldq xmm9, 8
+            movq rax, xmm9 ; the other pixel in xmm9
+            inc word [rax]
 
-            xor r11, r11
-            movd r11d, xmm0 ; read pixel3
-            add r11, r13
-            inc word [r11]
-
-            xor r11, r11
             movd r11d, xmm3 ; read pixel4
             add r11, r13
             inc word [r11]
