@@ -9,28 +9,19 @@ void IHT_calc3DByteDepthUniformHist(const uchar* imgdata, uchar* histdata, size_
 
     size_t chs = 3; // CHANNELS
 
-    size_t padding = imgstep - imgcols * chs * sizeof(uchar);
-
     size_t dimSize = 256;
     size_t planeSize = 65536;
 
-    size_t i = 0;
-    size_t j;
-    while (i < imgrows) {
-        j = 0;
-        while (j < imgcols) {
-            * (short*) (
+    for (size_t i = 0; i < imgrows; ++i) {
+        for (size_t j = 0; j < imgcols; ++j) {
+            const uchar* pixel = imgdata + i*imgstep + j*chs;
+            uchar* bin =
                 histdata +
-                imgdata [0 * sizeof(uchar)] * planeSize * sizeof(short) +
-                imgdata [1 * sizeof(uchar)] * dimSize * sizeof(short) +
-                imgdata [2 * sizeof(uchar)] * sizeof(short)
-            ) += 1;
-
-            imgdata += chs * sizeof(uchar);
-            j += 1;
+                pixel[0] * planeSize * sizeof(short) +
+                pixel[1] * dimSize * sizeof(short) +
+                pixel[2] * sizeof(short);
+            *(short*)bin += 1;
         }
-        imgdata += padding;
-        i += 1;
     }
 
     GLOBAL_stopTimer();
