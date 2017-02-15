@@ -9,8 +9,11 @@ void IHT_calc3DByteDepthBackProject(const Mat* image, const Mat* hist, Mat* resu
 
 void IHT_calc3DByteDepthUniformHist_CV(const Mat& image, Mat& hist);
 
-extern "C" void IHT_calc3DByteDepthUniformHist_ASM(const uchar* imgdata, uchar* histdata, size_t imgrows, size_t imgcols, size_t imgstep);
-extern "C" void IHT_calc3DByteDepthBackProject_ASM(const Mat* image, const Mat* hist, Mat* result);
+extern "C" {
+    void IHT_calc3DByteDepthUniformHist_ASM(const uchar* imgdata, uchar* histdata, size_t imgrows, size_t imgcols, size_t imgstep);
+    void IHT_calc3DByteDepthUniformHist_DISASM(const uchar* imgdata, uchar* histdata, size_t imgrows, size_t imgcols, size_t imgstep);
+    void IHT_calc3DByteDepthBackProject_ASM(const Mat* image, const Mat* hist, Mat* result);
+}
 
 /* aux */
 Mat IHT_createHistArgumentFloat();
