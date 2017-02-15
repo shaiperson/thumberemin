@@ -5,7 +5,7 @@
 
 TEST_CASE("Histogram calculation times", "[times],[sequential],[histogram]") {
     Mat image, hist;
-    double time_its, time_ptrs, time_asm = 0;
+    double time_its, time_ptrs, time_asm, time_disasm = 0;
 
     image = imread("../test/ihtinput/rgballover.png");
 
@@ -24,14 +24,23 @@ TEST_CASE("Histogram calculation times", "[times],[sequential],[histogram]") {
         hist = IHT_createHistArgumentShort();
         IHT_calc3DByteDepthUniformHist_ASM(image.data, hist.data, image.rows, image.cols, image.step);
         time_asm += timer::t;
+
+        /* measure O3 pointer-arithmetic disassembled version */
+        hist = IHT_createHistArgumentShort();
+        IHT_calc3DByteDepthUniformHist_DISASM(image.data, hist.data, image.rows, image.cols, image.step);
+        time_disasm += timer::t;
     }
 
-    cout << "C++ iterators ";
+    cout << "C++ iterators   ";
     cerr << time_its / REPETITIONS << endl;
 
-    cout << "C++ pointers  ";
+    cout << "C++ pointers    ";
     cerr << time_ptrs / REPETITIONS << endl;
 
-    cout << "Assembler SSE ";
+    cout << "Assembler SSE   ";
     cerr << time_asm / REPETITIONS << endl;
+
+    cout << "Disassembled O3 ";
+    cerr << time_disasm / REPETITIONS << endl;
+
 }

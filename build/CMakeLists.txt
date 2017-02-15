@@ -62,6 +62,14 @@ add_custom_command (
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
+# assemble -O3 ptrarthm hist disasm
+add_custom_command (
+    OUTPUT hist_disasm_O3.o
+    COMMAND nasm -f elf64 -g -F dwarf ../asm/hist_disasm_ptrarthm_O3.asm -o hist_disasm_O3.o
+    DEPENDS ../asm/hist_disasm_ptrarthm_O3.asm
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
 # compile iht separately to control optimization flags
 add_custom_command (
     OUTPUT iht.o
@@ -80,6 +88,7 @@ add_executable (
 add_executable (
     tests
     hist.o
+    hist_disasm_O3.o
     ../test/catch.cpp
     ../test/ContinuousSineWaveTest.cpp
     ../test/ihtTests.cpp
