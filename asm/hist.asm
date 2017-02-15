@@ -52,9 +52,7 @@ IHT_calc3DByteDepthUniformHist_ASM:
     ; HARDCODING imgcols * 3 <---- MODIFY if switching to HS(V)
     ; multiply imgcols by 3, number of channels
     ; shift left once and add once
-    mov r11, r15
-    sal r11, 1
-    add r11, r15 ; r11 now contains imgcols * 3
+    lea r11, [r15+r15*2] ; r11 now contains imgcols * 3
 
     sub rbx, r11 ; rbx now contains padding
 
