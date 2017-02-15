@@ -18,8 +18,8 @@ align 16
 ; low --> high
 arrange_bytes: db 0,3,6,9,1,4,7,10,2,5,8,11,12,13,14,15
 
-coordclc_psz_psz_psz_psz: dd PLANESIZE, PLANESIZE, PLANESIZE, PLANESIZE
-coordclc_dsz_dsz_dsz_dsz: dd DIMSIZE, DIMSIZE, DIMSIZE, DIMSIZE
+kill_high_dword: dd 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0
+
 coordclc_0_1_dsz_psz:     dd PLANESIZE, DIMSIZE, 1, 0
 
 section .text
@@ -62,9 +62,11 @@ IHT_calc3DByteDepthUniformHist_ASM:
     pxor xmm15, xmm15
 
     ; vectors for bin-index calculation
-    movdqa xmm14, [coordclc_psz_psz_psz_psz]
-    movdqa xmm13, [coordclc_dsz_dsz_dsz_dsz]
-    movdqa xmm12, [coordclc_0_1_dsz_psz]
+    ; movdqa xmm14, [coordclc_psz_psz_psz_psz]
+    ; movdqa xmm13, [coordclc_dsz_dsz_dsz_dsz]
+    ; movdqa xmm12, [coordclc_0_1_dsz_psz]
+    movdqa xmm12, [kill_high_dword]
+    ; xmm13, xmm14 now free as fuck
 
     ; mask for pshufb
     movdqa xmm8, [arrange_bytes]
@@ -113,10 +115,26 @@ IHT_calc3DByteDepthUniformHist_ASM:
             ; which is << 2^31-1. This of course assumes image as 8-bit depth.
             ; -------------------------------------------------------------------
             mov rax, rax
-            pmulld xmm0, xmm14 ; multiply b's
-            pmulld xmm1, xmm13 ; multiply g's
+            pslld xmm0, 16 ; multiply b's
+            pslld xmm1, 8 ; multiply g's
             ; xmm2 r's, they're multiplied by 1
-            pmulld xmm3, xmm12 ; multiply pixel4
+            ; pmulld xmm3, xmm12 ; multiply pixel4
+            ; si vale la pena por ahí se puede evitar el último mul con shifts y máscaras
+
+            movdqa xmm13, xmm3 ; xmm13 <-- xx | r4 | g4 | b4
+            pand xmm13, xmm12 ; xmm13 <-- 0 | r4 | g4 | b4
+            psrldq xmm13, 8 ; xmm13 <-- 0 | 0 | 0 | r4
+
+            punpckldq xmm3, xmm15 ; xmm3 <-- g4 | b4
+            movdqa xmm14, xmm3 ; xmm14 <-- g4 | b4
+
+            psllq xmm3, 16 ; xmm3 <-- g4 * psz | b4 * psz
+            psllq xmm14, 8 ; xmm3 <-- g4 * dsz | b4 * dsz
+
+            psrldq xmm14, 8 ; xmm14 <-- 0 | g4 * dsz
+
+            paddq xmm3, xmm14 ; xmm3 <-- g4 * psz | b4*psz + g4*dsz
+            paddq xmm3, xmm13 ; xmm3 <-- g4 * psz | b4*psz + g4*dsz + r4
 
             ; b1+g1+r1 | b2+g2+r2 | b3+g3+r3 | b0+g0+r0 <-- xmm0
             paddd xmm0, xmm1
@@ -125,9 +143,9 @@ IHT_calc3DByteDepthUniformHist_ASM:
             ; last but not least, xmm3 (b4 g4 r4)
             ; shift left to kill unused highest dword without changing value of
             ; horizontal sum (shift instruction fills in 0s)
-            pslldq xmm3, 4
-            phaddd xmm3, xmm3
-            phaddd xmm3, xmm3 ; xx | xx | xx | b4+g4+r4
+            ; pslldq xmm3, 4
+            ; phaddd xmm3, xmm3
+            ; phaddd xmm3, xmm3 ; xx | xx | xx | b4+g4+r4
 
             ; use to compute histogram bin addresses and increment them
             xor r11, r11
@@ -157,7 +175,7 @@ IHT_calc3DByteDepthUniformHist_ASM:
             inc word [r11]
 
             xor r11, r11
-            movd r11d, xmm3 ; read pixel4
+            movq r11, xmm3 ; read pixel4 <-- ACÁ ES MOVQ porque ahora en xmm3 queda la cuenta en el qword bajo
             add r11, r13
             inc word [r11]
 
