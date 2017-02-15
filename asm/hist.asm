@@ -134,7 +134,7 @@ IHT_calc3DByteDepthUniformHist_ASM:
             psrldq xmm14, 8 ; xmm14 <-- 0 | g4 * dsz
 
             paddq xmm3, xmm14 ; xmm3 <-- g4 * psz | b4*psz + g4*dsz
-            paddq xmm3, xmm13 ; xmm3 <-- g4 * psz | b4*psz + g4*dsz + r4
+            paddq xmm3, xmm13 ; xmm3 <-- g4 * psz | b4*psz + g4*dsz + r4  == queda el offset en el qword bajo de xmm3
 
             ; b1+g1+r1 | b2+g2+r2 | b3+g3+r3 | b0+g0+r0 <-- xmm0
             paddd xmm0, xmm1
