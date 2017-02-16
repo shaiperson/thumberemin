@@ -17,8 +17,8 @@ SCENARIO("Calculating the 3D histogram of an RGB 8-bit image with cols divisble 
             IHT_calc3DByteDepthUniformHist_ASM(image.data, hist_vec.data, image.rows, image.cols, image.step);
 
             THEN("Histogram at [1,2,3] has 100, total number of image pixels") {
-                REQUIRE(hist_seq.at<short>(1,2,3) == 100);
-                REQUIRE(hist_vec.at<short>(1,2,3) == 100);
+                REQUIRE(hist_seq.at<short>(3,2,1) == 100);
+                REQUIRE(hist_vec.at<short>(3,2,1) == 100);
             }
 
             THEN("It has 0 in all other bins") {
@@ -45,13 +45,13 @@ SCENARIO("Calculating the 3D histogram of an RGB 8-bit image with cols divisble 
             THEN("Histogram has 1 in bins (0, 0, 0..24)") {
                 bool allOnes_seq = true;
                 for (size_t i = 0; i < 25; ++i)
-                    allOnes_seq = allOnes_seq && hist_seq.at<short>(0,0,i) == 1;
+                    allOnes_seq = allOnes_seq && hist_seq.at<short>(i,0,0) == 1;
 
                 REQUIRE(allOnes_seq);
 
                 bool allOnes_vec = true;
                 for (size_t i = 0; i < 25; ++i)
-                    allOnes_vec = allOnes_vec && hist_vec.at<short>(0,0,i) == 1;
+                    allOnes_vec = allOnes_vec && hist_vec.at<short>(i,0,0) == 1;
 
                 REQUIRE(allOnes_vec);
             }
@@ -73,7 +73,7 @@ SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[backproject
 
         int histSizes[3] = {256, 256, 256};
         Mat hist(3, histSizes, CV_16UC1, Scalar(0));
-        hist.at<short>(1,2,3) = 10;
+        hist.at<short>(3,2,1) = 10;
 
         WHEN("Back-projected") {
             Mat backProjection_seq = IHT_createBackProjectArgumentShort(image.size());

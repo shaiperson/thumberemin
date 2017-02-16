@@ -17,9 +17,9 @@ void IHT_calc3DByteDepthUniformHist(const uchar* imgdata, uchar* histdata, size_
             const uchar* pixel = imgdata + i*imgstep + j*chs;
             uchar* bin =
                 histdata +
-                pixel[0] * planeSize * sizeof(short) +
+                pixel[2] * planeSize * sizeof(short) +
                 pixel[1] * dimSize * sizeof(short) +
-                pixel[2] * sizeof(short);
+                pixel[0] * sizeof(short);
             *(short*)bin += 1;
         }
     }
@@ -35,7 +35,7 @@ void IHT_calc3DByteDepthUniformHist_CV(const Mat& image, Mat& hist) {
     for (size_t i = 0; i < image.rows; ++i) {
         for (size_t j = 0; j < image.cols; ++j) {
             const Vec3b& pixel = image.at<Vec3b>(i,j);
-            hist.at<short>(pixel[0], pixel[1], pixel[2]) += 1;
+            hist.at<short>(pixel[2], pixel[1], pixel[0]) += 1;
         }
     }
 
