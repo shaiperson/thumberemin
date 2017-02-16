@@ -140,34 +140,34 @@ IHT_calc3DByteDepthUniformHist_ASM:
             xor r11, r11
             movd r11d, xmm0 ; read pixel0
             add r11, r13
-            inc word [r11]
+            add word [r11], 1
 
             psrldq xmm0, 4 ; kill pixel0
 
             xor r11, r11
             movd r11d, xmm0 ; read pixel1
             add r11, r13
-            inc word [r11]
+            add word [r11], 1
 
             psrldq xmm0, 4 ; kill pixel1
 
             xor r11, r11
             movd r11d, xmm0 ; read pixel2
             add r11, r13
-            inc word [r11]
+            add word [r11], 1
 
             psrldq xmm0, 4 ; kill pixel2
 
             xor r11, r11
             movd r11d, xmm0 ; read pixel3
             add r11, r13
-            inc word [r11]
+            add word [r11], 1
 
             xor r11, r11
             movd r11d, xmm3 ; read pixel4
             sal r11, 1
             add r11, r13
-            inc word [r11]
+            add word [r11], 1
 
         add r12, 15 ; 15 = CHANNELS * PIXELS_PER_ITER * sizeof(uchar)
         add r10, 5 ; 5 = PIXELS_PER_ITER
