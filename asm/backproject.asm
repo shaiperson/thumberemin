@@ -6,8 +6,6 @@ extern GLOBAL_stopTimer
 section .data
 
 align 16
-; low --> high
-leave_3_low_bytes_r64: db 0xFF, 0xFF, 0xFF, 0, 0, 0, 0, 0
 
 section .text
 
@@ -41,8 +39,6 @@ IHT_calc3DByteDepthBackProject_ASM:
     lea r11, [rax+rax*2] ; r11 now contains imgcols * 3
     sub rbx, r11 ; rbx now contains padding
 
-    mov rdi, [leave_3_low_bytes_r64]
-
     ; i = 0
     xor r9, r9
 
@@ -52,45 +48,49 @@ IHT_calc3DByteDepthBackProject_ASM:
             ; xmm0 = x|r4|g4|b4|r3|g3|b3|r2|g2|b2|r1|g1|b1|r0|g0|b0
             movdqu xmm0, [r12]
 
-            movq r11, xmm0 ; r11 <-- g2 b2 r1 g1 b1 r0 g0 b0
-            and r11, rdi ; r11 <-- 0 0 0 0 0 r0 g0 b0
-            movdqu xmm1, [r13 + 2*r11] ; leave in position 0
+            movd r11d, xmm0 ; r11 <-- g2 b2 r1 g1 b1 r0 g0 b0
+            and r11, 0x0000000000FFFFFF ; r11 <-- 0 0 0 0 0 r0 g0 b0
+            movzx rdi, word [r13 + 2*r11] ; leave in position 0
 
-            psrldq xmm0, 3
+            psrldq xmm0, 3 ; crush p0
 
-            movq r11, xmm0
-            and r11, rdi ; r11 <-- 0 0 0 0 0 r1 g1 b1
-            movdqu xmm2, [r13 + 2*r11]
-            pslldq xmm2, 2 ; place in position 1
+            movd r11d, xmm0
+            and r11, 0x0000000000FFFFFF ; r11 <-- 0 0 0 0 0 r1 g1 b1
+            movzx rsi, word [r13 + 2*r11]
+            sal rsi, 16 ; place in position 1
 
-            psrldq xmm0, 3
+            psrldq xmm0, 3 ; crush p1
 
-            movq r11, xmm0
-            and r11, rdi ; r11 <-- 0 0 0 0 0 r2 g2 b2
-            movdqu xmm3, [r13 + 2*r11]
-            pslldq xmm3, 4 ; place in position 2
+            movd r11d, xmm0
+            and r11, 0x0000000000FFFFFF ; r11 <-- 0 0 0 0 0 r2 g2 b2
+            movzx rdx, word [r13 + 2*r11]
+            sal rdx, 32 ; place in position 2
 
-            psrldq xmm0, 3
+            psrldq xmm0, 3 ; crush p2
 
-            movq r11, xmm0
-            and r11, rdi ; r11 <-- 0 0 0 0 0 r3 g3 b3
-            movdqu xmm4, [r13 + 2*r11]
-            pslldq xmm4, 6 ; place in position 3
+            movd r11d, xmm0
+            and r11, 0x0000000000FFFFFF ; r11 <-- 0 0 0 0 0 r3 g3 b3
+            movzx rcx, word [r13 + 2*r11]
+            sal rcx, 48 ; place in position 3
 
-            psrldq xmm0, 3
+            ; junt pixel0,1,2,3 bin values
+            or rcx, rdi
+            or rcx, rsi
+            or rcx, rdx ; rcx <-- p3 p2 p1 p0
+            movq xmm1, rcx ; xmm1 <-- 0 | 0 | 0 | 0 | p3 | p2 | p1 | p0
 
-            movq r11, xmm0
-            and r11, rdi ; r11 <-- 0 0 0 0 0 r4 g4 b4
-            movdqu xmm5, [r13 + 2*r11]
-            pslldq xmm5, 8 ; place in position 4
+            psrldq xmm0, 3 ; crush p3
 
-            por xmm5, xmm1
-            por xmm5, xmm2
-            por xmm5, xmm3
-            por xmm5, xmm4
+            movd r11d, xmm0 ;
+            and r11, 0x0000000000FFFFFF ; r11 <-- 0 0 0 0 0 r4 g4 b4
+            movzx rdi, word [r13 + 2*r11] ; rdi ya está libre acá porque se hicieron los or para acomodar rcx
+            movd xmm2, edi
+            pslldq xmm2, 8 ; place in position 4
+
+            por xmm1, xmm2
 
             ; escribo en res
-            movdqu [r14], xmm5
+            movdqu [r14], xmm1
 
         add r12, 15 ; advance imgdata, 15 = CHANNELS * PIXELS_PER_ITER
         add r14, 10 ; advance resdata POR AHÍ MEJOR índices y usar lea en el loop?
