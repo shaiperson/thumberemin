@@ -65,8 +65,8 @@ IHT_calc3DByteDepthUniformHist_ASM:
             ; xmm0 = x|r4|g4|b4|r3|g3|b3|r2|g2|b2|r1|g1|b1|r0|g0|b0
             movdqu xmm0, [r12]
 
-            movq r11, xmm0 ; r11 <-- g2 | b2 | r1 | g1 | b1 | r0 | g0 | b0
-            and r11, rdi ; r11 <-- 0 | 0 | 0 | 0 | 0 | r0 | g0 | b0
+            movq r11, xmm0 ; r11 <-- g2 b2 r1 g1 b1 r0 g0 b0
+            and r11, rdi ; r11 <-- 0 0 0 0 0 r0 g0 b0
             inc word [r13 + 2*r11] ; probar también con shift, sumar el puntero y ahí escribir
 
             psrldq xmm0, 3
