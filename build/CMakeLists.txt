@@ -62,6 +62,14 @@ add_custom_command (
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
+# assemble backproject.asm
+add_custom_command (
+    OUTPUT backproject.o
+    COMMAND nasm -f elf64 -g -F dwarf ../asm/backproject.asm -o backproject.o
+    DEPENDS ../asm/backproject.asm
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
 # assemble -O3 ptrarthm hist disasm
 add_custom_command (
     OUTPUT hist_disasm_O3.o
@@ -88,6 +96,7 @@ add_executable (
 add_executable (
     tests
     hist.o
+    backproject.o
     hist_disasm_O3.o
     ../test/catch.cpp
     ../test/ContinuousSineWaveTest.cpp
