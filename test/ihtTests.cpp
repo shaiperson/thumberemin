@@ -73,7 +73,7 @@ SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[backproject
 
         int histSizes[3] = {256, 256, 256};
         Mat hist(3, histSizes, CV_16UC1, Scalar(0));
-        hist.at<short>(1,2,3) = 100;
+        hist.at<short>(1,2,3) = 10;
 
         WHEN("Back-projected") {
             Mat backProjection_seq = IHT_createBackProjectArgumentShort(image.size());
@@ -82,19 +82,19 @@ SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[backproject
             IHT_calc3DByteDepthBackProject(image.data, hist.data, backProjection_seq.data, image.rows, image.cols, image.step);
             IHT_calc3DByteDepthBackProject_ASM(image.data, hist.data, backProjection_vec.data, image.rows, image.cols, image.step);
 
-            bool allHundreds;
-            THEN("All pixels in sequential back projection have 100") {
-                allHundreds = true;
+            bool allTens;
+            THEN("All pixels in sequential back projection have 10") {
+                allTens = true;
                 for (auto it = backProjection_seq.begin<short>(); it != backProjection_seq.end<short>(); ++it)
-                    allHundreds = allHundreds && *it == 100;
-                REQUIRE(allHundreds);
+                    allTens = allTens && *it == 10;
+                REQUIRE(allTens);
             }
 
-            THEN("All pixels in vectorial back projection have 100") {
-                allHundreds = true;
+            THEN("All pixels in vectorial back projection have 10") {
+                allTens = true;
                 for (auto it = backProjection_vec.begin<short>(); it != backProjection_vec.end<short>(); ++it)
-                    allHundreds = allHundreds && *it == 100;
-                REQUIRE(allHundreds);
+                    allTens = allTens && *it == 10;
+                REQUIRE(allTens);
             }
         }
     }
