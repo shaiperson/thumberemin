@@ -113,40 +113,31 @@ IHT_calc3DByteDepthBackProject_ASM:
 
             xor r11, r11
 
-            movd r11d, xmm0 ; r11 <-- pixel0 offset
-            movzx rdi, word [r13 + 2*r11] ; rdi <-- hist_bin[pixel0]
+            movd r11d, xmm0 ; r11 <-- pixel0 casi-offset
+            movdqu xmm4, [r13 + 2*r11] ; bin value directo a xmm
             psrldq xmm0, 4
 
-            movd r11d, xmm0 ; r11 <-- pixel1 offset
-            movzx rsi, word [r13 + 2*r11] ; rsi <-- hist_bin[pixel1]
+            movd r11d, xmm0 ; r11 <-- pixel1 casi-offset
+            movdqu xmm5, [r13 + 2*r11] ; bin value directo a xmm
+            pslldq xmm5, 2
             psrldq xmm0, 4
 
-            movd r11d, xmm0 ; r11 <-- pixel2 offset
-            movzx rdx, word [r13 + 2*r11] ; rdx <-- hist_bin[pixel2]
+            movd r11d, xmm0 ; r11 <-- pixel2 casi-offset
+            movdqu xmm6, [r13 + 2*r11] ; bin value directo a xmm
+            pslldq xmm6, 4
             psrldq xmm0, 4
 
-            movd r11d, xmm0 ; r11 <-- pixel3 offset
-            movzx rcx, word [r13 + 2*r11] ; rcx <-- hist_bin[pixel3]
+            movd r11d, xmm0 ; r11 <-- pixel3 casi-offset
+            movdqu xmm7, [r13 + 2*r11] ; bin value directo a xmm
+            pslldq xmm7, 6
 
-            movd r11d, xmm3 ; r11 <-- pixel4 offset
-            movzx r8, word [r13 + 2*r11] ; r8 <-- hist_bin[pixel4]
+            movd r11d, xmm3 ; r11 <-- pixel4 casi-offset
+            movdqu xmm0, [r13 + 2*r11] ; bin value directo a xmm | YA PUEDO MATAR XMM0
+            pslldq xmm0, 8
 
-            ; shifts para alinear los shorts del hist en orden correcto
-            sal rsi, 16 ; pixel1 va en posición 1
-            sal rdx, 32 ; pixel2 va en posición 2
-            sal rcx, 48 ; pixel3 va en posición 3
-
-            ; or para juntarlos en rdi
-            or rdi, rsi
-            or rdi, rdx
-            or rdi, rcx
-
-            ; primero mov de pixel4
-            movd xmm0, r8d
-            pslldq xmm0, 8 ; muevo a posición 4, qword bajo queda zeroed)
-
-            ; movq de pixels0,1,2,3 a qword bajo de xmm0, ZEROEA QWORD ALTO POR GATO
-            movq xmm7, rdi
+            por xmm0, xmm4
+            por xmm0, xmm5
+            por xmm0, xmm6
             por xmm0, xmm7
 
             ; escribo en res
