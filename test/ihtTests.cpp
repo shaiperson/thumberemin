@@ -5,7 +5,7 @@
 
 Mat image, hist_seq, hist_vec;
 
-SCENARIO("Calculating the 3D histogram of an RGB 8-bit image with cols divisble by 5", "[hist]") {
+SCENARIO("Calculating the 3D histogram of an RGB 8-bit image with cols divisble by 5", "[unit], [hist]") {
     GIVEN("A 10x10 RGB 8-bit image whose pixels are all [1,2,3]") {
         Mat imageToCropFrom(13, 13, CV_8UC3, Scalar(1,2,3));
         image = imageToCropFrom(Rect(2,2,10,10)); // crop image so that it has padding
@@ -66,7 +66,7 @@ SCENARIO("Calculating the 3D histogram of an RGB 8-bit image with cols divisble 
     }
 }
 
-SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[backproject]") {
+SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[backproject],[unit]") {
     GIVEN("An RGB histogram with bin [1,2,3] at 10 and an image whoe pixels are all [1,2,3]") {
         Mat imageToCropFrom(13, 13, CV_8UC3, Scalar(1,2,3));
         image = imageToCropFrom(Rect(2,2,10,10)); // crop image so that it has padding
