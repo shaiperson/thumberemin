@@ -46,18 +46,18 @@ void IHT_calc3DByteDepthUniformHist_CV(const Mat& image, Mat& hist) {
 /* ================================================================= */
 
 /* RESULT SE SUPONE INICIALIZADA EN 0 */
-void IHT_calc3DByteDepthBackProject(const Mat* image, const Mat* hist, Mat* result) {
-    unsigned char* imgdata = image->data;
-    unsigned char* histdata = hist->data;
-    unsigned char* resdata = result->data;
+void IHT_calc3DByteDepthBackProject (
+    const uchar* imgdata,
+    const uchar* histdata,
+    uchar* resdata,
+    size_t imgrows,
+    size_t imgcols,
+    size_t imgstep
+) {
 
     size_t imgchs = 3; // should be == image->channels()
     size_t reschs = 1;
 
-    size_t imgrows = image->rows;
-    size_t imgcols = image->cols;
-
-    size_t imgstep = image->step;
     size_t padding = imgstep - imgcols * imgchs * sizeof(uchar);
 
     size_t dimSize = 256;

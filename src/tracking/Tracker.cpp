@@ -17,7 +17,7 @@ void Tracker::update(const Mat& frame) {
     Mat roi = frame(roiRect);
     Mat backProjection = IHT_createBackProjectArgumentShort(roiRect.size());
 
-    IHT_calc3DByteDepthBackProject(&roi, &sample, &backProjection);
+    IHT_calc3DByteDepthBackProject(roi.data, sample.data, backProjection.data, roi.rows, roi.cols, roi.step);
 
     Point windowShiftVector = Point(-dynconf.inactiveRegions[0].width, -roiRect.y);
     window += windowShiftVector; // shift to playingRegion-relative position

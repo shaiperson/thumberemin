@@ -68,21 +68,33 @@ SCENARIO("Calculating the 3D histogram of an RGB 8-bit image with cols divisble 
 
 SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[backproject]") {
     GIVEN("An RGB histogram with bin [1,2,3] at 10 and an image whoe pixels are all [1,2,3]") {
-        Mat image(5, 5, CV_8UC3, Scalar(1,2,3));
+        Mat imageToCropFrom(13, 13, CV_8UC3, Scalar(1,2,3));
+        image = imageToCropFrom(Rect(2,2,10,10)); // crop image so that it has padding
 
         int histSizes[3] = {256, 256, 256};
         Mat hist(3, histSizes, CV_16UC1, Scalar(0));
-        hist.at<short>(1,2,3) = 10;
+        hist.at<short>(1,2,3) = 100;
 
         WHEN("Back-projected") {
-            Mat backProjection = IHT_createBackProjectArgumentShort(image.size());
-            IHT_calc3DByteDepthBackProject(&image, &hist, &backProjection);
+            Mat backProjection_seq = IHT_createBackProjectArgumentShort(image.size());
+            Mat backProjection_vec = IHT_createBackProjectArgumentShort(image.size());
 
-            THEN("All pixels in back projection have 10") {
-                bool allTens = true;
-                for (auto it = backProjection.begin<short>(); it != backProjection.end<short>(); ++it)
-                    allTens = allTens && *it == 10;
-                REQUIRE(allTens);
+            IHT_calc3DByteDepthBackProject(image.data, hist.data, backProjection_seq.data, image.rows, image.cols, image.step);
+            IHT_calc3DByteDepthBackProject_ASM(image.data, hist.data, backProjection_vec.data, image.rows, image.cols, image.step);
+
+            bool allHundreds;
+            THEN("All pixels in sequential back projection have 100") {
+                allHundreds = true;
+                for (auto it = backProjection_seq.begin<short>(); it != backProjection_seq.end<short>(); ++it)
+                    allHundreds = allHundreds && *it == 100;
+                REQUIRE(allHundreds);
+            }
+
+            THEN("All pixels in vectorial back projection have 100") {
+                allHundreds = true;
+                for (auto it = backProjection_vec.begin<short>(); it != backProjection_vec.end<short>(); ++it)
+                    allHundreds = allHundreds && *it == 100;
+                REQUIRE(allHundreds);
             }
         }
     }
