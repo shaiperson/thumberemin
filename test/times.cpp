@@ -62,7 +62,7 @@ TEST_CASE("Back projection calculation times", "[times],[backproject]") {
         hist = IHT_createHistArgumentShort();
         backproject = IHT_createBackProjectArgumentShort(image.size());
         IHT_calc3DByteDepthBackProject_ASM(image.data, hist.data, backproject.data, image.rows, image.cols, image.step);
-        time_ptrs += timer::t;
+        time_asm += timer::t;
     }
 
     cout << "C++ pointers    ";
