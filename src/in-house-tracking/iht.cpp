@@ -70,9 +70,9 @@ void IHT_calc3DByteDepthBackProject (
         while (j < imgcols) {
             * (short*) resdata = * (short*) (
                 histdata +
-                imgdata [0 * sizeof(uchar)] * planeSize * sizeof(short) +
+                imgdata [2 * sizeof(uchar)] * planeSize * sizeof(short) +
                 imgdata [1 * sizeof(uchar)] * dimSize * sizeof(short) +
-                imgdata [2 * sizeof(uchar)] * sizeof(short)
+                imgdata [0 * sizeof(uchar)] * sizeof(short)
             );
             imgdata += imgchs * sizeof(uchar);
             resdata += reschs * sizeof(short);
