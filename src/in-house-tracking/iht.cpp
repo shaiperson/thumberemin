@@ -55,6 +55,8 @@ void IHT_calc3DByteDepthBackProject (
     size_t imgstep
 ) {
 
+    GLOBAL_startTimer();
+
     size_t imgchs = 3; // should be == image->channels()
     size_t reschs = 1;
 
@@ -81,6 +83,9 @@ void IHT_calc3DByteDepthBackProject (
         imgdata += padding;
         i += 1;
     }
+
+    GLOBAL_stopTimer();
+
 }
 
 /* ================================================================= */
