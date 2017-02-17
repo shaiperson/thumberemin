@@ -66,8 +66,9 @@ SCENARIO("Calculating the 3D histogram of an RGB 8-bit image with cols divisble 
     }
 }
 
-SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[backproject],[unit]") {
-    GIVEN("An RGB histogram with bin [1,2,3] at 10 and an image whoe pixels are all [1,2,3]") {
+SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[unit], [backproject]") {
+
+    GIVEN("An RGB histogram with bin [1,2,3] at 10 and an image whose pixels are all [1,2,3]") {
         Mat imageToCropFrom(13, 13, CV_8UC3, Scalar(1,2,3));
         image = imageToCropFrom(Rect(2,2,10,10)); // crop image so that it has padding
 
@@ -95,6 +96,57 @@ SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[backproject
                 for (auto it = backProjection_vec.begin<short>(); it != backProjection_vec.end<short>(); ++it)
                     allTens = allTens && *it == 10;
                 REQUIRE(allTens);
+            }
+        }
+    }
+
+    GIVEN("RGB histogram with all [x,100,100] bins at 123, all [x,200,200] bins at 456, rest at 0; image with diagonal [1,100,100] and the rest [1,200,200]") {
+        Mat imageToCropFrom(23, 23, CV_8UC3, Scalar(1,200,200));
+        image = imageToCropFrom(Rect(2,2,20,20));
+        for (size_t i = 0; i < 20; ++i)
+            image.at<Vec3b>(i,i) = Vec3b(1, 100, 100);
+
+        int histSizes[3] = {256, 256, 256};
+        Mat hist(3, histSizes, CV_16UC1, Scalar(0));
+        for (size_t i = 0; i < 255; ++i) {
+            hist.at<short>(100, 100, i) = 123;
+            hist.at<short>(200, 200, i) = 456;
+        }
+
+        WHEN("Back-projected") {
+            Mat backProjection_seq = IHT_createBackProjectArgumentShort(image.size());
+            Mat backProjection_vec = IHT_createBackProjectArgumentShort(image.size());
+
+            IHT_calc3DByteDepthBackProject(image.data, hist.data, backProjection_seq.data, image.rows, image.cols, image.step);
+            IHT_calc3DByteDepthBackProject_ASM(image.data, hist.data, backProjection_vec.data, image.rows, image.cols, image.step);
+
+            bool allCorrectSeq, allCorrectVec;
+            THEN("All diagonal pixels have 123") {
+                allCorrectSeq = true;
+                for (size_t i = 0; i < 20; ++i)
+                    allCorrectSeq = allCorrectSeq && backProjection_seq.at<short>(i,i) == 123;
+                REQUIRE(allCorrectSeq);
+
+                allCorrectVec = true;
+                for (size_t i = 0; i < 20; ++i)
+                    allCorrectVec = allCorrectVec && backProjection_vec.at<short>(i,i) == 123;
+                REQUIRE(allCorrectVec);
+            }
+
+            THEN("The rest has 456") {
+                allCorrectSeq = true;
+                for (size_t i = 0; i < 20; ++i)
+                    for (size_t j = 0; j < 20; ++j)
+                        if (i != j)
+                            allCorrectSeq = allCorrectSeq && backProjection_seq.at<short>(i,j) == 456;
+                REQUIRE(allCorrectSeq);
+
+                allCorrectVec = true;
+                for (size_t i = 0; i < 20; ++i)
+                    for (size_t j = 0; j < 20; ++j)
+                        if (i != j)
+                            allCorrectVec = allCorrectVec && backProjection_vec.at<short>(i,j) == 456;
+                REQUIRE(allCorrectVec);
             }
         }
     }
