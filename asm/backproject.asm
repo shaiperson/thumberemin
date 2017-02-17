@@ -45,52 +45,53 @@ IHT_calc3DByteDepthBackProject_ASM:
     .rows_loop:
         xor r10, r10
         .cols_loop:
-            ; xmm0 = x|r4|g4|b4|r3|g3|b3|r2|g2|b2|r1|g1|b1|r0|g0|b0
+            ; xmm0 = x|r4|g4|b4|r3|g3|b3|r2 | g2|b2|r1|g1|b1|r0|g0|b0
             movdqu xmm0, [r12]
 
-            movd r11d, xmm0 ; r11 <-- g2 b2 r1 g1 b1 r0 g0 b0
-            and r11, 0x0000000000FFFFFF ; r11 <-- 0 0 0 0 0 r0 g0 b0
-            movzx rdi, word [r13 + 2*r11] ; leave in position 0
+            movq rdi, xmm0
+            mov rsi, rdi
+            mov rdx, rdi
 
-            psrldq xmm0, 3 ; crush p0
+            and rdi, 0x0000000000FFFFFF ; rdi <-- 0 0 0 0 0 r0 g0 b0
 
-            movd r11d, xmm0
-            and r11, 0x0000000000FFFFFF ; r11 <-- 0 0 0 0 0 r1 g1 b1
-            movzx rsi, word [r13 + 2*r11]
-            sal rsi, 16 ; place in position 1
+            shr rsi, 24 ; move pixel1 to lowest 3 bytes
+            and rsi, 0x0000000000FFFFFF ; rsi <-- 0 0 0 0 0 r1 g1 b1
 
-            psrldq xmm0, 3 ; crush p1
+            shr rdx, 48 ; rdx <-- 0 0 0 0 0 0 g2 b2 <--> missing r2
 
-            movd r11d, xmm0
-            and r11, 0x0000000000FFFFFF ; r11 <-- 0 0 0 0 0 r2 g2 b2
-            movzx rdx, word [r13 + 2*r11]
-            sal rdx, 32 ; place in position 2
+            psrldq xmm0, 8
 
-            psrldq xmm0, 3 ; crush p2
+            movq rcx, xmm0 ; copy higher pixels
 
-            movd r11d, xmm0
-            and r11, 0x0000000000FFFFFF ; r11 <-- 0 0 0 0 0 r3 g3 b3
-            movzx rcx, word [r13 + 2*r11]
-            sal rcx, 48 ; place in position 3
+            mov r8, rcx ; recover r2 to place in rdx
+            sal r8, 16 ; position r2 for or with rdx
+            or rdx, r8 ; bring r2 along with a bunch of other crap
+            and rdx, 0x0000000000FFFFFF ; rdx <-- 0 0 0 0 0 r2 g2 b2
 
-            ; junt pixel0,1,2,3 bin values
-            or rcx, rdi
-            or rcx, rsi
-            or rcx, rdx ; rcx <-- p3 p2 p1 p0
-            movq xmm1, rcx ; xmm1 <-- 0 | 0 | 0 | 0 | p3 | p2 | p1 | p0
+            mov r8, rcx ; copy higher pixels again
 
-            psrldq xmm0, 3 ; crush p3
+            shr rcx, 8 ; move pixel3 to lowest 3 bytes
+            and rcx, 0x0000000000FFFFFF ; rcx <-- 0 0 0 0 0 0 r4 g4 b4
 
-            movd r11d, xmm0 ;
-            and r11, 0x0000000000FFFFFF ; r11 <-- 0 0 0 0 0 r4 g4 b4
-            movzx rdi, word [r13 + 2*r11] ; rdi ya está libre acá porque se hicieron los or para acomodar rcx
-            movd xmm2, edi
-            pslldq xmm2, 8 ; place in position 4
+            shr r8, 32 ; move pixel4 to lowest 3 bytes
+            and r8, 0x0000000000FFFFFF
 
-            por xmm1, xmm2
+            ; now write (ordered lowest->highest): rdi, rsi, rdx, rcx, r8
 
-            ; escribo en res
-            movdqu [r14], xmm1
+            mov r11w, [r13 + 2*rdi]
+            mov [r14 + 0], r11w
+
+            mov r11w, [r13 + 2*rsi]
+            mov [r14 + 2], r11w
+
+            mov r11w, [r13 + 2*rdx]
+            mov [r14 + 4], r11w
+
+            mov r11w, [r13 + 2*rcx]
+            mov [r14 + 6], r11w
+
+            mov r11w, [r13 + 2*r8]
+            mov [r14 + 8], r11w
 
         add r12, 15 ; advance imgdata, 15 = CHANNELS * PIXELS_PER_ITER
         add r14, 10 ; advance resdata POR AHÍ MEJOR índices y usar lea en el loop?
