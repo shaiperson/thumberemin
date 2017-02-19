@@ -55,28 +55,28 @@ if(CMAKE_VERSION VERSION_LESS "2.8.11")
 endif()
 
 # assemble hist.asm
-add_custom_command (
-    OUTPUT hist.o
-    COMMAND nasm -f elf64 -g -F dwarf ../asm/hist.asm -o hist.o
-    DEPENDS ../asm/hist.asm
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-)
+# add_custom_command (
+#    OUTPUT hist.o
+#    COMMAND nasm -f elf64 -g -F dwarf ../asm/hist.asm -o hist.o
+#    DEPENDS ../asm/hist.asm
+#    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+#)
 
 # assemble backproject.asm
-add_custom_command (
-    OUTPUT backproject.o
-    COMMAND nasm -f elf64 -g -F dwarf ../asm/backproject.asm -o backproject.o
-    DEPENDS ../asm/backproject.asm
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-)
+# add_custom_command (
+#    OUTPUT backproject.o
+#    COMMAND nasm -f elf64 -g -F dwarf ../asm/backproject.asm -o backproject.o
+#    DEPENDS ../asm/backproject.asm
+#    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+#)
 
 # assemble -O3 ptrarthm hist disasm
-add_custom_command (
-    OUTPUT hist_disasm_O3.o
-    COMMAND nasm -f elf64 -g -F dwarf ../asm/hist_disasm_ptrarthm_O3.asm -o hist_disasm_O3.o
-    DEPENDS ../asm/hist_disasm_ptrarthm_O3.asm
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-)
+# add_custom_command (
+#    OUTPUT hist_disasm_O3.o
+#    COMMAND nasm -f elf64 -g -F dwarf ../asm/hist_disasm_ptrarthm_O3.asm -o hist_disasm_O3.o
+#    DEPENDS ../asm/hist_disasm_ptrarthm_O3.asm
+#    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+#)
 
 # compile iht separately to control optimization flags
 add_custom_command (
@@ -95,9 +95,9 @@ add_executable (
 
 add_executable (
     tests
-    hist.o
-    backproject.o
-    hist_disasm_O3.o
+    #hist.o
+    #backproject.o
+    #hist_disasm_O3.o
     ../test/catch.cpp
     ../test/ContinuousSineWaveTest.cpp
     ../test/ihtTests.cpp
