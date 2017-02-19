@@ -152,7 +152,7 @@ SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[unit], [bac
     }
 }
 
-TEST_CASE("IHT image moments and centroid", "[moments]") {
+TEST_CASE("IHT image moments and centroid", "[moments], [unit]") {
     WHEN("Calculating moments for 3x3 all-1s matrix") {
         Mat mat(3, 3, CV_16UC1, Scalar(1));
         iht_moments ms(mat, Rect(0, 0, mat.cols, mat.rows));
@@ -199,7 +199,7 @@ TEST_CASE("IHT image moments and centroid", "[moments]") {
     }
 }
 
-TEST_CASE("Mean shift", "[meanshift]") {
+TEST_CASE("Mean shift", "[meanshift], [unit]") {
     GIVEN("A 10x10 matrix with values 1..100 and a window in its center") {
         Mat image(10, 10, CV_16UC1);
         for (auto it = image.begin<short>(); it != image.end<short>(); ++it)
@@ -209,20 +209,8 @@ TEST_CASE("Mean shift", "[meanshift]") {
             Rect ihtWindow(2, 2, 4, 4); // center rectangle of image
             Rect cvWindow(ihtWindow);
 
-            cout << endl;
-            cout << "Before" << endl;
-            cout << "IHT " << ihtWindow << endl;
-            cout << "CV  " << cvWindow << endl;
-            cout << endl;
-
-            IHT_meanShift(image, ihtWindow, 5);
+            IHT_meanShift_CV(image, ihtWindow, 5);
             meanShift(image, cvWindow, TermCriteria(TermCriteria::COUNT, 5, 0));
-
-            cout << endl;
-            cout << "After" << endl;
-            cout << "IHT " << ihtWindow << endl;
-            cout << "CV  " << cvWindow << endl;
-            cout << endl;
 
             THEN("IHT and CV windows are shifted equally") {
                 REQUIRE(ihtWindow == cvWindow);
@@ -240,20 +228,8 @@ TEST_CASE("Mean shift", "[meanshift]") {
             Rect ihtWindow(15, 15, 20, 30);
             Rect cvWindow(ihtWindow);
 
-            cout << endl;
-            cout << "Before" << endl;
-            cout << "IHT " << ihtWindow << endl;
-            cout << "CV  " << cvWindow << endl;
-            cout << endl;
-
-            IHT_meanShift(image, ihtWindow, 23);
+            IHT_meanShift_CV(image, ihtWindow, 23);
             meanShift(image, cvWindow, TermCriteria(TermCriteria::COUNT, 23, 0));
-
-            cout << endl;
-            cout << "After" << endl;
-            cout << "IHT " << ihtWindow << endl;
-            cout << "CV  " << cvWindow << endl;
-            cout << endl;
 
             THEN("IHT and CV windows are shifted equally") {
                 REQUIRE(ihtWindow == cvWindow);

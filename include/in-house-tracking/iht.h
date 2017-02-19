@@ -9,7 +9,7 @@ void IHT_calc3DByteDepthUniformHist_CV(const Mat& image, Mat& hist);
 
 void IHT_calc3DByteDepthBackProject(const uchar* image, const uchar* hist, uchar* result, size_t imgrows, size_t imgcols, size_t imgstep);
 
-void IHT_meanShift(const Mat& densityMap, Rect& window, size_t iters);
+void IHT_meanShift_CV(const Mat& densityMap, Rect& window, size_t iters);
 
 extern "C" {
     void IHT_calc3DByteDepthUniformHist_ASM(const uchar* imgdata, uchar* histdata, size_t imgrows, size_t imgcols, size_t imgstep);

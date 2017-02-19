@@ -94,7 +94,7 @@ void IHT_calc3DByteDepthBackProject (
 --------------------------------------------------------------------
 ================================================================= */
 
-void IHT_meanShift(const Mat& densityMap, Rect& window, size_t iters) {
+void IHT_meanShift_CV(const Mat& densityMap, Rect& window, size_t iters) {
 
     // GLOBAL_startTimer();
 
@@ -104,35 +104,19 @@ void IHT_meanShift(const Mat& densityMap, Rect& window, size_t iters) {
     for (size_t iter = 0; iter < iters; ++iter) {
 
         iht_moments ms(densityMap, window);
-
         centroid = ms.centroid;
-
-        // cout << centroid << endl;
 
         shifted_tl = centroid - Point(window.width/2, window.height/2);
 
-        // cout << "centroid " << centroid << endl;
-        // cout << "shifted_tl " << shifted_tl << endl;
-
-        // update window
         window = Rect (
             std::min(std::max(shifted_tl.x, 0), densityMap.cols - window.width),
             std::min(std::max(shifted_tl.y, 0), densityMap.rows - window.height),
             window.width,
             window.height
         );
-
-        // window.x = std::min(std::max(shifted_tl.x, 0), densityMap.cols - window.width); // -1?
-        // window.y = std::min(std::max(shifted_tl.y, 0), densityMap.rows - window.height); // -1?
-
-        // centroid = ms.centroid;
-        // shiftVector = centroid - (window.tl() + Point(window.width/2, window.height/2));
-        // window += shiftVector;
     }
 
     // GLOBAL_stopTimer();
-
-
 }
 
 /* =================================================================
@@ -161,4 +145,4 @@ Mat IHT_createBackProjectArgumentShort(const Size& size) {
     return Mat(size, CV_16UC1, Scalar(0));
 }
 
-void IHT_meanShift(const Mat& densityMap, Rect& window, size_t iters);
+void IHT_meanShift_CV(const Mat& densityMap, Rect& window, size_t iters);

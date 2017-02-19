@@ -21,7 +21,7 @@ void Tracker::update(const Mat& frame) {
 
     Point windowTranslation = Point(-dynconf.inactiveRegions[0].width, -roiRect.y);
     window += windowTranslation; // shift to playingRegion-relative position
-    IHT_meanShift(backProjection, window, StaticConfiguration::termCritIters);
+    IHT_meanShift_CV(backProjection, window, StaticConfiguration::termCritIters);
     window -= windowTranslation; // shift back to frame-relative position
 }
 
