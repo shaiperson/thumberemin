@@ -209,8 +209,51 @@ TEST_CASE("Mean shift", "[meanshift]") {
             Rect ihtWindow(2, 2, 4, 4); // center rectangle of image
             Rect cvWindow(ihtWindow);
 
+            cout << endl;
+            cout << "Before" << endl;
+            cout << "IHT " << ihtWindow << endl;
+            cout << "CV  " << cvWindow << endl;
+            cout << endl;
+
             IHT_meanShift(image, ihtWindow, 5);
             meanShift(image, cvWindow, TermCriteria(TermCriteria::COUNT, 5, 0));
+
+            cout << endl;
+            cout << "After" << endl;
+            cout << "IHT " << ihtWindow << endl;
+            cout << "CV  " << cvWindow << endl;
+            cout << endl;
+
+            THEN("IHT and CV windows are shifted equally") {
+                REQUIRE(ihtWindow == cvWindow);
+            }
+        }
+    }
+
+    GIVEN("A random 100x100 matrix") {
+        Mat image(100, 100, CV_16UC1);
+        for (size_t i = 0; i < 100; ++i)
+            for (size_t j = 0; j < 100; ++j)
+                image.at<short>(i,j) = rand() % SHRT_MAX;
+
+        WHEN("Some mean shift iterations computed using IHT on the one hand and OpenCV on the other") {
+            Rect ihtWindow(15, 15, 20, 30);
+            Rect cvWindow(ihtWindow);
+
+            cout << endl;
+            cout << "Before" << endl;
+            cout << "IHT " << ihtWindow << endl;
+            cout << "CV  " << cvWindow << endl;
+            cout << endl;
+
+            IHT_meanShift(image, ihtWindow, 23);
+            meanShift(image, cvWindow, TermCriteria(TermCriteria::COUNT, 23, 0));
+
+            cout << endl;
+            cout << "After" << endl;
+            cout << "IHT " << ihtWindow << endl;
+            cout << "CV  " << cvWindow << endl;
+            cout << endl;
 
             THEN("IHT and CV windows are shifted equally") {
                 REQUIRE(ihtWindow == cvWindow);
