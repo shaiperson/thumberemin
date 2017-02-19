@@ -17,6 +17,7 @@ namespace StaticConfiguration {
     extern const size_t totalNotes;
     extern const size_t sampleRate;
     extern const size_t numberOfChannels;
+    extern const size_t termCritIters;
 }
 
 class DynamicConfiguration {

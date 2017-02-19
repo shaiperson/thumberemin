@@ -19,6 +19,8 @@ const size_t StaticConfiguration::totalNotes = 648;
 const size_t StaticConfiguration::sampleRate = 44000;
 const size_t StaticConfiguration::numberOfChannels = 1;
 
+const size_t StaticConfiguration::termCritIters = 10;
+
 DynamicConfiguration::DynamicConfiguration(const Size& fsz) {
     /* Size of the frames fed by the camera in use */
     frameSize = Size(fsz);
