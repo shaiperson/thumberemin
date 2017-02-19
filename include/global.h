@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include <cmath>
 #include <utility>
+#include <algorithm>
 
 using namespace cv;
 using namespace std;
