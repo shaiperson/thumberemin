@@ -2,7 +2,7 @@
 
 Tracker::Tracker(Mat& histogram) :
     sample(histogram), // begin with samplingRegion as initial window
-    termCriteria(TermCriteria::COUNT, 10, 0) // terminate after 10 iterations
+    termCriteria(TermCriteria::COUNT, StaticConfiguration::termCritIters, 0) // terminate after 10 iterations
     { }
 
 void Tracker::update(const Mat& frame) {
@@ -19,10 +19,10 @@ void Tracker::update(const Mat& frame) {
 
     IHT_calc3DByteDepthBackProject(roi.data, sample.data, backProjection.data, roi.rows, roi.cols, roi.step);
 
-    Point windowShiftVector = Point(-dynconf.inactiveRegions[0].width, -roiRect.y);
-    window += windowShiftVector; // shift to playingRegion-relative position
-    meanShift(backProjection, window, termCriteria);
-    window -= windowShiftVector; // shift back to frame-relative position
+    Point windowTranslation = Point(-dynconf.inactiveRegions[0].width, -roiRect.y);
+    window += windowTranslation; // shift to playingRegion-relative position
+    IHT_meanShift(backProjection, window, StaticConfiguration::termCritIters);
+    window -= windowTranslation; // shift back to frame-relative position
 }
 
 Point Tracker::current() const {
