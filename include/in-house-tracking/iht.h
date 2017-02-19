@@ -21,4 +21,29 @@ Mat IHT_createHistArgumentShort();
 Mat IHT_createBackProjectArgumentFloat(const Size&);
 Mat IHT_createBackProjectArgumentShort(const Size&);
 
+struct iht_moments {
+    float m00, m10, m01;
+    Point centroid;
+    iht_moments(const Mat& image, const Rect& window) : m00(0), m10(0), m01(0) {
+        short curr;
+
+        for (int x = window.tl().x; x < window.br().x; ++x) {
+            for (int y = window.tl().y; y < window.br().y; ++y) {
+                curr = image.at<short>(y,x);
+                m00 += curr;
+                m10 += x*curr;
+                m01 += y*curr;
+            }
+        }
+
+        // cout << "--------------------" << endl;
+        // cout << "m00 " << m00 << endl;
+        // cout << "m10 " << m10 << endl;
+        // cout << "m01 " << m01 << endl;
+        // cout << "--------------------" << endl;
+
+        centroid = Point(round(m10/m00), round(m01/m00));
+    }
+};
+
 #endif
