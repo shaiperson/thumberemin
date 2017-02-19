@@ -72,3 +72,34 @@ TEST_CASE("Back projection calculation times", "[times],[backproject]") {
     cerr << time_asm / REPETITIONS << endl;
 
 }
+
+TEST_CASE("Mean shift times", "[times],[meanshift]") {
+    Mat image(100, 100, CV_16UC1);
+    for (size_t i = 0; i < 100; ++i)
+        for (size_t j = 0; j < 100; ++j)
+            image.at<short>(i,j) = rand() % SHRT_MAX;
+
+    Rect ihtPtrsWindow(rand() % 70, rand() % 70, 10 + rand() % 20, 10 + rand() % 20);
+    Rect ihtCvWindow(ihtPtrsWindow);
+
+    double time_ihtptrs, time_ihtcv = 0;
+
+    int iters = 10;
+
+    for (size_t i = 0; i < REPETITIONS; ++i) {
+        /* measure pointers version */
+        IHT_meanShift(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow.x, &ihtPtrsWindow.y, ihtPtrsWindow.width, ihtPtrsWindow.height, iters);
+        time_ihtptrs += timer::t;
+
+        /* measure cv-idiomatic version */
+        IHT_meanShift_CV(image, ihtCvWindow, iters);
+        time_ihtcv += timer::t;
+    }
+
+    cout << "C++ pointers     ";
+    cerr << time_ihtptrs / REPETITIONS << endl;
+
+    cout << "C++ CV-idiomatic ";
+    cerr << time_ihtcv / REPETITIONS << endl;
+
+}
