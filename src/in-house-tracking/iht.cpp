@@ -94,13 +94,73 @@ void IHT_calc3DByteDepthBackProject (
 --------------------------------------------------------------------
 ================================================================= */
 
+void IHT_meanShift(const uchar* densityMap, int maprows, int mapcols, int mapstep, int* w_x, int* w_y, int width, int height, int iters) {
+
+    GLOBAL_startTimer();
+
+    short curr;
+    float m00, m10, m01;
+
+    int curr_w_x = *w_x;
+    int curr_w_y = *w_y;
+
+    int iterCounter = 0;
+    int x, y;
+    int centroid_x, centroid_y, tl_x, tl_y;
+    const uchar *w_data, *w_column;
+
+    while (iterCounter < iters) {
+
+        m00 = m10 = m01 = 0;
+
+        // calculate current window moments
+        w_column = densityMap + curr_w_y*mapstep + curr_w_x*sizeof(short);
+        x = curr_w_x;
+        while (x < curr_w_x + width) {
+            y = curr_w_y;
+            w_data = w_column;
+            while (y < curr_w_y + height) {
+                // window is known to be in valid position within density map
+                curr = *w_data;
+
+                m00 += curr;
+                m10 += x*curr;
+                m01 += y*curr;
+
+                y += 1;
+                w_data += mapstep; // skip row
+            }
+            x += 1;
+            w_column += sizeof(short);
+        }
+
+        /* update curr window */
+
+        centroid_x = round(m10/m00);
+        centroid_y = round(m01/m00);
+
+        tl_x = centroid_x - width/2;
+        tl_y = centroid_y - height/2;
+
+        /* HACE EL MIN MAX IN-HOUSE */
+        curr_w_x = std::min(std::max(tl_x, 0), mapcols-width);
+        curr_w_y = std::min(std::max(tl_y, 0), maprows-height);
+
+        iterCounter += 1;
+    }
+
+    *w_x = curr_w_x;
+    *w_y = curr_w_y;
+
+    GLOBAL_stopTimer();
+}
+
 void IHT_meanShift_CV(const Mat& densityMap, Rect& window, size_t iters) {
 
-    // GLOBAL_startTimer();
+    GLOBAL_startTimer();
 
     Point centroid, shifted_tl;
 
-    // calculate moments needed for mass center
     for (size_t iter = 0; iter < iters; ++iter) {
 
         iht_moments ms(densityMap, window);
@@ -116,12 +176,27 @@ void IHT_meanShift_CV(const Mat& densityMap, Rect& window, size_t iters) {
         );
     }
 
-    // GLOBAL_stopTimer();
+    GLOBAL_stopTimer();
 }
 
 /* =================================================================
 --------------------------------------------------------------------
 ================================================================= */
+
+/* moments */
+
+iht_moments::iht_moments(const Mat& image, const Rect& window) : m00(0), m10(0), m01(0) {
+    short curr;
+    for (int x = window.tl().x; x < window.br().x; ++x) {
+        for (int y = window.tl().y; y < window.br().y; ++y) {
+            curr = image.at<short>(y,x);
+            m00 += curr;
+            m10 += x*curr;
+            m01 += y*curr;
+        }
+    }
+    centroid = Point(round(m10/m00), round(m01/m00));
+}
 
 /* aux */
 
