@@ -14,7 +14,7 @@ SCENARIO("Calculating the 3D histogram of an RGB 8-bit image with cols divisble 
 
         WHEN("Histogram is calculated") {
             IHT_calc3DByteDepthUniformHist(image.data, hist_seq.data, image.rows, image.cols, image.step);
-            // IHT_calc3DByteDepthUniformHist_ASM(image.data, hist_vec.data, image.rows, image.cols, image.step);
+            IHT_calc3DByteDepthUniformHist_ASM(image.data, hist_vec.data, image.rows, image.cols, image.step);
 
             THEN("Histogram at [1,2,3] has 100, total number of image pixels") {
                 REQUIRE(hist_seq.at<short>(3,2,1) == 100);
@@ -40,7 +40,7 @@ SCENARIO("Calculating the 3D histogram of an RGB 8-bit image with cols divisble 
 
         WHEN("Histogram is calculated") {
             IHT_calc3DByteDepthUniformHist(image.data, hist_seq.data, image.rows, image.cols, image.step);
-            // IHT_calc3DByteDepthUniformHist_ASM(image.data, hist_vec.data, image.rows, image.cols, image.step);
+            IHT_calc3DByteDepthUniformHist_ASM(image.data, hist_vec.data, image.rows, image.cols, image.step);
 
             THEN("Histogram has 1 in bins (0, 0, 0..24)") {
                 bool allOnes_seq = true;
@@ -81,7 +81,7 @@ SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[unit], [bac
             Mat backProjection_vec = IHT_createBackProjectArgumentShort(image.size());
 
             IHT_calc3DByteDepthBackProject(image.data, hist.data, backProjection_seq.data, image.rows, image.cols, image.step);
-            // IHT_calc3DByteDepthBackProject_ASM(image.data, hist.data, backProjection_vec.data, image.rows, image.cols, image.step);
+            IHT_calc3DByteDepthBackProject_ASM(image.data, hist.data, backProjection_vec.data, image.rows, image.cols, image.step);
 
             bool allTens;
             THEN("All pixels in sequential back projection have 10") {
@@ -118,7 +118,7 @@ SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[unit], [bac
             Mat backProjection_vec = IHT_createBackProjectArgumentShort(image.size());
 
             IHT_calc3DByteDepthBackProject(image.data, hist.data, backProjection_seq.data, image.rows, image.cols, image.step);
-            // IHT_calc3DByteDepthBackProject_ASM(image.data, hist.data, backProjection_vec.data, image.rows, image.cols, image.step);
+            IHT_calc3DByteDepthBackProject_ASM(image.data, hist.data, backProjection_vec.data, image.rows, image.cols, image.step);
 
             bool allCorrectSeq, allCorrectVec;
             THEN("All diagonal pixels have 123") {

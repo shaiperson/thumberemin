@@ -22,12 +22,12 @@ TEST_CASE("Histogram calculation times", "[times],[hist]") {
 
         /* measure assembler version */
         hist = IHT_createHistArgumentShort();
-        // IHT_calc3DByteDepthUniformHist_ASM(image.data, hist.data, image.rows, image.cols, image.step);
+        IHT_calc3DByteDepthUniformHist_ASM(image.data, hist.data, image.rows, image.cols, image.step);
         time_asm += timer::t;
 
         /* measure O3 pointer-arithmetic disassembled version */
         hist = IHT_createHistArgumentShort();
-        // IHT_calc3DByteDepthUniformHist_DISASM(image.data, hist.data, image.rows, image.cols, image.step);
+        IHT_calc3DByteDepthUniformHist_DISASM(image.data, hist.data, image.rows, image.cols, image.step);
         time_disasm += timer::t;
     }
 
@@ -61,7 +61,7 @@ TEST_CASE("Back projection calculation times", "[times],[backproject]") {
         /* measure pointers version */
         hist = IHT_createHistArgumentShort();
         backproject = IHT_createBackProjectArgumentShort(image.size());
-        // IHT_calc3DByteDepthBackProject_ASM(image.data, hist.data, backproject.data, image.rows, image.cols, image.step);
+        IHT_calc3DByteDepthBackProject_ASM(image.data, hist.data, backproject.data, image.rows, image.cols, image.step);
         time_asm += timer::t;
     }
 
