@@ -199,40 +199,35 @@ TEST_CASE("IHT image moments and centroid", "[moments], [unit]") {
     }
 }
 
+bool rectOffBy(const Rect& r1, const Rect& r2, size_t margin) {
+    return abs(r1.x - r2.x) <= margin && abs(r1.y - r2.y) <= margin;
+}
+
 TEST_CASE("Mean shift", "[meanshift], [unit]") {
-    GIVEN("A 10x10 matrix with values 1..100 and a window in its center") {
-        Mat image(10, 10, CV_16UC1);
-        for (auto it = image.begin<short>(); it != image.end<short>(); ++it)
-            *it = it - image.begin<short>() + 1;
+    GIVEN("Various random matrices and windows") {
+        srand(123);
 
-        WHEN("Some mean shift iterations computed using IHT on the one hand and OpenCV on the other") {
-            Rect ihtWindow(2, 2, 4, 4); // center rectangle of image
-            Rect cvWindow(ihtWindow);
-
-            IHT_meanShift_CV(image, ihtWindow, 5);
-            meanShift(image, cvWindow, TermCriteria(TermCriteria::COUNT, 5, 0));
-
-            THEN("IHT and CV windows are shifted equally") {
-                REQUIRE(ihtWindow == cvWindow);
-            }
-        }
-    }
-
-    GIVEN("A random 100x100 matrix") {
         Mat image(100, 100, CV_16UC1);
         for (size_t i = 0; i < 100; ++i)
             for (size_t j = 0; j < 100; ++j)
                 image.at<short>(i,j) = rand() % SHRT_MAX;
 
-        WHEN("Some mean shift iterations computed using IHT on the one hand and OpenCV on the other") {
-            Rect ihtWindow(15, 15, 20, 30);
-            Rect cvWindow(ihtWindow);
+        Rect ihtPtrsWindow(rand() % 70, rand() % 70, 10 + rand() % 20, 10 + rand() % 20);
+        Rect ihtCvWindow(ihtPtrsWindow);
+        Rect cvWindow(ihtPtrsWindow);
 
-            IHT_meanShift_CV(image, ihtWindow, 23);
-            meanShift(image, cvWindow, TermCriteria(TermCriteria::COUNT, 23, 0));
+        WHEN("Some mean shift iterations computed using IHTs on the one hand and OpenCV on the other") {
+            int iters = 1;
+
+            IHT_meanShift(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow.x, &ihtPtrsWindow.y, ihtPtrsWindow.width, ihtPtrsWindow.height, iters);
+            IHT_meanShift_CV(image, ihtCvWindow, iters);
+            meanShift(image, cvWindow, TermCriteria(TermCriteria::COUNT, iters, 0));
 
             THEN("IHT and CV windows are shifted equally") {
-                REQUIRE(ihtWindow == cvWindow);
+                cout << "jaja" << endl;
+                REQUIRE(rectOffBy(ihtPtrsWindow, ihtCvWindow, 1));
+                REQUIRE(rectOffBy(ihtPtrsWindow, cvWindow, 1));
+                REQUIRE(rectOffBy(ihtCvWindow, cvWindow, 1));
             }
         }
     }
