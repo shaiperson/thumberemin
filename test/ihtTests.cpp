@@ -151,3 +151,70 @@ SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[unit], [bac
         }
     }
 }
+
+TEST_CASE("IHT image moments and centroid", "[moments]") {
+    WHEN("Calculating moments for 3x3 all-1s matrix") {
+        Mat mat(3, 3, CV_16UC1, Scalar(1));
+        iht_moments ms(mat, Rect(0, 0, mat.cols, mat.rows));
+
+        THEN("m00 is 9") {
+            REQUIRE(ms.m00 == 9);
+        }
+
+        THEN("m10 is 9") {
+            REQUIRE(ms.m10 == 9);
+        }
+
+        THEN("m01 is 9") {
+            REQUIRE(ms.m01 == 9);
+        }
+
+        THEN("Centroid is middle point") {
+            REQUIRE(ms.centroid == Point(1,1));
+        }
+    }
+
+    WHEN("Calculating moments for a 3x3 1..9 matrix") {
+        Mat mat_short(3, 3, CV_16UC1);
+        for (auto it = mat_short.begin<short>(); it != mat_short.end<short>(); ++it)
+            *it = it - mat_short.begin<short>() + 1;
+
+        Mat mat_uchar;
+        mat_short.convertTo(mat_uchar, CV_8UC1);
+
+        // Calculate IHT moments+centroid and OpenCV's moments and induced centroid
+        iht_moments iht_ms(mat_short, Rect(0,0,mat_short.cols, mat_short.rows));
+        Moments cv_ms = moments(mat_uchar);
+
+        THEN("All IHT zeroth and first moments equal OpenCV's") {
+            REQUIRE(iht_ms.m00 == cv_ms.m00);
+            REQUIRE(iht_ms.m10 == cv_ms.m10);
+            REQUIRE(iht_ms.m01 == cv_ms.m01);
+        }
+
+        THEN("IHT centroid coincides with OpenCV-moments' induced centroid") {
+            REQUIRE(iht_ms.centroid == Point(cv_ms.m10 / cv_ms.m00, cv_ms.m01 / cv_ms.m00));
+        }
+
+    }
+}
+
+TEST_CASE("Mean shift", "[meanshift]") {
+    GIVEN("A 10x10 matrix with values 1..100 and a window in its center") {
+        Mat image(10, 10, CV_16UC1);
+        for (auto it = image.begin<short>(); it != image.end<short>(); ++it)
+            *it = it - image.begin<short>() + 1;
+
+        WHEN("Some mean shift iterations computed using IHT on the one hand and OpenCV on the other") {
+            Rect ihtWindow(2, 2, 4, 4); // center rectangle of image
+            Rect cvWindow(ihtWindow);
+
+            IHT_meanShift(image, ihtWindow, 5);
+            meanShift(image, cvWindow, TermCriteria(TermCriteria::COUNT, 5, 0));
+
+            THEN("IHT and CV windows are shifted equally") {
+                REQUIRE(ihtWindow == cvWindow);
+            }
+        }
+    }
+}
