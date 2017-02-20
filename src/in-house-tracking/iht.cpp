@@ -108,8 +108,6 @@ void IHT_meanShift (
 
     GLOBAL_startTimer();
 
-    cout << "puntitos " << *w_x << " " << *w_y << endl;
-
     short curr;
     float m00, m10, m01;
 
@@ -170,8 +168,6 @@ void IHT_meanShift (
 void IHT_meanShift_CV(const Mat& densityMap, Rect& window, size_t iters) {
 
     GLOBAL_startTimer();
-
-    cout << "puntitos " << window.x << " " << window.y << endl;
 
     Point centroid, shifted_tl;
 

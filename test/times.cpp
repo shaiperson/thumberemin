@@ -3,7 +3,7 @@
 
 #define REPETITIONS 300
 
-TEST_CASE("Histogram calculation times", "[times],[hist]") {
+TEST_CASE("Histogram calculation times", "[times], [hist]") {
     Mat image, hist;
     double time_its, time_ptrs, time_asm, time_disasm = 0;
 
@@ -45,7 +45,7 @@ TEST_CASE("Histogram calculation times", "[times],[hist]") {
 
 }
 
-TEST_CASE("Back projection calculation times", "[times],[backproject]") {
+TEST_CASE("Back projection calculation times", "[times], [backproject]") {
     Mat image, hist, backproject;
     double time_ptrs, time_asm = 0;
 
@@ -73,7 +73,7 @@ TEST_CASE("Back projection calculation times", "[times],[backproject]") {
 
 }
 
-TEST_CASE("Mean shift times", "[times],[meanshift]") {
+TEST_CASE("Mean shift times", "[times], [meanshift]") {
     Mat image(100, 100, CV_16UC1);
     for (size_t i = 0; i < 100; ++i)
         for (size_t j = 0; j < 100; ++j)
