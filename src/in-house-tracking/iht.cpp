@@ -94,9 +94,21 @@ void IHT_calc3DByteDepthBackProject (
 --------------------------------------------------------------------
 ================================================================= */
 
-void IHT_meanShift(const uchar* densityMap, int maprows, int mapcols, int mapstep, int* w_x, int* w_y, int width, int height, int iters) {
+void IHT_meanShift (
+    const uchar* densityMap,
+    int maprows,
+    int mapcols,
+    int mapstep,
+    int* w_x,
+    int* w_y,
+    int width,
+    int height,
+    int iters
+) {
 
     GLOBAL_startTimer();
+
+    cout << "puntitos " << *w_x << " " << *w_y << endl;
 
     short curr;
     float m00, m10, m01;
@@ -121,7 +133,7 @@ void IHT_meanShift(const uchar* densityMap, int maprows, int mapcols, int mapste
             w_data = w_column;
             while (y < curr_w_y + height) {
                 // window is known to be in valid position within density map
-                curr = *w_data;
+                curr = *(short*)w_data;
 
                 m00 += curr;
                 m10 += x*curr;
@@ -142,7 +154,7 @@ void IHT_meanShift(const uchar* densityMap, int maprows, int mapcols, int mapste
         tl_x = centroid_x - width/2;
         tl_y = centroid_y - height/2;
 
-        /* HACE EL MIN MAX IN-HOUSE */
+        /* HACER EL MIN MAX IN-HOUSE */
         curr_w_x = std::min(std::max(tl_x, 0), mapcols-width);
         curr_w_y = std::min(std::max(tl_y, 0), maprows-height);
 
@@ -158,6 +170,8 @@ void IHT_meanShift(const uchar* densityMap, int maprows, int mapcols, int mapste
 void IHT_meanShift_CV(const Mat& densityMap, Rect& window, size_t iters) {
 
     GLOBAL_startTimer();
+
+    cout << "puntitos " << window.x << " " << window.y << endl;
 
     Point centroid, shifted_tl;
 
