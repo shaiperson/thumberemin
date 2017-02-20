@@ -110,26 +110,24 @@ void IHT_meanShift (
 
     short curr;
     float m00, m10, m01;
-
-    int curr_w_x = *w_x;
-    int curr_w_y = *w_y;
-
-    int iterCounter = 0;
     int x, y;
     int centroid_x, centroid_y, tl_x, tl_y;
     const uchar *w_data, *w_column;
+
+    int iterCounter = 0;
+    int curr_w_x = *w_x;
+    int curr_w_y = *w_y;
 
     while (iterCounter < iters) {
 
         m00 = m10 = m01 = 0;
 
         // calculate current window moments
-        w_column = densityMap + curr_w_y*mapstep + curr_w_x*sizeof(short);
-        x = curr_w_x;
-        while (x < curr_w_x + width) {
-            y = curr_w_y;
-            w_data = w_column;
-            while (y < curr_w_y + height) {
+        w_data = densityMap + curr_w_y*mapstep + curr_w_x*sizeof(short);
+        y = curr_w_y;
+        while (y < curr_w_y + height) {
+            x = curr_w_x;
+            while (x < curr_w_x + width) {
                 // window is known to be in valid position within density map
                 curr = *(short*)w_data;
 
@@ -137,11 +135,12 @@ void IHT_meanShift (
                 m10 += x*curr;
                 m01 += y*curr;
 
-                y += 1;
-                w_data += mapstep; // skip row
+                x += 1;
+                w_data += sizeof(short); // next element on row
             }
-            x += 1;
-            w_column += sizeof(short);
+            
+            y += 1;
+            w_data += mapstep - width*sizeof(short); // next row beginning
         }
 
         /* update curr window */
