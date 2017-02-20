@@ -199,10 +199,6 @@ TEST_CASE("IHT image moments and centroid", "[moments], [unit]") {
     }
 }
 
-bool rectOffBy(const Rect& r1, const Rect& r2, size_t margin) {
-    return abs(r1.x - r2.x) <= margin && abs(r1.y - r2.y) <= margin;
-}
-
 TEST_CASE("Mean shift", "[meanshift], [unit]") {
     GIVEN("Various random matrices and windows") {
         srand(123);
@@ -217,17 +213,16 @@ TEST_CASE("Mean shift", "[meanshift], [unit]") {
         Rect cvWindow(ihtPtrsWindow);
 
         WHEN("Some mean shift iterations computed using IHTs on the one hand and OpenCV on the other") {
-            int iters = 1;
+            int iters = 37;
 
             IHT_meanShift(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow.x, &ihtPtrsWindow.y, ihtPtrsWindow.width, ihtPtrsWindow.height, iters);
             IHT_meanShift_CV(image, ihtCvWindow, iters);
             meanShift(image, cvWindow, TermCriteria(TermCriteria::COUNT, iters, 0));
 
             THEN("IHT and CV windows are shifted equally") {
-                cout << "jaja" << endl;
-                REQUIRE(rectOffBy(ihtPtrsWindow, ihtCvWindow, 1));
-                REQUIRE(rectOffBy(ihtPtrsWindow, cvWindow, 1));
-                REQUIRE(rectOffBy(ihtCvWindow, cvWindow, 1));
+                REQUIRE(ihtPtrsWindow == ihtCvWindow);
+                REQUIRE(ihtPtrsWindow == cvWindow);
+                REQUIRE(ihtCvWindow == cvWindow);
             }
         }
     }
