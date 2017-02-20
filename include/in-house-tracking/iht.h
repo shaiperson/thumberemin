@@ -16,6 +16,7 @@ extern "C" {
     void IHT_calc3DByteDepthUniformHist_ASM(const uchar* imgdata, uchar* histdata, size_t imgrows, size_t imgcols, size_t imgstep);
     void IHT_calc3DByteDepthUniformHist_DISASM(const uchar* imgdata, uchar* histdata, size_t imgrows, size_t imgcols, size_t imgstep);
     void IHT_calc3DByteDepthBackProject_ASM(const uchar* image, const uchar* hist, uchar* result, size_t imgrows, size_t imgcols, size_t imgstep);
+    void IHT_meanShift_ASM(const uchar* densityMap, int maprows, int mapcols, int mapstep, int* w_x, int* w_y, int width, int height, int iters);
 }
 
 /* aux */

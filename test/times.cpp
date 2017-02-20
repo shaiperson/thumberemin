@@ -79,27 +79,35 @@ TEST_CASE("Mean shift times", "[times], [meanshift]") {
         for (size_t j = 0; j < 100; ++j)
             image.at<short>(i,j) = rand() % SHRT_MAX;
 
-    Rect ihtPtrsWindow(rand() % 70, rand() % 70, 10 + rand() % 20, 10 + rand() % 20);
-    Rect ihtCvWindow(ihtPtrsWindow);
+    Rect ihtAsmWindow(rand() % 70, rand() % 70, 10 + rand() % 20, 10 + rand() % 20);
+    Rect ihtPtrsWindow(ihtAsmWindow);
+    Rect ihtCvWindow(ihtAsmWindow);
 
-    double time_ihtptrs, time_ihtcv = 0;
+    double time_ihtptrs, time_ihtcv, time_asm = 0;
 
-    int iters = 10;
+    int iters = 100;
 
     for (size_t i = 0; i < REPETITIONS; ++i) {
+        /* measure cv-idiomatic version */
+        IHT_meanShift_CV(image, ihtCvWindow, iters);
+        time_ihtcv += timer::t;
+
         /* measure pointers version */
         IHT_meanShift(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow.x, &ihtPtrsWindow.y, ihtPtrsWindow.width, ihtPtrsWindow.height, iters);
         time_ihtptrs += timer::t;
 
-        /* measure cv-idiomatic version */
-        IHT_meanShift_CV(image, ihtCvWindow, iters);
-        time_ihtcv += timer::t;
+        /* measure ASM version */
+        IHT_meanShift_ASM(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow.x, &ihtPtrsWindow.y, ihtPtrsWindow.width, ihtPtrsWindow.height, iters);
+        time_asm += timer::t;
     }
+    
+    cout << "C++ CV-idiomatic ";
+    cerr << time_ihtcv / REPETITIONS << endl;
 
     cout << "C++ pointers     ";
     cerr << time_ihtptrs / REPETITIONS << endl;
 
-    cout << "C++ CV-idiomatic ";
-    cerr << time_ihtcv / REPETITIONS << endl;
+    cout << "Assembler SSE    ";
+    cerr << time_asm / REPETITIONS << endl;
 
 }

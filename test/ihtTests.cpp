@@ -208,21 +208,28 @@ TEST_CASE("Mean shift", "[meanshift], [unit]") {
             for (size_t j = 0; j < 100; ++j)
                 image.at<short>(i,j) = rand() % SHRT_MAX;
 
-        Rect ihtPtrsWindow(rand() % 70, rand() % 70, 10 + rand() % 20, 10 + rand() % 20);
-        Rect ihtCvWindow(ihtPtrsWindow);
-        Rect cvWindow(ihtPtrsWindow);
+        Rect ihtAsmWindow(rand() % 70, rand() % 70, 10 + rand() % 20, 10 + rand() % 20);
+        Rect ihtPtrsWindow(ihtAsmWindow);
+        Rect ihtCvWindow(ihtAsmWindow);
+        Rect cvWindow(ihtAsmWindow);
 
         WHEN("Some mean shift iterations computed using IHTs on the one hand and OpenCV on the other") {
             int iters = 37;
 
+            IHT_meanShift_ASM(image.data, image.rows, image.cols, image.step, &ihtAsmWindow.x, &ihtAsmWindow.y, ihtAsmWindow.width, ihtAsmWindow.height, iters);
             IHT_meanShift(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow.x, &ihtPtrsWindow.y, ihtPtrsWindow.width, ihtPtrsWindow.height, iters);
             IHT_meanShift_CV(image, ihtCvWindow, iters);
+            
             meanShift(image, cvWindow, TermCriteria(TermCriteria::COUNT, iters, 0));
 
-            THEN("IHT and CV windows are shifted equally") {
+            THEN("IHT-CV and CV windows are shifted equally") {
                 REQUIRE(ihtPtrsWindow == ihtCvWindow);
                 REQUIRE(ihtPtrsWindow == cvWindow);
                 REQUIRE(ihtCvWindow == cvWindow);
+            }
+
+            THEN("IHT-ASM and CV windows are shifted equally") {
+                REQUIRE(ihtAsmWindow == cvWindow);
             }
         }
     }
