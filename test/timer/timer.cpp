@@ -19,11 +19,9 @@ void timer::stop() {
 /* timer wrappers */
 
 void GLOBAL_startTimer() {
-    cout << "LOL HOLA" << endl;
     timer::start();
 }
 
 void GLOBAL_stopTimer() {
-    cout << "LOL CHAU" << endl;
     timer::stop();
 }
