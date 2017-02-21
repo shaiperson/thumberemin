@@ -135,7 +135,29 @@ IHT_meanShift_ASM:
 
     ; lógica de updatear curr_x y curr_y
 
-    loop .iters_loop
+    haddps xmm0, xmm0
+    haddps xmm0, xmm0 ; xmm0 <-- m00 | m00 | m00 | m00
+
+    divps xmm1, xmm0 ; xmm1 <-- casi_m10_3 / m00 | casi_m10_2 / m00 | casi_m10_1 / m00 | casi_m10_0 / m00
+    divps xmm2, xmm0 ; xmm2 <-- casi_m01_3 / m00 | casi_m01_2 / m00 | casi_m01_1 / m00 | casi_m01_0 / m00
+
+    ; por distributividad de la división
+    haddps xmm1, xmm1 ; distributividad de la división
+    haddps xmm1, xmm1 ; xmm1 <-- m10/m00 | m10/m00 | m10/m00 | m10/m00
+
+    ; por distributividad de la división
+    haddps xmm2, xmm2
+    haddps xmm2, xmm2 ; xmm2 <-- m01/m00 | m01/m00 | m01/m00 | m01/m00
+
+    ; (esto O3 también lo hace)
+    ; VER LO DE MXCSR REGISTER para el redondeo de esto cosa - que sea igual a std::round y listo
+    ; cvtss2si UN_R64, xmm1 ; UN_R64 <-- int(m10/m00) = shifted_centroid_x
+    ; cvtps2dq UN_R64, xmm2 ; UN_R64 <-- int(m01/m00) = shifted_centroid_y
+
+    ; at this point
+    ; xmm1 <-- shifted_centroid_x | shifted_centroid_x | shifted_centroid_x | shifted_centroid_x
+    ; xmm2 <-- shifted_centroid_y | shifted_centroid_y | shifted_centroid_y | shifted_centroid_y
+
 
     ; lógica de updatear window
 
