@@ -3,19 +3,27 @@ global IHT_meanShift_ASM
 extern GLOBAL_startTimer
 extern GLOBAL_stopTimer
 
+%define PIXELS_PER_ITER 4
+
 section .data
+
+align 16
+; low --> high
+
+four_dw_4s: dd 4, 4, 4, 4
+four_dw_1s: dd 1, 1, 1, 1
+initial_xs: dd 0, 1, 2, 3
 
 section .text
 
-; rdi->r12 <-- densityMap
-; esi->r13 <-- mapRows
-; edx->r14 <-- mapcols
-; ecx->r15 <-- mapstep
+; rdi->r12 <-- &densityMap
+; esi->r13d <-- mapRows
+; edx->r14d <-- mapcols
+; ecx->r15d <-- mapstep
 ; r8->rbx  <-- &window
-; r9       <-- iters
+; r9       <-- iters (size_t)
 
-; Quedarían conteniendo parámetros, en principio: r12, r13, r14, r15, rbx, r9(desp de volver a traerlo de la pila)
-; Quedarían libres entonces, en principio: r8, r10, r11, rdi, rsi, rdx, rcx
+; Quedarían libres entonces, en principio: r8, r9, r10, r11, rdi, rsi, rdx
 
 IHT_meanShift_ASM:
 
@@ -27,9 +35,9 @@ IHT_meanShift_ASM:
 
     ; preserve parameters
     mov r12, rdi
-    mov r13, rsi
-    mov r14, rdx
-    mov r15, rcx
+    mov r13d, esi
+    mov r14d, edx
+    mov r15d, ecx
     mov rbx, r8
 
     sub rsp, 8
@@ -37,10 +45,97 @@ IHT_meanShift_ASM:
 
     call GLOBAL_startTimer
 
-    mov r9, [rsp] ; vuelvo a traer de la pila iters
+    ; acomodo parámetros en r64s
+    mov rcx, [rsp] ; vuelvo a traer de la pila iters
+
+    ; máscaras y datos fijos
+    movdqa xmm15, [four_dw_4s] ; for incrementing x's
+    movdqa xmm14, [four_dw_1s] ; for incrementing y's
+    movdqa xmm13, [initial_xs] ; for resetting x's inside loop (without accessing memory)
+    pxor xmm12, xmm12 ; zeros for unpacking
+
+    ; move window info into registers
+    ; VERIFICAR SI HACEN FALTA ESTOS XORs PARA QUE QUEDE LIMPIA LA PARTE ALTA
+    mov r8d, dword [rbx + 0x0] ; r8d <-- w_x (curr_w_x)
+    mov r9d, dword [rbx + 0x4] ; r9d <-- w_y (curr_w_y)
+    mov r10d, dword [rbx + 0x8] ; r10d <-- width
+    mov r11d, dword [rbx + 0xc] ; r11d <-- height
+
+    ; calculate address of first window element (densityMap + curr_w_y*mapstep + curr_w_x*sizeof(short))
+    xor rdx, rdx ; limpio para poder usarlo en lea más que nada
+    mov edx, r15d ; edx <-- mapstep (temporario)
+    imul edx, r9d ; edx <-- mapstep*curr_w_y (temporario)
+
+    mov esi, r8d ; esi <-- w_x (temporario)
+    sal esi, 1 ; esi <-- w_x*2
+
+    add edx, esi ; edx (rdx) <-- mapstep*curr_w_y + w_x*sizeof(short)
+
+    lea r12, [r12 + rdx] ; r12 <-- dirección del primer elemento del window
+
+    ; calculate row increment for data pointer ( mapstep - width*sizeof(short) )
+    xor rdi, rdi ; limpio para poder usar como incremento de puntero
+    mov edi, r15d ; edi <-- mapstep
+    mov edx, r10d ; edx <-- width (temporario)
+    sal edx, 1 ; edx <-- width*sizeof(short)
+    sub edi, edx ; edi <-- mapstep - width*sizeof(short)
+
+    .iters_loop: ; uses rcx as counter
+
+        ; reset m00, m10, m01 accumulators (note 00..0 is FP 0 as well)
+        pxor xmm0, xmm0
+        pxor xmm1, xmm1
+        pxor xmm2, xmm2
+
+        ; reset y's
+        pxor xmm3, xmm4 ; xmm3 <-- 0 | 0 | 0 | 0
+        ; clear y counter
+        xor rdx, rdx
+
+        .y_loop:
+            ; reset x's
+            movdqu xmm4, xmm13 ; xmm4 <-- 3 | 2 | 1 | 0
+            ; clear x counter
+            xor rsi, rsi
+
+            .x_loop:
+
+                movdqu xmm5, [r12] ; xmm5 <-- xx | xx | xx | xx | d3 | d2 | d1 | d0
+                punpcklwd xmm5, xmm12 ; xmm5 <-- d3 | d2 | d1 | d0
+
+                cvtdq2ps xmm6, xmm5 ; xmm6 <-- float(xmm5)
+                addps xmm0, xmm6 ; accumulate m00
+
+                movdqu xmm6, xmm7 ; xmm6 <-- d3 | d2 | d1 | d0
+                pmuludq xmm6, xmm4 ; xmm6 <-- x3*d3 | x2*d2 | x1*d1 | x0*d0
+                cvtdq2ps xmm6, xmm6 ; xmm6 <-- float(xmm6)
+                addps xmm1, xmm6 ; accumulate m10
+
+                pmuludq xmm5, xmm3 ; xmm5 <-- y3*d3 | y2*d2 | y1*d1 | y0*d0
+                cvtdq2ps xmm5, xmm5 ; xmm5 <-- float(xmm5)
+                addps xmm2, xmm5 ; accumulate m01
+
+            paddd xmm4, xmm15 ; increment x's
+            add r12, 8 ; increment by sizeof(short)*PIXELS_PER_ITER
+            inc rsi ; increment x-counter
+            cmp esi, r10d ; cmp x-counter, width
+            jne .x_loop
+
+        paddd xmm4, xmm14 ; increment y's
+        add r12, rdi ; add row-window increment
+        inc rdx ; increment y-counter
+        cmp edx, r11d ; cmp y-counter, height
+        jne .y_loop
+
+    ; lógica de updatear curr_x y curr_y
+
+    loop .iters_loop
+
+    ; lógica de updatear window
 
     call GLOBAL_stopTimer
 
+    add rsp, 8
     pop rbx
     pop r15
     pop r14
