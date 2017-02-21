@@ -223,7 +223,7 @@ TEST_CASE("Mean shift", "[meanshift], [unit]") {
         window ihtPtrsWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
 
         WHEN("Some mean shift iterations computed using IHTs on the one hand and OpenCV on the other") {
-            int iters = 37;
+            size_t iters = 1;
 
             IHT_meanShift_ASM(image.data, image.rows, image.cols, image.step, &ihtAsmWindow, iters);
             IHT_meanShift(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow, iters);

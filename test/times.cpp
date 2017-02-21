@@ -87,7 +87,7 @@ TEST_CASE("Mean shift times", "[times], [meanshift]") {
 
     double time_ihtptrs, time_ihtcv, time_asm = 0;
 
-    int iters = 100;
+    size_t iters = 100;
 
     for (size_t i = 0; i < REPETITIONS; ++i) {
         /* measure cv-idiomatic version */

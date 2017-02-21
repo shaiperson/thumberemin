@@ -100,7 +100,7 @@ void IHT_meanShift (
     int mapcols,
     int mapstep,
     window* w,
-    int iters
+    size_t iters
 ) {
 
     GLOBAL_startTimer();
