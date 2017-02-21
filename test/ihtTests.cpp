@@ -155,7 +155,7 @@ SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[unit], [bac
 TEST_CASE("IHT image moments and centroid", "[moments], [unit]") {
     WHEN("Calculating moments for 3x3 all-1s matrix") {
         Mat mat(3, 3, CV_16UC1, Scalar(1));
-        iht_moments ms(mat, Rect(0, 0, mat.cols, mat.rows));
+        iht_moments ms(mat(Rect(0, 0, mat.cols, mat.rows)));
 
         THEN("m00 is 9") {
             REQUIRE(ms.m00 == 9);
@@ -183,7 +183,7 @@ TEST_CASE("IHT image moments and centroid", "[moments], [unit]") {
         mat_short.convertTo(mat_uchar, CV_8UC1);
 
         // Calculate IHT moments+centroid and OpenCV's moments and induced centroid
-        iht_moments iht_ms(mat_short, Rect(0,0,mat_short.cols, mat_short.rows));
+        iht_moments iht_ms(mat_short(Rect(0, 0, mat_short.cols, mat_short.rows)));
         Moments cv_ms = moments(mat_uchar);
 
         THEN("All IHT zeroth and first moments equal OpenCV's") {
@@ -211,6 +211,7 @@ TEST_CASE("Mean shift", "[meanshift], [unit]") {
         Rect ihtAsmWindow(rand() % 70, rand() % 70, 10 + rand() % 20, 10 + rand() % 20);
         Rect ihtPtrsWindow(ihtAsmWindow);
         Rect ihtCvWindow(ihtAsmWindow);
+        Rect ihtDisasmWindow(ihtAsmWindow);
         Rect cvWindow(ihtAsmWindow);
 
         WHEN("Some mean shift iterations computed using IHTs on the one hand and OpenCV on the other") {
@@ -219,13 +220,14 @@ TEST_CASE("Mean shift", "[meanshift], [unit]") {
             IHT_meanShift_ASM(image.data, image.rows, image.cols, image.step, &ihtAsmWindow.x, &ihtAsmWindow.y, ihtAsmWindow.width, ihtAsmWindow.height, iters);
             IHT_meanShift(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow.x, &ihtPtrsWindow.y, ihtPtrsWindow.width, ihtPtrsWindow.height, iters);
             IHT_meanShift_CV(image, ihtCvWindow, iters);
-            
+            IHT_meanShift_DISASM(image.data, image.rows, image.cols, image.step, &ihtDisasmWindow.x, &ihtDisasmWindow.y, ihtDisasmWindow.width, ihtDisasmWindow.height, iters);
             meanShift(image, cvWindow, TermCriteria(TermCriteria::COUNT, iters, 0));
 
             THEN("IHT-CV and CV windows are shifted equally") {
                 REQUIRE(ihtPtrsWindow == ihtCvWindow);
                 REQUIRE(ihtPtrsWindow == cvWindow);
                 REQUIRE(ihtCvWindow == cvWindow);
+                REQUIRE(ihtDisasmWindow == cvWindow);
             }
 
             THEN("IHT-ASM and CV windows are shifted equally") {

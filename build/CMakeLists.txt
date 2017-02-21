@@ -78,6 +78,14 @@ add_custom_command (
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
+# assemble meanshift.asm
+add_custom_command (
+    OUTPUT meanshift_disasm_O3.o
+    COMMAND nasm -f elf64 -g -F dwarf ../asm/meanshift_disasm_O3.asm -o meanshift_disasm_O3.o
+    DEPENDS ../asm/meanshift_disasm_O3.asm
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
 # assemble -O3 ptrarthm hist disasm
 add_custom_command (
     OUTPUT hist_disasm_O3.o
@@ -107,6 +115,7 @@ add_executable (
     backproject.o
     meanshift.o
     hist_disasm_O3.o
+    meanshift_disasm_O3.o
     ../test/catch.cpp
     ../test/ContinuousSineWaveTest.cpp
     ../test/ihtTests.cpp

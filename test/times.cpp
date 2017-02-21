@@ -100,7 +100,7 @@ TEST_CASE("Mean shift times", "[times], [meanshift]") {
         IHT_meanShift_ASM(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow.x, &ihtPtrsWindow.y, ihtPtrsWindow.width, ihtPtrsWindow.height, iters);
         time_asm += timer::t;
     }
-    
+
     cout << "C++ CV-idiomatic ";
     cerr << time_ihtcv / REPETITIONS << endl;
 
