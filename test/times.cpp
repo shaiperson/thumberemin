@@ -79,9 +79,11 @@ TEST_CASE("Mean shift times", "[times], [meanshift]") {
         for (size_t j = 0; j < 100; ++j)
             image.at<short>(i,j) = rand() % SHRT_MAX;
 
-    Rect ihtAsmWindow(rand() % 70, rand() % 70, 10 + rand() % 20, 10 + rand() % 20);
-    Rect ihtPtrsWindow(ihtAsmWindow);
-    Rect ihtCvWindow(ihtAsmWindow);
+    Rect ihtCvWindow(rand() % 70, rand() % 70, 10 + rand() % 20, 10 + rand() % 20);
+    Rect cvWindow(ihtCvWindow);
+
+    window ihtAsmWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
+    window ihtPtrsWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
 
     double time_ihtptrs, time_ihtcv, time_asm = 0;
 
@@ -93,11 +95,11 @@ TEST_CASE("Mean shift times", "[times], [meanshift]") {
         time_ihtcv += timer::t;
 
         /* measure pointers version */
-        IHT_meanShift(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow.x, &ihtPtrsWindow.y, ihtPtrsWindow.width, ihtPtrsWindow.height, iters);
+        IHT_meanShift(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow, iters);
         time_ihtptrs += timer::t;
 
         /* measure ASM version */
-        IHT_meanShift_ASM(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow.x, &ihtPtrsWindow.y, ihtPtrsWindow.width, ihtPtrsWindow.height, iters);
+        IHT_meanShift_ASM(image.data, image.rows, image.cols, image.step, &ihtAsmWindow, iters);
         time_asm += timer::t;
     }
 

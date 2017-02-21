@@ -199,6 +199,14 @@ TEST_CASE("IHT image moments and centroid", "[moments], [unit]") {
     }
 }
 
+bool operator==(const Rect& rect, const window& window) {
+    return rect == Rect(window.x, window.y, window.width, window.height);
+}
+
+bool operator==(const window& window, const Rect& rect) {
+    return rect == window;
+}
+
 TEST_CASE("Mean shift", "[meanshift], [unit]") {
     GIVEN("Various random matrices and windows") {
         srand(123);
@@ -208,16 +216,17 @@ TEST_CASE("Mean shift", "[meanshift], [unit]") {
             for (size_t j = 0; j < 100; ++j)
                 image.at<short>(i,j) = rand() % SHRT_MAX;
 
-        Rect ihtAsmWindow(rand() % 70, rand() % 70, 10 + rand() % 20, 10 + rand() % 20);
-        Rect ihtPtrsWindow(ihtAsmWindow);
-        Rect ihtCvWindow(ihtAsmWindow);
-        Rect cvWindow(ihtAsmWindow);
+        Rect ihtCvWindow(rand() % 70, rand() % 70, 10 + rand() % 20, 10 + rand() % 20);
+        Rect cvWindow(ihtCvWindow);
+
+        window ihtAsmWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
+        window ihtPtrsWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
 
         WHEN("Some mean shift iterations computed using IHTs on the one hand and OpenCV on the other") {
             int iters = 37;
 
-            IHT_meanShift_ASM(image.data, image.rows, image.cols, image.step, &ihtAsmWindow.x, &ihtAsmWindow.y, ihtAsmWindow.width, ihtAsmWindow.height, iters);
-            IHT_meanShift(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow.x, &ihtPtrsWindow.y, ihtPtrsWindow.width, ihtPtrsWindow.height, iters);
+            IHT_meanShift_ASM(image.data, image.rows, image.cols, image.step, &ihtAsmWindow, iters);
+            IHT_meanShift(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow, iters);
             IHT_meanShift_CV(image, ihtCvWindow, iters);
             meanShift(image, cvWindow, TermCriteria(TermCriteria::COUNT, iters, 0));
 

@@ -99,10 +99,7 @@ void IHT_meanShift (
     int maprows,
     int mapcols,
     int mapstep,
-    int* w_x,
-    int* w_y,
-    int width,
-    int height,
+    window* w,
     int iters
 ) {
 
@@ -117,8 +114,10 @@ void IHT_meanShift (
     const uchar *w_data, *w_column;
 
     int iterCounter = 0;
-    int curr_w_x = *w_x;
-    int curr_w_y = *w_y;
+    int curr_w_x = w->x;
+    int curr_w_y = w->y;
+    int width = w->width;
+    int height = w->height;
 
     while (iterCounter < iters) {
 
@@ -165,8 +164,8 @@ void IHT_meanShift (
         iterCounter += 1;
     }
 
-    *w_x = curr_w_x;
-    *w_y = curr_w_y;
+    w->x = curr_w_x;
+    w->y = curr_w_y;
 
     GLOBAL_stopTimer();
 }
