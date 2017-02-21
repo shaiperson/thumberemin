@@ -99,7 +99,7 @@ L5:
         jle    L3
         xor    edx,edx
 
-L4:
+L4: ; corresponde a ciclo de moments
 
         movsx  eax,WORD [rsi+rdx*2]
 
@@ -128,7 +128,7 @@ L3:
         cmp    r14d,edi
         jne    L5
 
-L7:
+L7: ; corresponde a ciclo de iters
 
         divss  xmm0,xmm3
 
