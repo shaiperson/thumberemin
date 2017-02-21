@@ -111,7 +111,9 @@ void IHT_meanShift (
     short curr;
     float m00, m10, m01;
     int x, y;
-    int centroid_x, centroid_y, tl_x, tl_y;
+    int shifted_centroid_x, shifted_centroid_y;
+    int centroid_x, centroid_y;
+    int tl_x, tl_y;
     const uchar *w_data, *w_column;
 
     int iterCounter = 0;
@@ -124,10 +126,12 @@ void IHT_meanShift (
 
         // calculate current window moments
         w_data = densityMap + curr_w_y*mapstep + curr_w_x*sizeof(short);
-        y = curr_w_y;
-        while (y < curr_w_y + height) {
-            x = curr_w_x;
-            while (x < curr_w_x + width) {
+        //y = curr_w_y;
+        y = 0; // do x,y positioning relative to window to avoid large moment values and consequent precision issues
+        while (y < height) {
+            //x = curr_w_x;
+            x = 0;
+            while (x < width) {
                 // window is known to be in valid position within density map
                 curr = *(short*)w_data;
 
@@ -138,15 +142,18 @@ void IHT_meanShift (
                 x += 1;
                 w_data += sizeof(short); // next element on row
             }
-            
+
             y += 1;
             w_data += mapstep - width*sizeof(short); // next row beginning
         }
 
         /* update curr window */
 
-        centroid_x = round(m10/m00);
-        centroid_y = round(m01/m00);
+        shifted_centroid_x = round(m10/m00);
+        shifted_centroid_y = round(m01/m00);
+
+        centroid_x = shifted_centroid_x + curr_w_x;
+        centroid_y = shifted_centroid_y + curr_w_y;
 
         tl_x = centroid_x - width/2;
         tl_y = centroid_y - height/2;
@@ -172,8 +179,8 @@ void IHT_meanShift_CV(const Mat& densityMap, Rect& window, size_t iters) {
 
     for (size_t iter = 0; iter < iters; ++iter) {
 
-        iht_moments ms(densityMap, window);
-        centroid = ms.centroid;
+        iht_moments ms(densityMap(window));
+        centroid = ms.centroid + window.tl();
 
         shifted_tl = centroid - Point(window.width/2, window.height/2);
 
@@ -194,11 +201,11 @@ void IHT_meanShift_CV(const Mat& densityMap, Rect& window, size_t iters) {
 
 /* moments */
 
-iht_moments::iht_moments(const Mat& image, const Rect& window) : m00(0), m10(0), m01(0) {
+iht_moments::iht_moments(const Mat& data) : m00(0), m10(0), m01(0) {
     short curr;
-    for (int x = window.tl().x; x < window.br().x; ++x) {
-        for (int y = window.tl().y; y < window.br().y; ++y) {
-            curr = image.at<short>(y,x);
+    for (int x = 0; x < data.cols; ++x) {
+        for (int y = 0; y < data.rows; ++y) {
+            curr = data.at<short>(y,x);
             m00 += curr;
             m10 += x*curr;
             m01 += y*curr;

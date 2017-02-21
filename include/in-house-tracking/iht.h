@@ -4,6 +4,12 @@
 #include "../global.h"
 #include "../../test/timer/timer.h"
 
+struct iht_moments {
+    float m00, m10, m01;
+    Point centroid;
+    iht_moments(const Mat& image);
+};
+
 void IHT_calc3DByteDepthUniformHist(const uchar* imgdata, uchar* histdata, size_t imgrows, size_t imgcols, size_t imgstep);
 void IHT_calc3DByteDepthUniformHist_CV(const Mat& image, Mat& hist);
 
@@ -24,11 +30,5 @@ Mat IHT_createHistArgumentFloat();
 Mat IHT_createHistArgumentShort();
 Mat IHT_createBackProjectArgumentFloat(const Size&);
 Mat IHT_createBackProjectArgumentShort(const Size&);
-
-struct iht_moments {
-    float m00, m10, m01;
-    Point centroid;
-    iht_moments(const Mat& image, const Rect& window);
-};
 
 #endif
