@@ -158,6 +158,9 @@ IHT_meanShift_ASM:
     ; xmm1 <-- shifted_centroid_x | shifted_centroid_x | shifted_centroid_x | shifted_centroid_x
     ; xmm2 <-- shifted_centroid_y | shifted_centroid_y | shifted_centroid_y | shifted_centroid_y
 
+    ; loop .iters_loop
+    dec ecx
+    jnz .iters_loop
 
     ; lógica de updatear window
 
