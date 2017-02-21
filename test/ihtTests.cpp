@@ -207,6 +207,11 @@ bool operator==(const window& window, const Rect& rect) {
     return rect == window;
 }
 
+ostream& operator<<(ostream& o, const window& window) {
+    o << Rect(window.x, window.y, window.width, window.height);
+    return o;
+}
+
 TEST_CASE("Mean shift", "[meanshift], [unit]") {
     GIVEN("Various random matrices and windows") {
         srand(123);
