@@ -123,7 +123,7 @@ IHT_meanShift_ASM:
 
             paddd xmm4, xmm15 ; increment x's
             add r12, 8 ; increment by sizeof(short)*PIXELS_PER_ITER
-            inc rsi ; increment x-counter
+            add rsi, 4 ; increment x-counter by PIXELS_PER_ITER
             cmp esi, r10d ; cmp x-counter, width
             jne .x_loop
 
