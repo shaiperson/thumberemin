@@ -40,7 +40,7 @@ IHT_meanShift_ASM:
     mov r15d, ecx
     mov rbx, r8
 
-    sub rsp, 8
+    sub rsp, 16 ; alineado
     mov [rsp], r9 ; preservo parámetro de r9, iters
 
     call GLOBAL_startTimer
@@ -73,6 +73,9 @@ IHT_meanShift_ASM:
 
     lea r12, [r12 + rdx] ; r12 <-- dirección del primer elemento del window
 
+    ; guardo en la pila el comienzo de los datos #aFaltaDeRegistros
+    mov [rsp], r12
+
     ; calculate row increment for data pointer ( mapstep - width*sizeof(short) )
     xor rdi, rdi ; limpio para poder usar como incremento de puntero
     mov edi, r15d ; edi <-- mapstep
@@ -81,6 +84,9 @@ IHT_meanShift_ASM:
     sub edi, edx ; edi <-- mapstep - width*sizeof(short)
 
     .iters_loop: ; uses rcx as counter
+
+        ; reseteo puntero al comienzo de la ventana
+        mov r12, [rsp]
 
         ; reset m00, m10, m01 accumulators (note 00..0 is FP 0 as well)
         pxor xmm0, xmm0
@@ -135,7 +141,7 @@ IHT_meanShift_ASM:
 
     call GLOBAL_stopTimer
 
-    add rsp, 8
+    add rsp, 16
     pop rbx
     pop r15
     pop r14
