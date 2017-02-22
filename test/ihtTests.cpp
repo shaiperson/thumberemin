@@ -207,6 +207,10 @@ bool operator==(const window& window, const Rect& rect) {
     return rect == window;
 }
 
+bool operator==(const window& w1, const window& w2) {
+    return Rect(w1.x, w1.y, w1.width, w1.height) == w2;
+}
+
 ostream& operator<<(ostream& o, const window& window) {
     o << Rect(window.x, window.y, window.width, window.height);
     return o;
