@@ -69,21 +69,6 @@ IHT_meanShift_ASM:
     sub r13d, r11d ; r13d <-- maprows-height
     sub r14d, r10d ; r14d <-- mapcols-width
 
-    ; calculate address of first window element (densityMap + curr_w_y*mapstep + curr_w_x*sizeof(short))
-    xor rdx, rdx ; limpio para poder usarlo en lea más que nada
-    mov edx, r15d ; edx <-- mapstep (temporario)
-    imul edx, r9d ; edx <-- mapstep*curr_w_y (temporario)
-
-    mov esi, r8d ; esi <-- w_x (temporario)
-    sal esi, 1 ; esi <-- w_x*2
-
-    add edx, esi ; edx (rdx) <-- mapstep*curr_w_y + w_x*sizeof(short)
-
-    lea r12, [r12 + rdx] ; r12 <-- dirección del primer elemento del window
-
-    ; guardo en la pila el comienzo de los datos #aFaltaDeRegistros
-    mov [rsp], r12
-
     ; máscaras y datos fijos
     cvtdq2ps xmm15, [four_dw_4s] ; for incrementing x's
     cvtdq2ps xmm14, [four_dw_1s] ; for incrementing y's
@@ -99,8 +84,18 @@ IHT_meanShift_ASM:
 
     .iters_loop: ; uses rcx as counter
 
-        ; reseteo puntero al comienzo de la ventana
-        mov r12, [rsp]
+        xor rbp, rbp
+        xor rax, rax
+
+        mov eax, r15d ; eax <-- mapstep
+        imul eax, r9d ; eax <-- mapstep*curr_w_y
+
+        mov ebp, r8d ; ebp <-- curr_w_x
+        sal ebp, 1 ; ebp <-- 2*curr_w_x
+
+        add rax, rbp
+
+        lea rax, [r12 + rax] ; rax <-- densityMap + curr_w_y*mapstep + curr_w_x*sizeof(short)
 
         ; reset m00, m10, m01 accumulators (note 00..0 is FP 0 as well)
         pxor xmm0, xmm0
@@ -121,7 +116,7 @@ IHT_meanShift_ASM:
 
             .x_loop:
 
-                movdqu xmm5, [r12] ; xmm5 <-- xx | xx | xx | xx | d3 | d2 | d1 | d0
+                movdqu xmm5, [rax] ; xmm5 <-- xx | xx | xx | xx | d3 | d2 | d1 | d0
                 punpcklwd xmm5, xmm12 ; xmm5 <-- d3 | d2 | d1 | d0
 
                 cvtdq2ps xmm6, xmm5 ; xmm6 <-- float(d3) | float(d2) | float(d1) | float(d0)
@@ -135,13 +130,13 @@ IHT_meanShift_ASM:
                 addps xmm2, xmm6 ; accumulate m01
 
             addps xmm4, xmm15 ; increment x's
-            add r12, 8 ; increment by sizeof(short)*PIXELS_PER_ITER
+            add rax, 8 ; increment by sizeof(short)*PIXELS_PER_ITER
             add rsi, 4 ; increment x-counter by PIXELS_PER_ITER
             cmp esi, r10d ; cmp x-counter, width
             jne .x_loop
 
         addps xmm3, xmm14 ; increment y's
-        add r12, rdi ; add row-window increment
+        add rax, rdi ; add row-window increment
         inc rdx ; increment y-counter
         cmp edx, r11d ; cmp y-counter, height
         jne .y_loop

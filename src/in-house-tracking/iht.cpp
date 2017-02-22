@@ -119,14 +119,12 @@ void IHT_meanShift (
     int width = w->width;
     int height = w->height;
 
-    const uchar* window_ptr = densityMap + curr_w_y*mapstep + curr_w_x*sizeof(short);
-
     while (iterCounter < iters) {
 
         m00 = m10 = m01 = 0;
 
         // calculate current window moments
-        w_data = window_ptr;
+        w_data = densityMap + curr_w_y*mapstep + curr_w_x*sizeof(short);
 
         //y = curr_w_y;
         y = 0; // do x,y positioning relative to window to avoid large moment values and consequent precision issues
