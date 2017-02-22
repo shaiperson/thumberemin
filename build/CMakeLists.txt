@@ -37,7 +37,6 @@ find_package(OpenCV REQUIRED)
 add_definitions (
     --std=c++11
     -g
-    -O3
 )
 
 # If the package has been found, several variables will
