@@ -207,6 +207,10 @@ bool operator==(const window& window, const Rect& rect) {
     return rect == window;
 }
 
+bool operator==(const window& w1, const window& w2) {
+    return Rect(w1.x, w1.y, w1.width, w1.height) == w2;
+}
+
 ostream& operator<<(ostream& o, const window& window) {
     o << Rect(window.x, window.y, window.width, window.height);
     return o;
@@ -221,14 +225,14 @@ TEST_CASE("Mean shift", "[meanshift], [unit]") {
             for (size_t j = 0; j < 100; ++j)
                 image.at<short>(i,j) = rand() % SHRT_MAX;
 
-        Rect ihtCvWindow(rand() % 70, rand() % 70, 10 + rand() % 20, 10 + rand() % 20);
+        Rect ihtCvWindow(rand() % 70, rand() % 70, 28, 28);
         Rect cvWindow(ihtCvWindow);
 
         window ihtAsmWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
         window ihtPtrsWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
 
         WHEN("Some mean shift iterations computed using IHTs on the one hand and OpenCV on the other") {
-            size_t iters = 1;
+            size_t iters = 150;
 
             IHT_meanShift_ASM(image.data, image.rows, image.cols, image.step, &ihtAsmWindow, iters);
             IHT_meanShift(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow, iters);
@@ -242,7 +246,8 @@ TEST_CASE("Mean shift", "[meanshift], [unit]") {
             }
 
             THEN("IHT-ASM and CV windows are shifted equally") {
-                // REQUIRE(ihtAsmWindow == cvWindow);
+                REQUIRE(ihtAsmWindow == ihtPtrsWindow);
+                REQUIRE(ihtAsmWindow == cvWindow);
             }
         }
     }
