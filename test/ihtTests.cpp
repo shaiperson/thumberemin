@@ -216,6 +216,22 @@ ostream& operator<<(ostream& o, const window& window) {
     return o;
 }
 
+bool offBy(const Rect& r1, const Rect& r2, int margin) {
+    return abs(r1.x - r2.x) <= margin && abs(r1.y - r2.y) <= margin;
+}
+
+bool offBy(const Rect& r, const window& w, int margin) {
+    return offBy(r, Rect(w.x, w.y, w.width, w.height), margin);
+}
+
+bool offBy(const window& w, const Rect& r, int margin) {
+    return offBy(r, Rect(w.x, w.y, w.width, w.height), margin);
+}
+
+bool offBy(const window& w1, const window& w2, int margin) {
+    return offBy(Rect(w1.x, w1.y, w1.width, w1.height), w2, margin);
+}
+
 TEST_CASE("Mean shift", "[meanshift], [unit]") {
     GIVEN("Various random matrices and windows") {
         srand(123);
@@ -223,16 +239,16 @@ TEST_CASE("Mean shift", "[meanshift], [unit]") {
         Mat image(100, 100, CV_16UC1);
         for (size_t i = 0; i < 100; ++i)
             for (size_t j = 0; j < 100; ++j)
-                image.at<short>(i,j) = rand() % 227;
+                image.at<short>(i,j) = rand() % SHRT_MAX;
 
-        Rect ihtCvWindow(4, 5, 66, 77);
+        Rect ihtCvWindow(37, 63, 7, 7);
         Rect cvWindow(ihtCvWindow);
 
         window ihtAsmWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
         window ihtPtrsWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
 
         WHEN("Some mean shift iterations computed using IHTs on the one hand and OpenCV on the other") {
-            size_t iters = 1; // 4 iters pass
+            size_t iters = 1;
 
             //IHT_meanShift_ASM(image.data, image.rows, image.cols, image.step, &ihtAsmWindow, iters);
             IHT_meanShift(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow, iters);
@@ -241,18 +257,14 @@ TEST_CASE("Mean shift", "[meanshift], [unit]") {
 
 
             THEN("IHT-CV and CV windows are shifted equally") {
-                // REQUIRE(ihtPtrsWindow == ihtCvWindow);
-                REQUIRE(ihtPtrsWindow == cvWindow);
-                // REQUIRE(ihtCvWindow == cvWindow);
-            }
-
-            THEN("lol pls erase") {
-                REQUIRE(ihtCvWindow == cvWindow);
+                REQUIRE(offBy(ihtPtrsWindow, ihtCvWindow, 1));
+                REQUIRE(offBy(ihtPtrsWindow, cvWindow, 1));
+                REQUIRE(offBy(ihtCvWindow, cvWindow, 1));
             }
 
             THEN("IHT-ASM and CV windows are shifted equally") {
-                // REQUIRE(ihtAsmWindow == ihtPtrsWindow);
-                // REQUIRE(ihtAsmWindow == cvWindow);
+                REQUIRE(offBy(ihtAsmWindow, ihtPtrsWindow, 1));
+                REQUIRE(offBy(ihtAsmWindow, cvWindow, 1));
             }
         }
     }
