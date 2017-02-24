@@ -182,7 +182,8 @@ void IHT_meanShift_CV(const Mat& densityMap, Rect& window, size_t iters) {
         iht_moments ms(densityMap(window));
         centroid = ms.centroid + window.tl();
 
-        shifted_tl = centroid - Point(window.width/2, window.height/2);
+        shifted_tl.x = centroid.x - window.width/2;
+        shifted_tl.y = centroid.y - window.height/2;
 
         window = Rect (
             std::min(std::max(shifted_tl.x, 0), densityMap.cols - window.width),
@@ -211,7 +212,8 @@ iht_moments::iht_moments(const Mat& data) : m00(0), m10(0), m01(0) {
             m01 += y*curr;
         }
     }
-    centroid = Point(round(m10/m00), round(m01/m00));
+    centroid.x = round(m10/m00);
+    centroid.y = round(m01/m00);
 }
 
 /* aux */
