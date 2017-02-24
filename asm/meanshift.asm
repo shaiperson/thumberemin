@@ -76,16 +76,12 @@ IHT_meanShift_ASM:
     pxor xmm12, xmm12 ; zeros for unpacking
 
     ; calculate row increment for data pointer ( mapstep - width*sizeof(short) )
-    xor rdi, rdi ; limpio para poder usar como incremento de puntero
     mov edi, r15d ; edi <-- mapstep
     mov edx, r10d ; edx <-- width (temporario)
     sal edx, 1 ; edx <-- width*sizeof(short)
     sub edi, edx ; edi <-- mapstep - width*sizeof(short)
 
     .iters_loop: ; uses rcx as counter
-
-        xor rbp, rbp
-        xor rax, rax
 
         mov eax, r15d ; eax <-- mapstep
         imul eax, r9d ; eax <-- mapstep*curr_w_y
@@ -120,21 +116,45 @@ IHT_meanShift_ASM:
                 punpcklwd xmm5, xmm12 ; xmm5 <-- d3 | d2 | d1 | d0
 
                 cvtdq2ps xmm6, xmm5 ; xmm6 <-- float(d3) | float(d2) | float(d1) | float(d0)
-                addps xmm0, xmm6 ; accumulate m00
+                addps xmm0, xmm6 ; accumulate for m00
 
-                movdqu xmm7, xmm6 ; xmm7 <-- float(d3) | float(d2) | float(d1) | float(d0)
+                movaps xmm7, xmm6 ; xmm7 <-- float(d3) | float(d2) | float(d1) | float(d0)
                 mulps xmm7, xmm4 ; xmm7 <-- x3*d3 | x2*d2 | x1*d1 | x0*d0
-                addps xmm1, xmm7 ; accumulate m10
+                addps xmm1, xmm7 ; accumulate for m10
 
-                mulps xmm6, xmm3 ; xmm5 <-- y3*d3 | y2*d2 | y1*d1 | y0*d0
-                addps xmm2, xmm6 ; accumulate m01
+                mulps xmm6, xmm3 ; xmm6 <-- y3*d3 | y2*d2 | y1*d1 | y0*d0
+                addps xmm2, xmm6 ; accumulate for m01
 
             addps xmm4, xmm15 ; increment x's
             add rax, 8 ; increment by sizeof(short)*PIXELS_PER_ITER
             add rsi, 4 ; increment x-counter by PIXELS_PER_ITER
-            cmp esi, r10d ; cmp x-counter, width
-            jne .x_loop
+            lea ebp, [r10d - PIXELS_PER_ITER] ; vectorization limit in row = width - PIXELS_PER_ITER
+            cmp esi, ebp ; cmp x-counter against vectorization limit
+            jle .x_loop ; iterate if lower
 
+            ; sequential processing of las bit of row
+            .end_of_row:
+            cmp esi, r10d
+            je .next_row
+
+                movzx rbp, word [rax] ; rbp <-- value
+                cvtsi2ss xmm5, ebp ; xmm5[31:0] <-- value
+
+                cvtsi2ss xmm6, esi ; xmm6[31:0] <-- x counter
+                cvtsi2ss xmm7, edx ; xmm6[31:0] <-- y counter
+
+                addss xmm0, xmm5 ; accumulate for m00
+
+                mulss xmm6, xmm5 ; xmm6[31:0] <-- x*value
+                addss xmm1, xmm6 ; accumulate for m10
+
+                mulss xmm7, xmm5 ; xmm7[31:0] <-- y*value
+                addss xmm2, xmm7 ; accumulate for m01
+
+            inc rsi
+            jmp .end_of_row
+
+        .next_row:
         addps xmm3, xmm14 ; increment y's
         add rax, rdi ; add row-window increment
         inc rdx ; increment y-counter
