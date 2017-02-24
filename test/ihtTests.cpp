@@ -234,37 +234,38 @@ bool offBy(const window& w1, const window& w2, int margin) {
 
 TEST_CASE("Mean shift", "[meanshift], [unit]") {
     GIVEN("Various random matrices and windows") {
-        srand(123);
+        srand(120);
 
         Mat image(100, 100, CV_16UC1);
         for (size_t i = 0; i < 100; ++i)
             for (size_t j = 0; j < 100; ++j)
                 image.at<short>(i,j) = rand() % SHRT_MAX;
 
-        Rect ihtCvWindow(37, 63, 7, 7);
+        Rect ihtCvWindow(37, 63, 29, 17);
         Rect cvWindow(ihtCvWindow);
 
         window ihtAsmWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
         window ihtPtrsWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
 
         WHEN("Some mean shift iterations computed using IHTs on the one hand and OpenCV on the other") {
-            size_t iters = 1;
+            size_t iters = 100;
 
             //IHT_meanShift_ASM(image.data, image.rows, image.cols, image.step, &ihtAsmWindow, iters);
             IHT_meanShift(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow, iters);
             IHT_meanShift_CV(image, ihtCvWindow, iters);
             meanShift(image, cvWindow, TermCriteria(TermCriteria::COUNT, iters, 0));
 
-
-            THEN("IHT-CV and CV windows are shifted equally") {
-                REQUIRE(offBy(ihtPtrsWindow, ihtCvWindow, 1));
-                REQUIRE(offBy(ihtPtrsWindow, cvWindow, 1));
-                REQUIRE(offBy(ihtCvWindow, cvWindow, 1));
+            THEN("IHT-ptrs IHT-CV windows are shifted equally") {
+                REQUIRE(ihtPtrsWindow == ihtCvWindow);
             }
 
-            THEN("IHT-ASM and CV windows are shifted equally") {
-                REQUIRE(offBy(ihtAsmWindow, ihtPtrsWindow, 1));
-                REQUIRE(offBy(ihtAsmWindow, cvWindow, 1));
+            THEN("IHT-ptrs and OpenCV windows are shifted equally") {
+                REQUIRE(ihtPtrsWindow == cvWindow);
+            }
+
+            THEN("IHT-ASM, IHT-ptrs and OpenCV windows are shifted equally") {
+                REQUIRE(ihtAsmWindow == ihtPtrsWindow);
+                REQUIRE(ihtAsmWindow == cvWindow);
             }
         }
     }

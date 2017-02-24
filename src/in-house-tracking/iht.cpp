@@ -149,14 +149,8 @@ void IHT_meanShift (
 
         /* update curr window */
 
-        shifted_centroid_x = round(m10/m00);
-        shifted_centroid_y = round(m01/m00);
-
-        centroid_x = shifted_centroid_x + curr_w_x;
-        centroid_y = shifted_centroid_y + curr_w_y;
-
-        tl_x = centroid_x - width/2;
-        tl_y = centroid_y - height/2;
+        tl_x = roundf(m10/m00 + (float)curr_w_x - width*0.5);
+        tl_y = roundf(m01/m00 + (float)curr_w_y - height*0.5);
 
         /* HACER EL MIN MAX IN-HOUSE */
         curr_w_x = std::min(std::max(tl_x, 0), mapcols-width);
@@ -175,19 +169,20 @@ void IHT_meanShift_CV(const Mat& densityMap, Rect& window, size_t iters) {
 
     GLOBAL_startTimer();
 
-    Point centroid, shifted_tl;
+    Point centroid, tl;
 
     for (size_t iter = 0; iter < iters; ++iter) {
 
         iht_moments ms(densityMap(window));
-        centroid = ms.centroid + window.tl();
 
-        shifted_tl.x = centroid.x - window.width/2;
-        shifted_tl.y = centroid.y - window.height/2;
+        tl = Point (
+            roundf(ms.m10/ms.m00 + (float)window.tl().x - window.width*0.5),
+            roundf(ms.m01/ms.m00 + (float)window.tl().y - window.height*0.5)
+        );
 
         window = Rect (
-            std::min(std::max(shifted_tl.x, 0), densityMap.cols - window.width),
-            std::min(std::max(shifted_tl.y, 0), densityMap.rows - window.height),
+            std::min(std::max(tl.x, 0), densityMap.cols - window.width),
+            std::min(std::max(tl.y, 0), densityMap.rows - window.height),
             window.width,
             window.height
         );
@@ -212,8 +207,7 @@ iht_moments::iht_moments(const Mat& data) : m00(0), m10(0), m01(0) {
             m01 += y*curr;
         }
     }
-    centroid.x = round(m10/m00);
-    centroid.y = round(m01/m00);
+    centroid = Point(roundf(m10/m00), roundf(m01/m00));
 }
 
 /* aux */
