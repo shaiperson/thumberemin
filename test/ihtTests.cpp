@@ -234,7 +234,7 @@ bool offBy(const window& w1, const window& w2, int margin) {
 
 TEST_CASE("Mean shift", "[meanshift], [unit]") {
     GIVEN("Various random matrices and windows") {
-        srand(120);
+        srand(12345);
 
         Mat image(100, 100, CV_16UC1);
         for (size_t i = 0; i < 100; ++i)
@@ -248,9 +248,9 @@ TEST_CASE("Mean shift", "[meanshift], [unit]") {
         window ihtPtrsWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
 
         WHEN("Some mean shift iterations computed using IHTs on the one hand and OpenCV on the other") {
-            size_t iters = 100;
+            size_t iters = 190;
 
-            //IHT_meanShift_ASM(image.data, image.rows, image.cols, image.step, &ihtAsmWindow, iters);
+            IHT_meanShift_ASM(image.data, image.rows, image.cols, image.step, &ihtAsmWindow, iters);
             IHT_meanShift(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow, iters);
             IHT_meanShift_CV(image, ihtCvWindow, iters);
             meanShift(image, cvWindow, TermCriteria(TermCriteria::COUNT, iters, 0));
@@ -265,7 +265,7 @@ TEST_CASE("Mean shift", "[meanshift], [unit]") {
 
             THEN("IHT-ASM, IHT-ptrs and OpenCV windows are shifted equally") {
                 REQUIRE(ihtAsmWindow == ihtPtrsWindow);
-                REQUIRE(ihtAsmWindow == cvWindow);
+                REQUIRE(offBy(ihtAsmWindow, cvWindow, 1));
             }
         }
     }
