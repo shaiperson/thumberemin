@@ -56,11 +56,13 @@ IHT_meanShift_ASM:
     mov r10d, dword [rbx + 0x8] ; r10d <-- width
     mov r11d, dword [rbx + 0xc] ; r11d <-- height
 
-    ; store in stack width/2 and height/2
-    mov dword [rsp + 8], r10d ; [rsp + 8] <-- width
-    mov dword [rsp + 12], r11d ; [rsp + 12] <-- height
-    sar dword [rsp + 8], 1 ; [rsp + 8] <-- width/2
-    sar dword [rsp + 12], 1 ; [rsp + 12] <-- height/2
+    ; store in xmms float(width/2) and float(height/2)
+    mov edi, 2 ; temporarily use edi
+    cvtsi2ss xmm10, edi ; xmm10 <-- float(2). Temporarily use xmm10
+    cvtsi2ss xmm8, r10d ; xmm8 <-- float(width)
+    cvtsi2ss xmm9, r11d ; xmm9 <-- float(height)
+    divss xmm8, xmm10 ; xmm8 <-- float(width/2)
+    divss xmm9, xmm10 ; xmm9 <-- float(width/2)
 
     ; store a dword 0 in stack for conditional movs for min and max
     mov dword [rsp + 16], 0
@@ -177,20 +179,19 @@ IHT_meanShift_ASM:
         haddps xmm2, xmm2
         haddps xmm2, xmm2 ; xmm2 <-- m01/m00 | m01/m00 | m01/m00 | m01/m00
 
-        ; (esto O3 también lo hace)
-        ; VER LO DE MXCSR REGISTER para el redondeo de esto cosa - que sea igual a std::round y listo
-        cvtss2si rbp, xmm1 ; rbp <-- int(m10/m00) = shifted_centroid_x
-        cvtss2si rax, xmm2 ; rax <-- int(m01/m00) = shifted_centroid_y
+        ; VER LO DE MXCSR REGISTER para el redondeo de estos cosas - que sea igual a std::roundf y listo
 
-        ; at this point
-        ; rbp <-- shifted_centroid_x
-        ; rax <-- shifted_centroid_y
+        cvtsi2ss xmm5, r8d ; xmm5 <-- float(curr_w_x)
+        cvtsi2ss xmm6, r9d ; xmm6 <-- float(curr_w_y)
 
-        add ebp, r8d ; ebp <-- centroid_x
-        add eax, r9d ; eax <-- centroid_y
+        addss xmm1, xmm5 ; xmm1 <-- xx | xx | xx | float(m10/m00) + float(curr_w_x)
+        addss xmm2, xmm6 ; xmm2 <-- xx | xx | xx | float(m01/m00) + float(curr_w_y)
 
-        sub ebp, [rsp + 8] ; ebp <-- tl_x
-        sub eax, [rsp + 12] ; eax <-- tl_y
+        subss xmm1, xmm8 ; xmm1 <-- float(m10/m00) + float(curr_w_x) - float(width/2) = float(tl_x)
+        subss xmm2, xmm9 ; xmm2 <-- float(m01/m00) + float(curr_w_y) - float(height/2) = float(tl_y)
+
+        cvtss2si ebp, xmm1 ; ebp <-- int(tl_x)
+        cvtss2si eax, xmm2 ; eax <-- int(tl_y)
 
         ; A PARTIR DE AHORA *SON SIGNED*
 
