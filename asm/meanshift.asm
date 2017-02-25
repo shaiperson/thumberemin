@@ -153,7 +153,8 @@ IHT_meanShift_ASM:
                 mulss xmm7, xmm5 ; xmm7[31:0] <-- y*value
                 addss xmm2, xmm7 ; accumulate for m01
 
-            inc rsi
+            inc rsi ; increment x counter
+            add rax, 2 ; increment data pointer
             jmp .end_of_row
 
         .next_row:
