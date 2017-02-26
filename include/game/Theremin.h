@@ -9,9 +9,6 @@
 #include "../tracking/TrackingInfo.h"
 #include "../tracking/ColorSampler.h"
 #include "../tracking/Tracker.h"
-#include "../sound/SoundGenerator.h"
-#include "../sound/SilentSoundGenerator.h"
-#include "../sound/RangeSoundGenerator.h"
 
 class Theremin {
 public:

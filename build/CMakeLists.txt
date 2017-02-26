@@ -20,9 +20,6 @@ set (
     ../src/gui/Screen.cpp
     ../src/tracking/ColorSampler.cpp
     ../src/tracking/Tracker.cpp
-    ../src/sound/SilentSoundGenerator.cpp
-    ../src/sound/RangeSoundGenerator.cpp
-    ../src/sound/ContinuousSineWave.cpp
     iht.o
 )
 
