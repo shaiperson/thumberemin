@@ -10,12 +10,13 @@ void Tracker::update(const Mat& frame) {
     const int channels[3] = {0,1,2};
     float singleBinRange[2] = {0, 256};
     const float* ranges[3] = {singleBinRange, singleBinRange, singleBinRange};
+    Mat backProjection;
 
     // Thereminless usa frame entero como ROI
     Mat roi = frame;
 
     // PRUEBO CON EL FRAME ENTERO a ver si SIMD se la banca
-    Mat backProjection = IHT_createBackProjectArgumentShort(roi.size());
+    // backProjection = IHT_createBackProjectArgumentShort(roi.size());
 
     calcBackProject(&roi, nimages, channels, sample, backProjection, ranges);
     // IHT_calc3DByteDepthBackProject(roi.data, sample.data, backProjection.data, roi.rows, roi.cols, roi.step);
