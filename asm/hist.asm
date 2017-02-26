@@ -84,10 +84,24 @@ IHT_calc3DByteDepthUniformHist_ASM:
             inc word [r13 + 2*r11]
 
         add r12, 15 ; 15 = CHANNELS * PIXELS_PER_ITER * sizeof(uchar)
-        add r10, 5 ; 5 = PIXELS_PER_ITER
-        cmp r10, r15 ; cmp j, imgcols
-        jne .cols_loop
+        add r10, PIXELS_PER_ITER ; 5 = PIXELS_PER_ITER
+        lea rdx, [r15 - PIXELS_PER_ITER] ; rdx <-- vecotorization limit
+        cmp r10, rdx ; cmp j, vectorization limit
+        jle .cols_loop
 
+        .end_of_row:
+        cmp r10, r15
+        je .next_row
+
+            mov edx, dword [r12] ; rdx <-- x | x | x | x | x | r | g | b
+            and rdx, 0x0000000000FFFFFF ; rdx <-- 0 | 0 | 0 | 0 | 0 | r | g | b
+            inc word [r13 + 2*rdx] ; bin += 1
+
+        inc r10
+        add r12, CHANNELS
+        jmp .end_of_row
+
+    .next_row:
     add r12, rbx ; i += padding
     add r9, 1 ; only add ONE row
     cmp r9, r14 ; cmp i, imgrows
