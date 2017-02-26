@@ -68,13 +68,13 @@ SCENARIO("Calculating the 3D histogram of an RGB 8-bit image with cols divisble 
 
 SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[unit], [backproject]") {
 
-    GIVEN("An RGB histogram with bin [1,2,3] at 10 and an image whose pixels are all [1,2,3]") {
-        Mat imageToCropFrom(13, 13, CV_8UC3, Scalar(1,2,3));
-        image = imageToCropFrom(Rect(2,2,10,10)); // crop image so that it has padding
+    GIVEN("An RGB histogram with bin [1,2,3] at 42 and an image whose pixels are all [1,2,3]") {
+        Mat imageToCropFrom(17, 17, CV_8UC3, Scalar(1,2,3));
+        image = imageToCropFrom(Rect(2,2,13,13)); // crop image so that it has padding; use image with cols not multiple of 5
 
         int histSizes[3] = {256, 256, 256};
         Mat hist(3, histSizes, CV_16UC1, Scalar(0));
-        hist.at<short>(3,2,1) = 10;
+        hist.at<short>(3,2,1) = 42;
 
         WHEN("Back-projected") {
             Mat backProjection_seq = IHT_createBackProjectArgumentShort(image.size());
@@ -84,17 +84,18 @@ SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[unit], [bac
             IHT_calc3DByteDepthBackProject_ASM(image.data, hist.data, backProjection_vec.data, image.rows, image.cols, image.step);
 
             bool allTens;
-            THEN("All pixels in sequential back projection have 10") {
+            THEN("All pixels in sequential back projection have 42") {
                 allTens = true;
+                int jajalolsies = 0;
                 for (auto it = backProjection_seq.begin<short>(); it != backProjection_seq.end<short>(); ++it)
-                    allTens = allTens && *it == 10;
+                    allTens = allTens && *it == 42;
                 REQUIRE(allTens);
             }
 
-            THEN("All pixels in vectorial back projection have 10") {
+            AND_THEN("All pixels in vectorial back projection have 42") {
                 allTens = true;
                 for (auto it = backProjection_vec.begin<short>(); it != backProjection_vec.end<short>(); ++it)
-                    allTens = allTens && *it == 10;
+                    allTens = allTens && *it == 42;
                 REQUIRE(allTens);
             }
         }
@@ -133,7 +134,7 @@ SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[unit], [bac
                 REQUIRE(allCorrectVec);
             }
 
-            THEN("The rest has 456") {
+            AND_THEN("The rest has 456") {
                 allCorrectSeq = true;
                 for (size_t i = 0; i < 20; ++i)
                     for (size_t j = 0; j < 20; ++j)
@@ -161,15 +162,15 @@ TEST_CASE("IHT image moments and centroid", "[moments], [unit]") {
             REQUIRE(ms.m00 == 9);
         }
 
-        THEN("m10 is 9") {
+        AND_THEN("m10 is 9") {
             REQUIRE(ms.m10 == 9);
         }
 
-        THEN("m01 is 9") {
+        AND_THEN("m01 is 9") {
             REQUIRE(ms.m01 == 9);
         }
 
-        THEN("Centroid is middle point") {
+        AND_THEN("Centroid is middle point") {
             REQUIRE(ms.centroid == Point(1,1));
         }
     }
@@ -192,7 +193,7 @@ TEST_CASE("IHT image moments and centroid", "[moments], [unit]") {
             REQUIRE(iht_ms.m01 == cv_ms.m01);
         }
 
-        THEN("IHT centroid coincides with OpenCV-moments' induced centroid") {
+        AND_THEN("IHT centroid coincides with OpenCV-moments' induced centroid") {
             REQUIRE(iht_ms.centroid == Point(cv_ms.m10 / cv_ms.m00, cv_ms.m01 / cv_ms.m00));
         }
 
