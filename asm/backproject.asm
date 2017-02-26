@@ -115,8 +115,7 @@ IHT_calc3DByteDepthBackProject_ASM:
         inc r10
         add r12, CHANNELS ; increment imgdata by CHANNELS * sizeof(uchar)
         add r14, 2 ; increment resdata by SIZEOF(short)
-        cmp r10, rax
-        jne .end_of_row
+        jmp .end_of_row
 
     .next_row:
     add r12, rbx ; imgdata += padding | RESDATA SE SUPONE CONTINUO
