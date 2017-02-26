@@ -132,7 +132,7 @@ IHT_meanShift_ASM:
             add rsi, 4 ; increment x-counter by PIXELS_PER_ITER
             lea ebp, [r10d - PIXELS_PER_ITER] ; vectorization limit in row = width - PIXELS_PER_ITER
             cmp esi, ebp ; cmp x-counter against vectorization limit
-            jle .x_loop ; iterate if lower
+            jle .x_loop ; iterate if lower or equal
 
             ; sequential processing of las bit of row
             .end_of_row:
