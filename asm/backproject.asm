@@ -3,6 +3,9 @@ global IHT_calc3DByteDepthBackProject_ASM
 extern GLOBAL_startTimer
 extern GLOBAL_stopTimer
 
+%define PIXELS_PER_ITER 5
+%define CHANNELS 3
+
 section .data
 
 align 16
@@ -93,12 +96,29 @@ IHT_calc3DByteDepthBackProject_ASM:
             ; escribo en res
             movdqu [r14], xmm1
 
-        add r12, 15 ; advance imgdata, 15 = CHANNELS * PIXELS_PER_ITER
+        add r12, 15 ; advance imgdata, 15 = CHANNELS * sizeof(uchar) * PIXELS_PER_ITER
         add r14, 10 ; advance resdata POR AHÍ MEJOR índices y usar lea en el loop?
-        add r10, 5 ; 5 = PIXELS_PER_ITER
-        cmp r10, rax ; cmp j, imgcols
-        jne .cols_loop
+        add r10, PIXELS_PER_ITER ; 5 = PIXELS_PER_ITER
+        lea rdi, [rax - PIXELS_PER_ITER] ; cmp j, vectoriation limit
+        cmp r10, rdi
+        jle .cols_loop ; iterate of lower or equal
 
+        .end_of_row:
+        cmp r10, rax
+        je .next_row
+
+            mov edi, dword [r12] ; rdi <-- x | x | x | x | x | r | g | b
+            and rdi, 0x0000000000FFFFFF ; rdi <-- 0 | 0 | 0 | 0 | 0 | r | g | b
+            mov di, word [r13 + 2*rdi] ; rdi <-- 0 | 0 | 0 | 0 | 0 | 0 | val val
+            mov [r14], di
+
+        inc r10
+        add r12, CHANNELS ; increment imgdata by CHANNELS * sizeof(uchar)
+        add r14, 2 ; increment resdata by SIZEOF(short)
+        cmp r10, rax
+        jne .end_of_row
+
+    .next_row:
     add r12, rbx ; imgdata += padding | RESDATA SE SUPONE CONTINUO
     add r9, 1 ; i += 1
     cmp r9, r15
