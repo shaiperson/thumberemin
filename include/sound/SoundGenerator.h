@@ -1,4 +1,4 @@
-#ifndef SOUNDGENERATOR_H
+/*#ifndef SOUNDGENERATOR_H
 #define SOUNDGENERATOR_H
 
 #include "../global.h"
@@ -13,3 +13,4 @@ public:
 };
 
 #endif
+*/

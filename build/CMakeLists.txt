@@ -104,6 +104,9 @@ add_custom_command (
 # Declare the executable target built from your sources
 add_executable (
     prueba
+    hist.o
+    backproject.o
+    meanshift.o
     ../src/game/main.cpp
     ${COMMON_CPPS}
 )

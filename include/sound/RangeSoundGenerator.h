@@ -1,4 +1,4 @@
-#ifndef RANGESOUNDGENERATOR_H
+/*#ifndef RANGESOUNDGENERATOR_H
 #define RANGESOUNDGENERATOR_H
 
 #include "SoundGenerator.h"
@@ -30,3 +30,4 @@ private:
 };
 
 #endif
+*/

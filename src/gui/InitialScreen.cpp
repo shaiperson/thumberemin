@@ -3,8 +3,8 @@
 // TODO hardcoded values
 InitialScreen::InitialScreen() :
     samplingInstructions (
-        {"Cover square", "with thumb", "and press 'enter'", "", "Press 'q' to quit"}
-    ) {}
+        {"Cover square", "with object", "and hit any key", "", "Press 'q' to quit"}
+    ) { }
 
 /* Derived-screen-specific additional frame processing for display*/
 void InitialScreen::processFrame(Mat& frame, const TrackingInfo& tracker) const {

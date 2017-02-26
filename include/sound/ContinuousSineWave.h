@@ -1,4 +1,4 @@
-#ifndef CONTINUOUSSINEWAVE_H
+/*#ifndef CONTINUOUSSINEWAVE_H
 #define CONTINUOUSSINEWAVE_H
 
 #include "../global.h"
@@ -24,3 +24,4 @@ private:
 };
 
 #endif
+*/

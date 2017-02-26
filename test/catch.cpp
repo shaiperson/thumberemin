@@ -21,7 +21,7 @@ int prevMultipleOf(int n, int d) {
 struct randomMeanshiftCase {
     Mat image;
     Rect ihtCvWindow, cvWindow;
-    window ihtAsmWindow, ihtPtrsWindow;
+    IHT_window ihtAsmWindow, ihtPtrsWindow;
     randomMeanshiftCase() :
         image(100, 100, CV_16UC1),
         ihtCvWindow(
@@ -47,19 +47,19 @@ struct randomMeanshiftCase {
     }
 };
 
-bool operator==(const Rect& rect, const window& window) {
+bool operator==(const Rect& rect, const IHT_window& window) {
     return rect == Rect(window.x, window.y, window.width, window.height);
 }
 
-bool operator==(const window& window, const Rect& rect) {
+bool operator==(const IHT_window& window, const Rect& rect) {
     return rect == window;
 }
 
-bool operator==(const window& w1, const window& w2) {
+bool operator==(const IHT_window& w1, const window& w2) {
     return Rect(w1.x, w1.y, w1.width, w1.height) == w2;
 }
 
-ostream& operator<<(ostream& o, const window& window) {
+ostream& operator<<(ostream& o, const IHT_window& window) {
     o << Rect(window.x, window.y, window.width, window.height);
     return o;
 }

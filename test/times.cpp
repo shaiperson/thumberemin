@@ -82,8 +82,8 @@ TEST_CASE("Mean shift times", "[times], [meanshift]") {
     Rect ihtCvWindow(rand() % 70, rand() % 70, 10 + rand() % 20, 10 + rand() % 20);
     Rect cvWindow(ihtCvWindow);
 
-    window ihtAsmWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
-    window ihtPtrsWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
+    IHT_window ihtAsmWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
+    IHT_window ihtPtrsWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
 
     double time_ihtptrs, time_ihtcv, time_asm = 0;
 

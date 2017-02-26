@@ -25,12 +25,8 @@ private:
     Capture capture;
     Screen* screen;
     TrackingInfo* tracker;
-    SoundGenerator* sound;
 
-    bool playingMode; // TODO make polymorphic with respect to run()?
-
-    void switchToPlayingMode();
-    bool keyOptions();
+    void run();
 
 };
 

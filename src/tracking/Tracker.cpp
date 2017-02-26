@@ -2,27 +2,23 @@
 
 Tracker::Tracker(Mat& histogram) :
     sample(histogram), // begin with samplingRegion as initial window
-    termCriteria(TermCriteria::COUNT, StaticConfiguration::termCritIters, 0) // terminate after 10 iterations
+    termCriteria(TermCriteria::COUNT, StaticConfiguration::termCritIters, 0)
     { }
 
 void Tracker::update(const Mat& frame) {
-    /* Playing region expanded with exact margins to allow desired movement of tracking marker
-    Note this strongly relies on meanShift()'s behavior with respect to tracking window reaching edges of frame*/
-    Point playingRegionExpansionVector = Point(0, StaticConfiguration::trackingWindowSize.height / 2);
-    Rect roiRect (
-        dynconf.playingRegion.tl() - playingRegionExpansionVector,
-        dynconf.playingRegion.br() + playingRegionExpansionVector
-    );
+    // Thereminless usa frame entero como ROI
+    Mat roi = frame;
 
-    Mat roi = frame(roiRect);
-    Mat backProjection = IHT_createBackProjectArgumentShort(roiRect.size());
+    // PRUEBO CON EL FRAME ENTERO a ver si SIMD se la banca
+    Mat backProjection = IHT_createBackProjectArgumentShort(roi.size());
 
     IHT_calc3DByteDepthBackProject(roi.data, sample.data, backProjection.data, roi.rows, roi.cols, roi.step);
+    // IHT_calc3DByteDepthBackProject_ASM(roi.data, sample.data, backProjection.data, roi.rows, roi.cols, roi.step);
 
-    Point windowTranslation = Point(-dynconf.inactiveRegions[0].width, -roiRect.y);
-    window += windowTranslation; // shift to playingRegion-relative position
-    IHT_meanShift_CV(backProjection, window, StaticConfiguration::termCritIters);
-    window -= windowTranslation; // shift back to frame-relative position
+    // IHT_meanShift_CV(backProjection, window, StaticConfiguration::termCritIters);
+    IHT_meanShift(backProjection.data, backProjection.rows, backProjection.cols, backProjection.step, &window, StaticConfiguration::termCritIters);
+    // IHT_meanShift_ASM(backProjection.data, backProjection.rows, backProjection.cols, backProjection.step, &window, StaticConfiguration::termCritIters);
+
 }
 
 Point Tracker::current() const {

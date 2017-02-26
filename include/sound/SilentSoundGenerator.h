@@ -1,4 +1,4 @@
-#ifndef SILENTSOUNDGENERATOR_H
+/*#ifndef SILENTSOUNDGENERATOR_H
 #define SILENTSOUNDGENERATOR_H
 
 #include "SoundGenerator.h"
@@ -9,3 +9,4 @@ public:
 };
 
 #endif
+*/

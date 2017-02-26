@@ -2,6 +2,7 @@
 #define TRACKINGINFO_H
 
 #include "../config/config.h"
+#include "../in-house-tracking/iht.h"
 
 class TrackingInfo {
 public:
@@ -15,7 +16,8 @@ public:
     Size windowSize() const { return StaticConfiguration::trackingWindowSize; }
 
 protected:
-    Rect window;
+    // Rect window;
+    IHT_window window;
 };
 
 #endif

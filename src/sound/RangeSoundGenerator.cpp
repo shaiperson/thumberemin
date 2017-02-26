@@ -1,4 +1,4 @@
-#include "../../include/sound/RangeSoundGenerator.h"
+/*#include "../../include/sound/RangeSoundGenerator.h"
 
 RangeSoundGenerator::RangeSoundGenerator()
     : wave (
@@ -56,3 +56,4 @@ void RangeSoundGenerator::initializeOutputParameters() {
     outputParameters.hostApiSpecificStreamInfo = NULL;
     outputParameters.channelCount = StaticConfiguration::numberOfChannels;
 }
+*/

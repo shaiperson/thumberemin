@@ -99,7 +99,7 @@ void IHT_meanShift (
     int maprows,
     int mapcols,
     int mapstep,
-    window* w,
+    IHT_window* w,
     size_t iters
 ) {
 

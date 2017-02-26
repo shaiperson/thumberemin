@@ -1,4 +1,4 @@
-#include "../../include/sound/ContinuousSineWave.h"
+/*#include "../../include/sound/ContinuousSineWave.h"
 
 ContinuousSineWave::ContinuousSineWave(float frequency, size_t sampleRate) :
     sampleRate(sampleRate),
@@ -33,3 +33,4 @@ float ContinuousSineWave::k() {
 void ContinuousSineWave::updatePhase() {
     phase = k()*(prevFrequency - currFrequency) + phase;
 }
+*/

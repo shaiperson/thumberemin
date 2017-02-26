@@ -2,13 +2,13 @@
 
 /* Derived-screen-specific additional frame processing for display*/
 void PlayingScreen::processFrame(Mat& frame, const TrackingInfo& tracker) const {
-    drawNoteMarker (
+    drawTrackingMarker (
         frame,
         tracker.current()
     );
 }
 
-void PlayingScreen::drawNoteMarker(Mat& frame, const Point& center) const {
+void PlayingScreen::drawTrackingMarker(Mat& frame, const Point& center) const {
     /* "FREQUENCY POINTER" */
     circle (
         frame,
@@ -19,6 +19,7 @@ void PlayingScreen::drawNoteMarker(Mat& frame, const Point& center) const {
         CV_AA
     );
 
+    /*
     Point freqPoint(center - Point(dynconf.trackingMarkerRadius * 3, 0));
     line (
         frame,
@@ -28,16 +29,18 @@ void PlayingScreen::drawNoteMarker(Mat& frame, const Point& center) const {
         1,
         CV_AA
     );
-
+    */
     /* print frequency */
-    float freq = dynconf.pixel2Freq[center.y];
-    stringstream stream;
-    stream << fixed << setprecision(1) << freq;
+    // float freq = dynconf.pixel2Freq[center.y];
+    // stringstream stream;
+    // stream << fixed << setprecision(1) << freq;
 
-    putText(frame, stream.str(), freqPoint - Point(0, 5), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(255,255,255));
+    // putText(frame, stream.str(), freqPoint - Point(0, 5), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(255,255,255));
 
     /* ENCLOSING CIRCLES */
-    circle ( // inner
+
+    // inner
+    circle (
         frame,
         center,
         dynconf.trackingMarkerRadius * (2/3.0),
@@ -46,7 +49,8 @@ void PlayingScreen::drawNoteMarker(Mat& frame, const Point& center) const {
         CV_AA
     );
 
-    circle ( // outer
+    // outer
+    circle (
         frame,
         center,
         dynconf.trackingMarkerRadius,
