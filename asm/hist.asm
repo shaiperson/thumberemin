@@ -12,12 +12,6 @@ extern GLOBAL_stopTimer
 ; misc
 %define PIXELS_PER_ITER 5
 
-section .data
-
-align 16
-; low --> high
-leave_3_low_bytes_r64: db 0xFF, 0xFF, 0xFF, 0, 0, 0, 0, 0
-
 section .text
 
 ; RDI-->R12 imgdata
@@ -52,10 +46,6 @@ IHT_calc3DByteDepthUniformHist_ASM:
 
     sub rbx, r11 ; rbx now contains padding
 
-    ;;;;;;;;;;;;;;;;
-
-    mov rdi, [leave_3_low_bytes_r64]
-
     ; i = 0
     xor r9, r9
 
@@ -66,31 +56,31 @@ IHT_calc3DByteDepthUniformHist_ASM:
             movdqu xmm0, [r12]
 
             movq r11, xmm0 ; r11 <-- g2 b2 r1 g1 b1 r0 g0 b0
-            and r11, rdi ; r11 <-- 0 0 0 0 0 r0 g0 b0
+            and r11, 0x0000000000FFFFFF ; r11 <-- 0 0 0 0 0 r0 g0 b0
             inc word [r13 + 2*r11] ; probar también con shift, sumar el puntero y ahí escribir
 
             psrldq xmm0, 3
 
             movq r11, xmm0
-            and r11, rdi
+            and r11, 0x0000000000FFFFFF
             inc word [r13 + 2*r11]
 
             psrldq xmm0, 3
 
             movq r11, xmm0
-            and r11, rdi
+            and r11, 0x0000000000FFFFFF
             inc word [r13 + 2*r11]
 
             psrldq xmm0, 3
 
             movq r11, xmm0
-            and r11, rdi
+            and r11, 0x0000000000FFFFFF
             inc word [r13 + 2*r11]
 
             psrldq xmm0, 3
 
             movq r11, xmm0
-            and r11, rdi
+            and r11, 0x0000000000FFFFFF
             inc word [r13 + 2*r11]
 
         add r12, 15 ; 15 = CHANNELS * PIXELS_PER_ITER * sizeof(uchar)
