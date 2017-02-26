@@ -6,17 +6,24 @@ Tracker::Tracker(Mat& histogram) :
     { }
 
 void Tracker::update(const Mat& frame) {
+    int nimages = 1;
+    const int channels[3] = {0,1,2};
+    float singleBinRange[2] = {0, 256};
+    const float* ranges[3] = {singleBinRange, singleBinRange, singleBinRange};
+
     // Thereminless usa frame entero como ROI
     Mat roi = frame;
 
     // PRUEBO CON EL FRAME ENTERO a ver si SIMD se la banca
     Mat backProjection = IHT_createBackProjectArgumentShort(roi.size());
 
-    IHT_calc3DByteDepthBackProject(roi.data, sample.data, backProjection.data, roi.rows, roi.cols, roi.step);
+    calcBackProject(&roi, nimages, channels, sample, backProjection, ranges);
+    // IHT_calc3DByteDepthBackProject(roi.data, sample.data, backProjection.data, roi.rows, roi.cols, roi.step);
     // IHT_calc3DByteDepthBackProject_ASM(roi.data, sample.data, backProjection.data, roi.rows, roi.cols, roi.step);
 
+    meanShift(backProjection, window, termCriteria);
+    // IHT_meanShift(backProjection.data, backProjection.rows, backProjection.cols, backProjection.step, &window, StaticConfiguration::termCritIters);
     // IHT_meanShift_CV(backProjection, window, StaticConfiguration::termCritIters);
-    IHT_meanShift(backProjection.data, backProjection.rows, backProjection.cols, backProjection.step, &window, StaticConfiguration::termCritIters);
     // IHT_meanShift_ASM(backProjection.data, backProjection.rows, backProjection.cols, backProjection.step, &window, StaticConfiguration::termCritIters);
 
 }
