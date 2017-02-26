@@ -180,12 +180,14 @@ void IHT_meanShift_CV(const Mat& densityMap, Rect& window, size_t iters) {
             roundf(ms.m01/ms.m00 + (float)window.tl().y - window.height*0.5)
         );
 
-        window = Rect (
-            std::min(std::max(tl.x, 0), densityMap.cols - window.width),
-            std::min(std::max(tl.y, 0), densityMap.rows - window.height),
-            window.width,
-            window.height
-        );
+        if ( ( window & Rect(tl, window.size()) ) != Rect() ) {
+            window = Rect (
+                std::min(std::max(tl.x, 0), densityMap.cols - window.width),
+                std::min(std::max(tl.y, 0), densityMap.rows - window.height),
+                window.width,
+                window.height
+            );
+        }
     }
 
     GLOBAL_stopTimer();
