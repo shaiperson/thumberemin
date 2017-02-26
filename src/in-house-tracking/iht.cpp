@@ -152,9 +152,13 @@ void IHT_meanShift (
         tl_x = roundf(m10/m00 + (float)curr_w_x - width*0.5);
         tl_y = roundf(m01/m00 + (float)curr_w_y - height*0.5);
 
-        /* HACER EL MIN MAX IN-HOUSE */
-        curr_w_x = std::min(std::max(tl_x, 0), mapcols-width);
-        curr_w_y = std::min(std::max(tl_y, 0), maprows-height);
+        if ( // intersection between current and previous windows not empty
+            abs(tl_x - curr_w_x) < width &&
+            abs(tl_y - curr_w_y) < height
+        ) {
+            curr_w_x = std::min(std::max(tl_x, 0), mapcols-width);
+            curr_w_y = std::min(std::max(tl_y, 0), maprows-height);
+        }
 
         iterCounter += 1;
     }
