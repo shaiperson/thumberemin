@@ -16,8 +16,7 @@ public:
     Size windowSize() const { return StaticConfiguration::trackingWindowSize; }
 
 protected:
-    Rect window;
-    // IHT_window window;
+    IHT_window window;
 };
 
 #endif

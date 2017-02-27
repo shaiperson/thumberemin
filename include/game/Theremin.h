@@ -13,7 +13,7 @@
 class Theremin {
 public:
     Theremin();
-    Theremin(const string& filepath);
+    Theremin(const string& mode);
     ~Theremin();
     void runFromVideoSource();
     void runLive();

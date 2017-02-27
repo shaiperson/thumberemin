@@ -12,7 +12,7 @@ const int StaticConfiguration::trackingMarkerThickness = 1;
 
 const size_t StaticConfiguration::termCritIters = 10;
 
-DynamicConfiguration::DynamicConfiguration(const Size& fsz) {
+DynamicConfiguration::DynamicConfiguration(const Size& fsz, const string& modeOption) {
     /* Size of the frames fed by the camera in use */
     frameSize = Size(fsz);
 
@@ -26,6 +26,11 @@ DynamicConfiguration::DynamicConfiguration(const Size& fsz) {
 
     /* Radius of circular tracking marker */
     trackingMarkerRadius = StaticConfiguration::trackingWindowSize.width / 2;
+
+    runningMode =
+        modeOption == "idiomatic" ? IDIOMATIC :
+        modeOption == "pointers" ? POINTERS :
+        ASM ;
 }
 
 DynamicConfiguration dynconf;

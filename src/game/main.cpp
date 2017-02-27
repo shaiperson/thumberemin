@@ -3,7 +3,9 @@
 // ./main or ./main vid <video_file_path>
 int main(int argc, char* argv[]) {
 
-    Theremin theremin;
+    string option = argc > 1 ? argv[1] : "";
+
+    Theremin theremin(option);
     theremin.runLive();
 
     return 0;

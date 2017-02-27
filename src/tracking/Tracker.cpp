@@ -6,26 +6,21 @@ Tracker::Tracker(Mat& histogram) :
     { }
 
 void Tracker::update(const Mat& frame) {
-    int nimages = 1;
-    const int channels[3] = {0,1,2};
-    float singleBinRange[2] = {0, 256};
-    const float* ranges[3] = {singleBinRange, singleBinRange, singleBinRange};
-    Mat backProjection;
-
-    // Thereminless usa frame entero como ROI
     Mat roi = frame;
+    Mat backProjection = IHT_createBackProjectArgumentShort(roi.size());
 
-    // PRUEBO CON EL FRAME ENTERO a ver si SIMD se la banca
-    // backProjection = IHT_createBackProjectArgumentShort(roi.size());
+    RunningMode mode = dynconf.runningMode;
 
-    calcBackProject(&roi, nimages, channels, sample, backProjection, ranges);
-    // IHT_calc3DByteDepthBackProject(roi.data, sample.data, backProjection.data, roi.rows, roi.cols, roi.step);
-    // IHT_calc3DByteDepthBackProject_ASM(roi.data, sample.data, backProjection.data, roi.rows, roi.cols, roi.step);
-
-    meanShift(backProjection, window, termCriteria);
-    // IHT_meanShift(backProjection.data, backProjection.rows, backProjection.cols, backProjection.step, &window, StaticConfiguration::termCritIters);
-    // IHT_meanShift_CV(backProjection, window, StaticConfiguration::termCritIters);
-    // IHT_meanShift_ASM(backProjection.data, backProjection.rows, backProjection.cols, backProjection.step, &window, StaticConfiguration::termCritIters);
+    if (mode == IDIOMATIC) {
+        IHT_calc3DByteDepthBackProject_CV(roi, sample, backProjection);
+        IHT_meanShift_CV(backProjection, window, StaticConfiguration::termCritIters);
+    } else if (mode == POINTERS) {
+        IHT_calc3DByteDepthBackProject(roi.data, sample.data, backProjection.data, roi.rows, roi.cols, roi.step);
+        IHT_meanShift(backProjection.data, backProjection.rows, backProjection.cols, backProjection.step, &window, StaticConfiguration::termCritIters);
+    } else if (mode == ASM) {
+        IHT_calc3DByteDepthBackProject_ASM(roi.data, sample.data, backProjection.data, roi.rows, roi.cols, roi.step);
+        IHT_meanShift_ASM(backProjection.data, backProjection.rows, backProjection.cols, backProjection.step, &window, StaticConfiguration::termCritIters);
+    }
 
 }
 

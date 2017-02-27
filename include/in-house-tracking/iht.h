@@ -13,6 +13,7 @@ struct iht_moments {
 struct IHT_window {
     int x, y, width, height;
     Point tl() const { return Point(x,y); }
+    Size size() const { return Size(width, height); }
 
     IHT_window(const Rect& r) : x(r.x), y(r.y), width(r.width), height(r.height) { }
     IHT_window() { }
@@ -25,7 +26,7 @@ void IHT_calc3DByteDepthBackProject(const uchar* image, const uchar* hist, uchar
 void IHT_calc3DByteDepthBackProject_CV(const Mat& image, const Mat& hist, Mat& backProjection);
 
 void IHT_meanShift(const uchar* densityMap, int maprows, int mapcols, int mapstep, IHT_window* w, size_t iters);
-void IHT_meanShift_CV(const Mat& densityMap, Rect& window, size_t iters);
+void IHT_meanShift_CV(const Mat& densityMap, IHT_window& window, size_t iters);
 
 extern "C" {
     void IHT_calc3DByteDepthUniformHist_ASM(const uchar* imgdata, uchar* histdata, size_t imgrows, size_t imgcols, size_t imgstep);

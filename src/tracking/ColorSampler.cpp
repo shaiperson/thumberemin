@@ -10,21 +10,16 @@ Point ColorSampler::current() const {
 
 Mat ColorSampler::takeSample(Mat& frame) {
     Mat samplingData = frame(dynconf.samplingRegion);
-    Mat hist;
+    Mat hist = IHT_createHistArgumentShort();
 
-    int nimages = 1; // only one 3-channel image
-    const int channels[3] = {0,1,2};
-    int dims = 3; // 3 dims: B, G and R.
-    int histSize[] = {256, 256, 256}; // each color is in uchar range 0..255
-    float singleBinRange[2] = {0, 256};
-    const float* ranges[3] = {singleBinRange, singleBinRange, singleBinRange};
+    RunningMode mode = dynconf.runningMode;
 
-    calcHist(&samplingData, nimages, channels, Mat(), hist, dims, histSize, ranges);
-
-    // hist = IHT_createHistArgumentShort();
-    // IHT_calc3DByteDepthUniformHist(samplingData.data, hist.data, samplingData.rows, samplingData.cols, samplingData.step);
-
-    // IHT_calc3DByteDepthUniformHist_ASM(samplingData.data, hist.data, samplingData.rows, samplingData.cols, samplingData.step);
+    if (mode == IDIOMATIC)
+        IHT_calc3DByteDepthUniformHist_CV(samplingData, hist);
+    else if (mode == POINTERS)
+        IHT_calc3DByteDepthUniformHist(samplingData.data, hist.data, samplingData.rows, samplingData.cols, samplingData.step);
+    else if (mode == ASM)
+        IHT_calc3DByteDepthUniformHist_ASM(samplingData.data, hist.data, samplingData.rows, samplingData.cols, samplingData.step);
 
     return hist;
 }

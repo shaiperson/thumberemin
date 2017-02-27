@@ -186,22 +186,24 @@ void IHT_meanShift (
     GLOBAL_stopTimer();
 }
 
-void IHT_meanShift_CV(const Mat& densityMap, Rect& window, size_t iters) {
+void IHT_meanShift_CV(const Mat& densityMap, IHT_window& window, size_t iters) {
 
     GLOBAL_startTimer();
 
     Point centroid, tl;
+    Rect wRect;
 
     for (size_t iter = 0; iter < iters; ++iter) {
+        wRect = Rect(window.tl(), window.size());
 
-        iht_moments ms(densityMap(window));
+        iht_moments ms(densityMap(wRect));
 
         tl = Point (
             roundf(ms.m10/ms.m00 + (float)window.tl().x - window.width*0.5),
             roundf(ms.m01/ms.m00 + (float)window.tl().y - window.height*0.5)
         );
 
-        if ( tl.x >= 0 && tl.y >= 0 && ( window & Rect(tl, window.size()) ) != Rect() ) {
+        if ( tl.x >= 0 && tl.y >= 0 && ( wRect & Rect(tl, window.size()) ) != Rect() ) {
             window = Rect (
                 std::min(tl.x, densityMap.cols - window.width),
                 std::min(tl.y, densityMap.rows - window.height),

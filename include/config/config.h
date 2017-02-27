@@ -14,13 +14,20 @@ namespace StaticConfiguration {
     extern const size_t termCritIters;
 }
 
+enum RunningMode {
+    IDIOMATIC,
+    POINTERS,
+    ASM,
+};
+
 class DynamicConfiguration {
 public:
     Size frameSize;
     Rect samplingRegion;
     int trackingMarkerRadius;
+    RunningMode runningMode;
 
-    DynamicConfiguration(const Size&);
+    DynamicConfiguration(const Size&, const string&);
     DynamicConfiguration() { }
 
 private:

@@ -1,12 +1,12 @@
 #include "../../include/game/Theremin.h"
 
-Theremin::Theremin() :
+Theremin::Theremin(const string& modeOption) :
     capture(StaticConfiguration::defaultCamera)
 {
     if(!capture.isOpened()) throw runtime_error("Error initializing camera");
 
     // Has to be defined before screen object is created
-    dynconf = DynamicConfiguration(capture.frameSize());
+    dynconf = DynamicConfiguration(capture.frameSize(), modeOption);
 
     screen = new InitialScreen;
     tracker = new ColorSampler;
