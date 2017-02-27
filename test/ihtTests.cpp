@@ -73,28 +73,40 @@ SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[unit], [bac
         image = imageToCropFrom(Rect(2,2,13,13)); // crop image so that it has padding; use image with cols not multiple of 5
 
         int histSizes[3] = {256, 256, 256};
-        Mat hist(3, histSizes, CV_16UC1, Scalar(0));
-        hist.at<short>(3,2,1) = 42;
+        Mat hist_(3, histSizes, CV_16UC1, Scalar(0));
+        hist_.at<short>(3,2,1) = 42;
+
+        const Mat hist(hist_);
 
         WHEN("Back-projected") {
-            Mat backProjection_seq = IHT_createBackProjectArgumentShort(image.size());
-            Mat backProjection_vec = IHT_createBackProjectArgumentShort(image.size());
+            Mat backProjection_cv = IHT_createBackProjectArgumentShort(image.size());
+            Mat backProjection_ptrs = IHT_createBackProjectArgumentShort(image.size());
+            Mat backProjection_asm = IHT_createBackProjectArgumentShort(image.size());
 
-            IHT_calc3DByteDepthBackProject(image.data, hist.data, backProjection_seq.data, image.rows, image.cols, image.step);
-            IHT_calc3DByteDepthBackProject_ASM(image.data, hist.data, backProjection_vec.data, image.rows, image.cols, image.step);
+            IHT_calc3DByteDepthBackProject_CV(image, hist, backProjection_cv);
+            IHT_calc3DByteDepthBackProject(image.data, hist.data, backProjection_ptrs.data, image.rows, image.cols, image.step);
+            IHT_calc3DByteDepthBackProject_ASM(image.data, hist.data, backProjection_asm.data, image.rows, image.cols, image.step);
 
             bool allTens;
-            THEN("All pixels in sequential back projection have 42") {
+            THEN("All pixels in idiomatic back projection have 42") {
                 allTens = true;
                 int jajalolsies = 0;
-                for (auto it = backProjection_seq.begin<short>(); it != backProjection_seq.end<short>(); ++it)
+                for (auto it = backProjection_cv.begin<short>(); it != backProjection_cv.end<short>(); ++it)
                     allTens = allTens && *it == 42;
                 REQUIRE(allTens);
             }
 
-            AND_THEN("All pixels in vectorial back projection have 42") {
+            THEN("All pixels in ptrs back projection have 42") {
                 allTens = true;
-                for (auto it = backProjection_vec.begin<short>(); it != backProjection_vec.end<short>(); ++it)
+                int jajalolsies = 0;
+                for (auto it = backProjection_ptrs.begin<short>(); it != backProjection_ptrs.end<short>(); ++it)
+                    allTens = allTens && *it == 42;
+                REQUIRE(allTens);
+            }
+
+            AND_THEN("All pixels in ASM back projection have 42") {
+                allTens = true;
+                for (auto it = backProjection_asm.begin<short>(); it != backProjection_asm.end<short>(); ++it)
                     allTens = allTens && *it == 42;
                 REQUIRE(allTens);
             }
@@ -108,29 +120,38 @@ SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[unit], [bac
             image.at<Vec3b>(i,i) = Vec3b(1, 100, 100);
 
         int histSizes[3] = {256, 256, 256};
-        Mat hist(3, histSizes, CV_16UC1, Scalar(0));
+        Mat hist_(3, histSizes, CV_16UC1, Scalar(0));
         for (size_t i = 0; i < 255; ++i) {
-            hist.at<short>(100, 100, i) = 123;
-            hist.at<short>(200, 200, i) = 456;
+            hist_.at<short>(100, 100, i) = 123;
+            hist_.at<short>(200, 200, i) = 456;
         }
 
-        WHEN("Back-projected") {
-            Mat backProjection_seq = IHT_createBackProjectArgumentShort(image.size());
-            Mat backProjection_vec = IHT_createBackProjectArgumentShort(image.size());
+        const Mat hist(hist_);
 
-            IHT_calc3DByteDepthBackProject(image.data, hist.data, backProjection_seq.data, image.rows, image.cols, image.step);
-            IHT_calc3DByteDepthBackProject_ASM(image.data, hist.data, backProjection_vec.data, image.rows, image.cols, image.step);
+        WHEN("Back-projected") {
+            Mat backProjection_cv = IHT_createBackProjectArgumentShort(image.size());
+            Mat backProjection_ptrs = IHT_createBackProjectArgumentShort(image.size());
+            Mat backProjection_asm = IHT_createBackProjectArgumentShort(image.size());
+
+            IHT_calc3DByteDepthBackProject_CV(image, hist, backProjection_cv);
+            IHT_calc3DByteDepthBackProject(image.data, hist.data, backProjection_ptrs.data, image.rows, image.cols, image.step);
+            IHT_calc3DByteDepthBackProject_ASM(image.data, hist.data, backProjection_asm.data, image.rows, image.cols, image.step);
 
             bool allCorrectSeq, allCorrectVec;
             THEN("All diagonal pixels have 123") {
                 allCorrectSeq = true;
                 for (size_t i = 0; i < 20; ++i)
-                    allCorrectSeq = allCorrectSeq && backProjection_seq.at<short>(i,i) == 123;
+                    allCorrectSeq = allCorrectSeq && backProjection_cv.at<short>(i,i) == 123;
+                REQUIRE(allCorrectSeq);
+
+                allCorrectSeq = true;
+                for (size_t i = 0; i < 20; ++i)
+                    allCorrectSeq = allCorrectSeq && backProjection_ptrs.at<short>(i,i) == 123;
                 REQUIRE(allCorrectSeq);
 
                 allCorrectVec = true;
                 for (size_t i = 0; i < 20; ++i)
-                    allCorrectVec = allCorrectVec && backProjection_vec.at<short>(i,i) == 123;
+                    allCorrectVec = allCorrectVec && backProjection_asm.at<short>(i,i) == 123;
                 REQUIRE(allCorrectVec);
             }
 
@@ -139,14 +160,21 @@ SCENARIO("Back-projecting an RGB histogram on an RGB 8-bit image", "[unit], [bac
                 for (size_t i = 0; i < 20; ++i)
                     for (size_t j = 0; j < 20; ++j)
                         if (i != j)
-                            allCorrectSeq = allCorrectSeq && backProjection_seq.at<short>(i,j) == 456;
+                            allCorrectSeq = allCorrectSeq && backProjection_cv.at<short>(i,j) == 456;
+                REQUIRE(allCorrectSeq);
+
+                allCorrectSeq = true;
+                for (size_t i = 0; i < 20; ++i)
+                    for (size_t j = 0; j < 20; ++j)
+                        if (i != j)
+                            allCorrectSeq = allCorrectSeq && backProjection_ptrs.at<short>(i,j) == 456;
                 REQUIRE(allCorrectSeq);
 
                 allCorrectVec = true;
                 for (size_t i = 0; i < 20; ++i)
                     for (size_t j = 0; j < 20; ++j)
                         if (i != j)
-                            allCorrectVec = allCorrectVec && backProjection_vec.at<short>(i,j) == 456;
+                            allCorrectVec = allCorrectVec && backProjection_asm.at<short>(i,j) == 456;
                 REQUIRE(allCorrectVec);
             }
         }
