@@ -9,7 +9,6 @@ public:
 
 private:
     void processFrame(Mat&, const TrackingInfo&) const;
-    using Screen::dimRegions;
 
     InstructionsText samplingInstructions;
     void drawRectangleWithCenterAndSize(Mat& frame, const Point& center, const Size& size) const;

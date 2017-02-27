@@ -13,7 +13,6 @@ public:
 
 protected:
     virtual void processFrame(Mat& frame, const TrackingInfo& tracker) const = 0;
-    void dimRegions(Mat& frame, const vector<Rect> regions, double factor) const;
 };
 
 #endif

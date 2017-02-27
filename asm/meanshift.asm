@@ -196,23 +196,72 @@ IHT_meanShift_ASM:
 
         ; A PARTIR DE AHORA *SON SIGNED*
 
-        cmp ebp, 0
-        cmovl ebp, [rsp + 16] ; ebp <-- max(tl_x, 0)
+        ; check for non-empty intersection between prev and current window before updating
+        ; (use temporarily rdx and rsi (OK here since they get XORed before being used again))
 
-        cmp ebp, r14d
-        cmovg ebp, r14d ; ebp <-- min(max(tl_x, 0), mapcols-width)
+        ;---------------------------------------------
+        ; check tl_x >= 0
+        ;---------------------------------------------
+
+        cmp ebp, 0
+        jl .next_iter
+
+        ;---------------------------------------------
+        ; check tl_y >= 0
+        ;---------------------------------------------
 
         cmp eax, 0
-        cmovl eax, [rsp + 16] ; eax <-- max(tl_y, 0)
+        jl .next_iter
+
+        ;---------------------------------------------
+        ; check abs(tl_x - curr_w_x) < width
+        ;---------------------------------------------
+
+        mov edx, ebp ; edx <-- tl_x
+        sub edx, r8d ; edx <-- tl_x - curr_w_x
+
+        mov esi, edx
+        not esi
+        inc esi ; esi <-- not(edx)+1, in case edx was negative
+
+        cmp edx, 0 ; check if negative
+        cmovl edx, esi ; edx <-- abs(tl_x - curr_w_x)
+
+        cmp edx, r10d ; cmp abs(tl_x - curr_w_x), width
+        jge .next_iter
+
+        ;---------------------------------------------
+        ; check abs(tl_y - curr_w_y) < height
+        ;---------------------------------------------
+
+        mov edx, eax ; edx <-- tl_y
+        sub edx, r9d ; edx <-- tl_y - curr_w_y
+
+        mov esi, edx
+        not esi
+        inc esi ; esi <-- not(edx)+1, in case edx was negative
+
+        cmp edx, 0 ; check if negative
+        cmovl edx, esi ; edx <-- abs(tl_y - curr_w_y)
+
+        cmp edx, r11d ; cmp abs(tl_y + curr_w_y), height
+        jge .next_iter
+
+        ;---------------------------------------------
+        ; do window updating if non-empty intersection
+        ;---------------------------------------------
+
+        cmp ebp, r14d
+        cmovg ebp, r14d ; ebp <-- min(tl_x, mapcols-width)
 
         cmp eax, r13d
-        cmovg eax, r13d ; eax <-- min(max(tl_y, 0), maprows-height)
+        cmovg eax, r13d ; eax <-- min(tl_y, maprows-height)
 
         ; update curr_w_x and curr_w_y
         mov r8d, ebp ; curr_w_x <-- min(max(tl_x, 0), mapcols-width)
         mov r9d, eax ; curr_w_y <-- min(max(tl_y, 0), maprows-height)
 
-        ; loop .iters_loop
+    .next_iter:
     dec ecx
     jnz .iters_loop
 

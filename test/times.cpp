@@ -1,8 +1,10 @@
-#include "catch.hpp"
 #include "../include/in-house-tracking/iht.h"
 
 #define REPETITIONS 300
 
+int main() { }
+
+/*
 TEST_CASE("Histogram calculation times", "[times], [hist]") {
     Mat image, hist;
     double time_its, time_ptrs, time_asm, time_disasm = 0;
@@ -10,22 +12,22 @@ TEST_CASE("Histogram calculation times", "[times], [hist]") {
     image = imread("../test/ihtinput/rgballover.png");
 
     for (size_t i = 0; i < REPETITIONS; ++i) {
-        /* measure iterators version */
+        // measure iterators version
         hist = IHT_createHistArgumentShort();
         IHT_calc3DByteDepthUniformHist_CV(image, hist);
         time_its += timer::t;
 
-        /* measure pointers version */
+        // measure pointers version
         hist = IHT_createHistArgumentShort();
         IHT_calc3DByteDepthUniformHist(image.data, hist.data, image.rows, image.cols, image.step);
         time_ptrs += timer::t;
 
-        /* measure assembler version */
+        // measure assembler version
         hist = IHT_createHistArgumentShort();
         IHT_calc3DByteDepthUniformHist_ASM(image.data, hist.data, image.rows, image.cols, image.step);
         time_asm += timer::t;
 
-        /* measure O3 pointer-arithmetic disassembled version */
+        // measure O3 pointer-arithmetic disassembled version
         hist = IHT_createHistArgumentShort();
         IHT_calc3DByteDepthUniformHist_DISASM(image.data, hist.data, image.rows, image.cols, image.step);
         time_disasm += timer::t;
@@ -52,13 +54,13 @@ TEST_CASE("Back projection calculation times", "[times], [backproject]") {
     image = imread("../test/ihtinput/rgballover.png");
 
     for (size_t i = 0; i < REPETITIONS; ++i) {
-        /* measure iterators version */
+        // measure iterators version
         hist = IHT_createHistArgumentShort();
         backproject = IHT_createBackProjectArgumentShort(image.size());
         IHT_calc3DByteDepthBackProject(image.data, hist.data, backproject.data, image.rows, image.cols, image.step);
         time_ptrs += timer::t;
 
-        /* measure pointers version */
+        // measure pointers version
         hist = IHT_createHistArgumentShort();
         backproject = IHT_createBackProjectArgumentShort(image.size());
         IHT_calc3DByteDepthBackProject_ASM(image.data, hist.data, backproject.data, image.rows, image.cols, image.step);
@@ -82,23 +84,23 @@ TEST_CASE("Mean shift times", "[times], [meanshift]") {
     Rect ihtCvWindow(rand() % 70, rand() % 70, 10 + rand() % 20, 10 + rand() % 20);
     Rect cvWindow(ihtCvWindow);
 
-    window ihtAsmWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
-    window ihtPtrsWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
+    IHT_window ihtAsmWindow(ihtCvWindow);
+    IHT_window ihtPtrsWindow(ihtCvWindow);
 
     double time_ihtptrs, time_ihtcv, time_asm = 0;
 
     size_t iters = 100;
 
     for (size_t i = 0; i < REPETITIONS; ++i) {
-        /* measure cv-idiomatic version */
+        // measure cv-idiomatic version
         IHT_meanShift_CV(image, ihtCvWindow, iters);
         time_ihtcv += timer::t;
 
-        /* measure pointers version */
+        // measure pointers version
         IHT_meanShift(image.data, image.rows, image.cols, image.step, &ihtPtrsWindow, iters);
         time_ihtptrs += timer::t;
 
-        /* measure ASM version */
+        // measure ASM version
         IHT_meanShift_ASM(image.data, image.rows, image.cols, image.step, &ihtAsmWindow, iters);
         time_asm += timer::t;
     }
@@ -113,3 +115,4 @@ TEST_CASE("Mean shift times", "[times], [meanshift]") {
     cerr << time_asm / REPETITIONS << endl;
 
 }
+*/

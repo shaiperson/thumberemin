@@ -2,6 +2,7 @@
 #define TRACKINGINFO_H
 
 #include "../config/config.h"
+#include "../in-house-tracking/iht.h"
 
 class TrackingInfo {
 public:
@@ -16,6 +17,7 @@ public:
 
 protected:
     Rect window;
+    // IHT_window window;
 };
 
 #endif

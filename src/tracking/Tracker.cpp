@@ -2,27 +2,31 @@
 
 Tracker::Tracker(Mat& histogram) :
     sample(histogram), // begin with samplingRegion as initial window
-    termCriteria(TermCriteria::COUNT, StaticConfiguration::termCritIters, 0) // terminate after 10 iterations
+    termCriteria(TermCriteria::COUNT, StaticConfiguration::termCritIters, 0)
     { }
 
 void Tracker::update(const Mat& frame) {
-    /* Playing region expanded with exact margins to allow desired movement of tracking marker
-    Note this strongly relies on meanShift()'s behavior with respect to tracking window reaching edges of frame*/
-    Point playingRegionExpansionVector = Point(0, StaticConfiguration::trackingWindowSize.height / 2);
-    Rect roiRect (
-        dynconf.playingRegion.tl() - playingRegionExpansionVector,
-        dynconf.playingRegion.br() + playingRegionExpansionVector
-    );
+    int nimages = 1;
+    const int channels[3] = {0,1,2};
+    float singleBinRange[2] = {0, 256};
+    const float* ranges[3] = {singleBinRange, singleBinRange, singleBinRange};
+    Mat backProjection;
 
-    Mat roi = frame(roiRect);
-    Mat backProjection = IHT_createBackProjectArgumentShort(roiRect.size());
+    // Thereminless usa frame entero como ROI
+    Mat roi = frame;
 
-    IHT_calc3DByteDepthBackProject(roi.data, sample.data, backProjection.data, roi.rows, roi.cols, roi.step);
+    // PRUEBO CON EL FRAME ENTERO a ver si SIMD se la banca
+    // backProjection = IHT_createBackProjectArgumentShort(roi.size());
 
-    Point windowTranslation = Point(-dynconf.inactiveRegions[0].width, -roiRect.y);
-    window += windowTranslation; // shift to playingRegion-relative position
-    IHT_meanShift_CV(backProjection, window, StaticConfiguration::termCritIters);
-    window -= windowTranslation; // shift back to frame-relative position
+    calcBackProject(&roi, nimages, channels, sample, backProjection, ranges);
+    // IHT_calc3DByteDepthBackProject(roi.data, sample.data, backProjection.data, roi.rows, roi.cols, roi.step);
+    // IHT_calc3DByteDepthBackProject_ASM(roi.data, sample.data, backProjection.data, roi.rows, roi.cols, roi.step);
+
+    meanShift(backProjection, window, termCriteria);
+    // IHT_meanShift(backProjection.data, backProjection.rows, backProjection.cols, backProjection.step, &window, StaticConfiguration::termCritIters);
+    // IHT_meanShift_CV(backProjection, window, StaticConfiguration::termCritIters);
+    // IHT_meanShift_ASM(backProjection.data, backProjection.rows, backProjection.cols, backProjection.step, &window, StaticConfiguration::termCritIters);
+
 }
 
 Point Tracker::current() const {

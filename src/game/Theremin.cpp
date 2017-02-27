@@ -10,20 +10,6 @@ Theremin::Theremin() :
 
     screen = new InitialScreen;
     tracker = new ColorSampler;
-    sound = new SilentSoundGenerator;
-}
-
-Theremin::Theremin(const string& vid) :
-    capture(vid)
-{
-    if(!capture.isOpened()) throw runtime_error("Error initializing video");
-
-    // Has to be defined before screen object is created
-    dynconf = DynamicConfiguration(capture.frameSize());
-
-    screen = new InitialScreen;
-    tracker = new ColorSampler;
-    sound = new SilentSoundGenerator;
 }
 
 Theremin::~Theremin() {
@@ -32,60 +18,20 @@ Theremin::~Theremin() {
     capture.release();
 }
 
-void Theremin::runFromVideoSource() {
-    switchToPlayingMode();
-
+void Theremin::run() {
     Mat frame;
-    while (capture.read(frame)) {
-        // tracker->update(frame);
-        // screen->update(frame, *tracker);
-        // sound->update(*tracker);
-        imshow("LOL", frame);
+    int key = -1;
+
+    while (key == -1) {
+        capture >> frame;
+        tracker->update(frame);
+        screen->update(frame, *tracker);
+        key = waitKey(1);
     }
 }
 
 void Theremin::runLive() {
-    /* wait for user to choose playing mode */
-    Mat frame;
-    while (keyOptions()) {
-        capture >> frame;
-        tracker->update(frame);
-        screen->update(frame, *tracker);
-        sound->update(*tracker);
-    }
-
-    if (playingMode) {
-        while (keyOptions()) {
-            capture >> frame;
-            tracker->update(frame);
-            screen->update(frame, *tracker);
-            sound->update(*tracker);
-        }
-    }
-}
-
-bool Theremin::keyOptions() {
-    int key = waitKey(1);
-    bool continuePlaying = true;
-
-    /* enter key */
-    if (key == 13) {
-        cout << "Entering playing mode" << endl;
-        switchToPlayingMode();
-        continuePlaying = false;
-    }
-    /* 'q' key */
-    if (key == 113) {
-        cout << "K, quitting." << endl;
-        continuePlaying = false;
-    }
-
-    return continuePlaying;
-}
-
-void Theremin::switchToPlayingMode() {
-    /* set private playingMode flag */
-    playingMode = true;
+    run();
 
     /* replace inital screen with playing screen */
     delete screen;
@@ -99,7 +45,5 @@ void Theremin::switchToPlayingMode() {
     delete tracker;
     tracker = new Tracker(sampleHistogram);
 
-    /* replace silent sound generator with range sound generator */
-    delete sound;
-    sound = new RangeSoundGenerator;
+    run();
 }

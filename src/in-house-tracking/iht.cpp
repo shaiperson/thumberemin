@@ -114,7 +114,7 @@ void IHT_meanShift (
     int maprows,
     int mapcols,
     int mapstep,
-    window* w,
+    IHT_window* w,
     size_t iters
 ) {
 
@@ -167,9 +167,15 @@ void IHT_meanShift (
         tl_x = roundf(m10/m00 + (float)curr_w_x - width*0.5);
         tl_y = roundf(m01/m00 + (float)curr_w_y - height*0.5);
 
-        /* HACER EL MIN MAX IN-HOUSE */
-        curr_w_x = std::min(std::max(tl_x, 0), mapcols-width);
-        curr_w_y = std::min(std::max(tl_y, 0), maprows-height);
+        if ( // intersection between current and previous windows not empty
+            tl_x >= 0 &&
+            tl_y >= 0 &&
+            abs(tl_x - curr_w_x) < width &&
+            abs(tl_y - curr_w_y) < height
+        ) {
+            curr_w_x = std::min(tl_x, mapcols-width);
+            curr_w_y = std::min(tl_y, maprows-height);
+        }
 
         iterCounter += 1;
     }
@@ -195,12 +201,14 @@ void IHT_meanShift_CV(const Mat& densityMap, Rect& window, size_t iters) {
             roundf(ms.m01/ms.m00 + (float)window.tl().y - window.height*0.5)
         );
 
-        window = Rect (
-            std::min(std::max(tl.x, 0), densityMap.cols - window.width),
-            std::min(std::max(tl.y, 0), densityMap.rows - window.height),
-            window.width,
-            window.height
-        );
+        if ( tl.x >= 0 && tl.y >= 0 && ( window & Rect(tl, window.size()) ) != Rect() ) {
+            window = Rect (
+                std::min(tl.x, densityMap.cols - window.width),
+                std::min(tl.y, densityMap.rows - window.height),
+                window.width,
+                window.height
+            );
+        }
     }
 
     GLOBAL_stopTimer();

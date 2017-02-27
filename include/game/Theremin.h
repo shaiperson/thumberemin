@@ -9,9 +9,6 @@
 #include "../tracking/TrackingInfo.h"
 #include "../tracking/ColorSampler.h"
 #include "../tracking/Tracker.h"
-#include "../sound/SoundGenerator.h"
-#include "../sound/SilentSoundGenerator.h"
-#include "../sound/RangeSoundGenerator.h"
 
 class Theremin {
 public:
@@ -25,12 +22,8 @@ private:
     Capture capture;
     Screen* screen;
     TrackingInfo* tracker;
-    SoundGenerator* sound;
 
-    bool playingMode; // TODO make polymorphic with respect to run()?
-
-    void switchToPlayingMode();
-    bool keyOptions();
+    void run();
 
 };
 
