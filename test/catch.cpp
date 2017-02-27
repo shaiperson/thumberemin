@@ -35,10 +35,10 @@ struct randomMeanshiftCase {
 
             rand() % (image.rows*3/4)
         ),
-        cvWindow(ihtCvWindow)
+        cvWindow(ihtCvWindow),
+        ihtAsmWindow(ihtCvWindow),
+        ihtPtrsWindow(ihtCvWindow)
     {
-        ihtAsmWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
-        ihtPtrsWindow = {ihtCvWindow.x, ihtCvWindow.y, ihtCvWindow.width, ihtCvWindow.height};
         for (size_t i = 0; i < image.rows; ++i) {
             for (size_t j = 0; j < image.cols; ++j) {
                 image.at<short>(i,j) = rand() % SHRT_MAX;
@@ -55,7 +55,7 @@ bool operator==(const IHT_window& window, const Rect& rect) {
     return rect == window;
 }
 
-bool operator==(const IHT_window& w1, const window& w2) {
+bool operator==(const IHT_window& w1, const IHT_window& w2) {
     return Rect(w1.x, w1.y, w1.width, w1.height) == w2;
 }
 
