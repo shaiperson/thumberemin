@@ -115,7 +115,6 @@ add_executable (
     meanshift.o
     hist_disasm_O3.o
     ../test/catch.cpp
-    ../test/ContinuousSineWaveTest.cpp
     ../test/ihtTests.cpp
     ../test/times.cpp
     ${COMMON_CPPS}

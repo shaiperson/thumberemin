@@ -12,8 +12,10 @@ struct iht_moments {
 
 struct IHT_window {
     int x, y, width, height;
-    IHT_window(const Rect& r) : x(r.x), y(r.y), width(r.width), height(r.height) { }
     Point tl() const { return Point(x,y); }
+
+    IHT_window(const Rect& r) : x(r.x), y(r.y), width(r.width), height(r.height) { }
+    IHT_window() { }
 };
 
 void IHT_calc3DByteDepthUniformHist(const uchar* imgdata, uchar* histdata, size_t imgrows, size_t imgcols, size_t imgstep);
