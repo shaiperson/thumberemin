@@ -30,10 +30,10 @@ set (
 # set(OpenCV_DIR "${CMAKE_BINARY_DIR}/modules")
 find_package(OpenCV REQUIRED)
 
-#juancho
 add_definitions (
     --std=c++11
     -g
+    -O3
 )
 
 # If the package has been found, several variables will
@@ -74,22 +74,6 @@ add_custom_command (
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
-# assemble meanshift.asm
-#add_custom_command (
-#    OUTPUT meanshift_disasm_O3.o
-#    COMMAND nasm -f elf64 -g -F dwarf ../asm/meanshift_disasm_O3.asm -o meanshift_disasm_O3.o
-#    DEPENDS ../asm/meanshift_disasm_O3.asm
-#    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-#)
-
-# assemble -O3 ptrarthm hist disasm
-add_custom_command (
-    OUTPUT hist_disasm_O3.o
-    COMMAND nasm -f elf64 -g -F dwarf ../asm/hist_disasm_ptrarthm_O3.asm -o hist_disasm_O3.o
-    DEPENDS ../asm/hist_disasm_ptrarthm_O3.asm
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-)
-
 # compile iht separately to control optimization flags
 add_custom_command (
     OUTPUT iht.o
@@ -100,7 +84,7 @@ add_custom_command (
 
 # Declare the executable target built from your sources
 add_executable (
-    prueba
+    main
     hist.o
     backproject.o
     meanshift.o
@@ -109,26 +93,14 @@ add_executable (
 )
 
 add_executable (
-    tests
+    exp
     hist.o
     backproject.o
     meanshift.o
-    hist_disasm_O3.o
-    ../test/catch.cpp
-    ../test/ihtTests.cpp
     ../test/times.cpp
     ${COMMON_CPPS}
 )
 
-#add_executable (
-#    exp
-#    ../exp/cswExp.cpp
-#    ../exp/exp.cpp/
-#    ${COMMON_CPPS}
-#)
-
 # Link your application with OpenCV libraries
-target_link_libraries(prueba ${OpenCV_LIBS} portaudio)
-target_link_libraries(tests ${OpenCV_LIBS} portaudio)
-# target_link_libraries(exp ${OpenCV_LIBS} portaudio)
-# target_link_libraries(prueba portaudio)
+target_link_libraries(main ${OpenCV_LIBS})
+target_link_libraries(exp ${OpenCV_LIBS})
