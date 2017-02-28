@@ -6,22 +6,34 @@ Tracker::Tracker(Mat& histogram) :
     { }
 
 void Tracker::update(const Mat& frame) {
+    // Mat roi = frame(Rect(dynconf.samplingRegion.x, 0, 50, frame.rows));
     Mat roi = frame;
     Mat backProjection = IHT_createBackProjectArgumentShort(roi.size());
 
     RunningMode mode = dynconf.runningMode;
 
+    // window.x -= dynconf.samplingRegion.x;
+
     if (mode == IDIOMATIC) {
         IHT_calc3DByteDepthBackProject_CV(roi, sample, backProjection);
+        timer::trackingAccum += timer::t;
         IHT_meanShift_CV(backProjection, window, StaticConfiguration::termCritIters);
+        timer::trackingAccum += timer::t;
     } else if (mode == POINTERS) {
         IHT_calc3DByteDepthBackProject(roi.data, sample.data, backProjection.data, roi.rows, roi.cols, roi.step);
+        timer::trackingAccum += timer::t;
         IHT_meanShift(backProjection.data, backProjection.rows, backProjection.cols, backProjection.step, &window, StaticConfiguration::termCritIters);
+        timer::trackingAccum += timer::t;
     } else if (mode == ASM) {
         IHT_calc3DByteDepthBackProject_ASM(roi.data, sample.data, backProjection.data, roi.rows, roi.cols, roi.step);
+        timer::trackingAccum += timer::t;
         IHT_meanShift_ASM(backProjection.data, backProjection.rows, backProjection.cols, backProjection.step, &window, StaticConfiguration::termCritIters);
+        timer::trackingAccum += timer::t;
     }
 
+    // window.x += dynconf.samplingRegion.x;
+
+    timer::trackingRepetitions += 1;
 }
 
 Point Tracker::current() const {

@@ -14,12 +14,15 @@ Mat ColorSampler::takeSample(Mat& frame) {
 
     RunningMode mode = dynconf.runningMode;
 
-    if (mode == IDIOMATIC)
+    if (mode == IDIOMATIC) {
         IHT_calc3DByteDepthUniformHist_CV(samplingData, hist);
-    else if (mode == POINTERS)
+    } else if (mode == POINTERS) {
         IHT_calc3DByteDepthUniformHist(samplingData.data, hist.data, samplingData.rows, samplingData.cols, samplingData.step);
-    else if (mode == ASM)
+    } else if (mode == ASM) {
         IHT_calc3DByteDepthUniformHist_ASM(samplingData.data, hist.data, samplingData.rows, samplingData.cols, samplingData.step);
+    }
+
+    timer::sampling = timer::t;
 
     return hist;
 }

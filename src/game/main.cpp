@@ -8,5 +8,10 @@ int main(int argc, char* argv[]) {
     Theremin theremin(option);
     theremin.runLive();
 
+    cout << "Tracking ran ";
+    cout << timer::sampling + timer::trackingAccum / timer::trackingRepetitions;
+    cout << " microseconds on average." << endl;
+
+
     return 0;
 }

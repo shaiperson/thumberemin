@@ -10,7 +10,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin/)
 # Define common cpps
 set (
     COMMON_CPPS
-    ../test/timer/timer.cpp
+    ../src/timer/timer.cpp
     ../src/config/config.cpp
     ../src/io/Capture.cpp
     ../src/gui/InitialScreen.cpp
@@ -92,15 +92,5 @@ add_executable (
     ${COMMON_CPPS}
 )
 
-add_executable (
-    exp
-    hist.o
-    backproject.o
-    meanshift.o
-    ../test/times.cpp
-    ${COMMON_CPPS}
-)
-
 # Link your application with OpenCV libraries
 target_link_libraries(main ${OpenCV_LIBS})
-target_link_libraries(exp ${OpenCV_LIBS})

@@ -6,6 +6,10 @@ Capture::Capture(int cameraId) :
 Capture::Capture(const string& filepath) :
     cvcapture(filepath) { }
 
+double Capture::get(int propId) {
+    return cvcapture.get(propId);
+}
+
 Size Capture::frameSize() {
     return Size(cvcapture.get(CV_CAP_PROP_FRAME_WIDTH), cvcapture.get(CV_CAP_PROP_FRAME_HEIGHT));
 }

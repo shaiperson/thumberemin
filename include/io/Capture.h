@@ -9,6 +9,7 @@ class Capture {
 public:
     Capture(int cameraId);
     Capture(const string& filepath);
+    double get(int propId);
     Size frameSize();
     bool isOpened();
     Capture& operator>>(Mat& image);
