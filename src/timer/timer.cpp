@@ -1,9 +1,13 @@
-#include "timer.h"
+#include "../../include/timer/timer.h"
 #include <iostream>
 
 high_resolution_clock::time_point timer::t0;
 high_resolution_clock::time_point timer::t1;
 double timer::t;
+
+double timer::sampling;
+double timer::trackingAccum = 0;
+size_t timer::trackingRepetitions;
 
 void timer::start() {
     timer::t0 = high_resolution_clock::now();

@@ -2,7 +2,7 @@
 #define IHT_H
 
 #include "../global.h"
-#include "../../test/timer/timer.h"
+#include "../timer/timer.h"
 
 struct iht_moments {
     float m00, m10, m01;
