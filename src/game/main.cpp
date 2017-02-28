@@ -1,17 +1,20 @@
-#include "../../include/game/Theremin.h"
+#include "../../include/game/Game.h"
 
 // ./main or ./main vid <video_file_path>
 int main(int argc, char* argv[]) {
 
     string option = argc > 1 ? argv[1] : "";
 
-    Theremin theremin(option);
-    theremin.runLive();
+    Game game(option);
+    game.runLive();
 
-    cout << "Tracking ran ";
+    cout << endl;
+    cout << "------------------------------------------------------------" << endl;
+    cout << "El tracking corrió en un promedio de ";
     cout << timer::sampling + timer::trackingAccum / timer::trackingRepetitions;
-    cout << " microseconds on average." << endl;
-
+    cout << " microsegundos." << endl;
+    cout << "------------------------------------------------------------" << endl;
+    cout << endl;
 
     return 0;
 }

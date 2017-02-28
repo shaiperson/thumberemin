@@ -10,11 +10,11 @@
 #include "../tracking/ColorSampler.h"
 #include "../tracking/Tracker.h"
 
-class Theremin {
+class Game {
 public:
-    Theremin();
-    Theremin(const string& mode);
-    ~Theremin();
+    Game();
+    Game(const string& mode);
+    ~Game();
     void runFromVideoSource();
     void runLive();
 

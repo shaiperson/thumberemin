@@ -1,6 +1,6 @@
-#include "../../include/game/Theremin.h"
+#include "../../include/game/Game.h"
 
-Theremin::Theremin(const string& modeOption) :
+Game::Game(const string& modeOption) :
     capture(StaticConfiguration::defaultCamera)
 {
     if(!capture.isOpened()) throw runtime_error("Error initializing camera");
@@ -12,13 +12,13 @@ Theremin::Theremin(const string& modeOption) :
     tracker = new ColorSampler;
 }
 
-Theremin::~Theremin() {
+Game::~Game() {
     delete screen;
     delete tracker;
     capture.release();
 }
 
-void Theremin::run() {
+void Game::run() {
     Mat frame;
     int key = -1;
 
@@ -30,7 +30,7 @@ void Theremin::run() {
     }
 }
 
-void Theremin::runLive() {
+void Game::runLive() {
     run();
 
     /* replace inital screen with playing screen */

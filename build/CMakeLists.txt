@@ -16,7 +16,7 @@ set (
     ../src/gui/InitialScreen.cpp
     ../src/gui/PlayingScreen.cpp
     ../src/gui/InstructionsText.cpp
-    ../src/game/Theremin.cpp
+    ../src/game/Game.cpp
     ../src/gui/Screen.cpp
     ../src/tracking/ColorSampler.cpp
     ../src/tracking/Tracker.cpp
