@@ -17,10 +17,10 @@ void IHT_calc3DByteDepthUniformHist(const uchar* imgdata, uchar* histdata, size_
             const uchar* pixel = imgdata + i*imgstep + j*chs;
             uchar* bin =
                 histdata +
-                pixel[2] * planeSize * sizeof(short) +
-                pixel[1] * dimSize * sizeof(short) +
-                pixel[0] * sizeof(short);
-            *(short*)bin += 1;
+                pixel[2] * planeSize * sizeof(ushort) +
+                pixel[1] * dimSize * sizeof(ushort) +
+                pixel[0] * sizeof(ushort);
+            *(ushort*)bin += 1;
         }
     }
 
@@ -35,7 +35,7 @@ void IHT_calc3DByteDepthUniformHist_CV(const Mat& image, Mat& hist) {
     for (size_t i = 0; i < image.rows; ++i) {
         for (size_t j = 0; j < image.cols; ++j) {
             const Vec3b& pixel = image.at<Vec3b>(i,j);
-            hist.at<short>(pixel[2], pixel[1], pixel[0]) += 1;
+            hist.at<ushort>(pixel[2], pixel[1], pixel[0]) += 1;
         }
     }
 
@@ -72,14 +72,14 @@ void IHT_calc3DByteDepthBackProject (
     while (i < imgrows) {
         j = 0;
         while (j < imgcols) {
-            * (short*) resdata = * (short*) (
+            * (ushort*) resdata = * (ushort*) (
                 histdata +
-                imgdata [2 * sizeof(uchar)] * planeSize * sizeof(short) +
-                imgdata [1 * sizeof(uchar)] * dimSize * sizeof(short) +
-                imgdata [0 * sizeof(uchar)] * sizeof(short)
+                imgdata [2 * sizeof(uchar)] * planeSize * sizeof(ushort) +
+                imgdata [1 * sizeof(uchar)] * dimSize * sizeof(ushort) +
+                imgdata [0 * sizeof(uchar)] * sizeof(ushort)
             );
             imgdata += imgchs * sizeof(uchar);
-            resdata += reschs * sizeof(short);
+            resdata += reschs * sizeof(ushort);
             j += 1;
         }
         imgdata += padding;
@@ -97,7 +97,7 @@ void IHT_calc3DByteDepthBackProject_CV(const Mat& image, const Mat& hist, Mat& b
     for (size_t i = 0; i < image.rows; ++i) {
         for (size_t j = 0; j < image.cols; ++j) {
             const Vec3b& pixel = image.at<Vec3b>(i,j);
-            backProjection.at<short>(i,j) = hist.at<short>(pixel[2], pixel[1], pixel[0]);
+            backProjection.at<ushort>(i,j) = hist.at<ushort>(pixel[2], pixel[1], pixel[0]);
         }
     }
 
@@ -120,7 +120,7 @@ void IHT_meanShift (
 
     GLOBAL_startTimer();
 
-    short curr;
+    ushort curr;
     float m00, m10, m01;
     int x, y;
     int shifted_centroid_x, shifted_centroid_y;
@@ -139,7 +139,7 @@ void IHT_meanShift (
         m00 = m10 = m01 = 0;
 
         // calculate current window moments
-        w_data = densityMap + curr_w_y*mapstep + curr_w_x*sizeof(short);
+        w_data = densityMap + curr_w_y*mapstep + curr_w_x*sizeof(ushort);
 
         //y = curr_w_y;
         y = 0; // do x,y positioning relative to window to avoid large moment values and consequent precision issues
@@ -148,18 +148,18 @@ void IHT_meanShift (
             x = 0;
             while (x < width) {
                 // window is known to be in valid position within density map
-                curr = *(short*)w_data;
+                curr = *(ushort*)w_data;
 
                 m00 += curr;
                 m10 += x*curr;
                 m01 += y*curr;
 
                 x += 1;
-                w_data += sizeof(short); // next element on row
+                w_data += sizeof(ushort); // next element on row
             }
 
             y += 1;
-            w_data += mapstep - width*sizeof(short); // next row beginning
+            w_data += mapstep - width*sizeof(ushort); // next row beginning
         }
 
         /* update curr window */
@@ -223,10 +223,10 @@ void IHT_meanShift_CV(const Mat& densityMap, IHT_window& window, size_t iters) {
 /* moments */
 
 iht_moments::iht_moments(const Mat& data) : m00(0), m10(0), m01(0) {
-    short curr;
+    ushort curr;
     for (int x = 0; x < data.cols; ++x) {
         for (int y = 0; y < data.rows; ++y) {
-            curr = data.at<short>(y,x);
+            curr = data.at<ushort>(y,x);
             m00 += curr;
             m10 += x*curr;
             m01 += y*curr;
