@@ -92,5 +92,15 @@ add_executable (
     ${COMMON_CPPS}
 )
 
+add_executable (
+    exp
+    hist.o
+    backproject.o
+    meanshift.o
+    ../exp/times.cpp
+    ${COMMON_CPPS}
+)
+
 # Link your application with OpenCV libraries
 target_link_libraries(main ${OpenCV_LIBS})
+target_link_libraries(exp ${OpenCV_LIBS})

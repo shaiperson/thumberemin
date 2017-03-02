@@ -5,17 +5,110 @@
 #include <iostream>
 #include <vector>
 
+#define REPETITIONS 1000
+#define ITERS 10
+
 int main( int argc, char* argv[] ) {
-    vector<randomMeanshiftCase> cases(20);
-
-    size_t iters = 100;
-    for (auto it = cases.begin(); it != cases.end(); ++it) {
-
-      IHT_meanShift_ASM(it->image.data, it->image.rows, it->image.cols, it->image.step, &it->ihtAsmWindow, iters);
-      IHT_meanShift(it->image.data, it->image.rows, it->image.cols, it->image.step, &it->ihtPtrsWindow, iters);
-      IHT_meanShift_CV(it->image, it->ihtCvWindow, iters);
-      meanShift(it->image, it->cvWindow, TermCriteria(TermCriteria::COUNT, iters, 0));
-
-      /* things */
+    if (argc < 3) {
+        cerr << "Indicar experimento" << endl;
+        return 1;
     }
+
+    vector<SquareRandomSamplingCase> samplingCases = createSquareRandomSamplingCases(50, 100, 1);
+    vector<SquareRandomBackprojCase> backprojCases = createSquareRandomBackprojCases(50, 100, 1);
+    vector<SquareRandomMeanshiftCase> meanshiftCases = createSquareRandomMeanshiftCasesWithMidSquareWindow(500, 50, 100, 1);
+
+    if (string("idiomatico-vs-punteros") == argv[1]) {
+
+        if (string("sampling") == argv[2]) {
+
+            for (SquareRandomSamplingCase& c : samplingCases) {
+                double cvTime = 0;
+                double ptrsTime = 0;
+                for (int i = 0; i < REPETITIONS; ++i) {
+                    IHT_calc3DByteDepthUniformHist_CV(c.window, c.cvHist);
+                    cvTime += timer::t;
+                    IHT_calc3DByteDepthUniformHist(c.window.data, c.ptrsHist.data, c.window.rows, c.window.cols, c.window.step);
+                    ptrsTime += timer::t;
+                }
+                cout << cvTime / REPETITIONS << " " << ptrsTime / REPETITIONS << endl;
+            }
+
+        } else if (string("backprojection") == argv[2]) {
+
+            for (SquareRandomBackprojCase& c : backprojCases) {
+                double cvTime = 0;
+                double ptrsTime = 0;
+                for (int i = 0; i < REPETITIONS; ++i) {
+                    IHT_calc3DByteDepthBackProject_CV(c.image, c.hist, c.cvBackproj);
+                    cvTime += timer::t;
+                    IHT_calc3DByteDepthBackProject(c.image.data, c.hist.data, c.ptrsBackproj.data, c.image.rows, c.image.cols, c.image.step);
+                    ptrsTime += timer::t;
+                }
+                cout << cvTime / REPETITIONS << " " << ptrsTime / REPETITIONS << endl;
+            }
+
+        } else if (string("meanshift") == argv[2]) {
+
+            for (SquareRandomMeanshiftCase& c : meanshiftCases) {
+                double cvTime = 0;
+                double ptrsTime = 0;
+                for (int i = 0; i < REPETITIONS; ++i) {
+                    IHT_meanShift_CV(c.densityMap, c.cvWindow, ITERS);
+                    cvTime += timer::t;
+                    IHT_meanShift(c.densityMap.data, c.densityMap.rows, c.densityMap.cols, c.densityMap.step, &c.ptrsWindow, ITERS);
+                    ptrsTime += timer::t;
+                }
+                cout << cvTime / REPETITIONS << " " << ptrsTime / REPETITIONS << endl;
+            }
+
+        }
+
+    } else if (string("punteros-vs-asm") == argv[1]) {
+
+        if (string("sampling") == argv[2]) {
+
+            for (SquareRandomSamplingCase& c : samplingCases) {
+                double ptrsTime = 0;
+                double asmTime = 0;
+                for (int i = 0; i < REPETITIONS; ++i) {
+                    IHT_calc3DByteDepthUniformHist(c.window.data, c.ptrsHist.data, c.window.rows, c.window.cols, c.window.step);
+                    ptrsTime += timer::t;
+                    IHT_calc3DByteDepthUniformHist_ASM(c.window.data, c.asmHist.data, c.window.rows, c.window.cols, c.window.step);
+                    asmTime += timer::t;
+                }
+                cout << ptrsTime / REPETITIONS << " " << asmTime / REPETITIONS << endl;
+            }
+
+        } else if (string("backprojection") == argv[2]) {
+
+            for (SquareRandomBackprojCase& c : backprojCases) {
+                double ptrsTime = 0;
+                double asmTime = 0;
+                for (int i = 0; i < REPETITIONS; ++i) {
+                    IHT_calc3DByteDepthBackProject(c.image.data, c.hist.data, c.ptrsBackproj.data, c.image.rows, c.image.cols, c.image.step);
+                    ptrsTime += timer::t;
+                    IHT_calc3DByteDepthBackProject_ASM(c.image.data, c.hist.data, c.asmBackproj.data, c.image.rows, c.image.cols, c.image.step);
+                    asmTime += timer::t;
+                }
+                cout << ptrsTime / REPETITIONS << " " << asmTime / REPETITIONS << endl;
+            }
+
+        } else if (string("meanshift") == argv[2]) {
+
+            for (SquareRandomMeanshiftCase& c : meanshiftCases) {
+                double ptrsTime = 0;
+                double asmTime = 0;
+                for (int i = 0; i < REPETITIONS; ++i) {
+                    IHT_meanShift(c.densityMap.data, c.densityMap.rows, c.densityMap.cols, c.densityMap.step, &c.ptrsWindow, ITERS);
+                    ptrsTime += timer::t;
+                    IHT_meanShift_ASM(c.densityMap.data, c.densityMap.rows, c.densityMap.cols, c.densityMap.step, &c.asmWindow, ITERS);
+                    asmTime += timer::t;
+                }
+                cout << ptrsTime / REPETITIONS << " " << asmTime / REPETITIONS << endl;
+            }
+        }
+    }
+
+    return 0;
 }

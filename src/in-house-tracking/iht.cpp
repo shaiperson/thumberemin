@@ -148,6 +148,7 @@ void IHT_meanShift (
             x = 0;
             while (x < width) {
                 // window is known to be in valid position within density map
+
                 curr = *(ushort*)w_data;
 
                 m00 += curr;
@@ -237,20 +238,9 @@ iht_moments::iht_moments(const Mat& data) : m00(0), m10(0), m01(0) {
 
 /* aux */
 
-/* Consuming method requires 0-initialized */
-Mat IHT_createHistArgumentFloat() {
-    int histSize[] = {256, 256, 256}; // each color is in uchar range 0..255
-    return Mat(3, histSize, CV_32FC1, Scalar(0));
-}
-
 Mat IHT_createHistArgumentShort() {
     int histSize[] = {256, 256, 256}; // each color is in uchar range 0..255
     return Mat(3, histSize, CV_16UC1, Scalar(0));
-}
-
-/* Consuming method requires 0-initialized */
-Mat IHT_createBackProjectArgumentFloat(const Size& size) {
-    return Mat(size, CV_32FC1, Scalar(0));
 }
 
 Mat IHT_createBackProjectArgumentShort(const Size& size) {

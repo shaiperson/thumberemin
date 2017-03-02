@@ -16,7 +16,8 @@ struct IHT_window {
     Size size() const { return Size(width, height); }
 
     IHT_window(const Rect& r) : x(r.x), y(r.y), width(r.width), height(r.height) { }
-    IHT_window() { }
+    IHT_window(int x, int y, int w, int h) : x(x), y(y), width(w), height(h) { }
+    IHT_window(const IHT_window& w) : x(w.x), y(w.y), width(w.width), height(w.height) { }
 };
 
 void IHT_calc3DByteDepthUniformHist(const uchar* imgdata, uchar* histdata, size_t imgrows, size_t imgcols, size_t imgstep);
@@ -36,9 +37,7 @@ extern "C" {
 }
 
 /* aux */
-Mat IHT_createHistArgumentFloat();
 Mat IHT_createHistArgumentShort();
-Mat IHT_createBackProjectArgumentFloat(const Size&);
 Mat IHT_createBackProjectArgumentShort(const Size&);
 
 #endif
