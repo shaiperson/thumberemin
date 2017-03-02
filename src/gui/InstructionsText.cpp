@@ -24,3 +24,19 @@ void InstructionsText::write(Mat& frame, const Point& bottomLeft) const {
             CV_AA
         );
 }
+
+int InstructionsText::maxLineWidth() {
+    vector<int> linesWidths(lines.size());
+
+    transform (
+        lines.cbegin(),
+        lines.cend(),
+        linesWidths.begin(),
+        [this] (const string& s) { return getTextSize(s, fontFace, fontScale, thickness, &baseLine).width; }
+    );
+
+    return * max_element (
+        linesWidths.cbegin(),
+        linesWidths.cend()
+    );
+}

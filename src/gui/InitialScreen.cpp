@@ -2,7 +2,7 @@
 
 InitialScreen::InitialScreen() :
     samplingInstructions (
-        {"Cover square", "with object", "and hit any key", "", "Press 'q' to quit"}
+        StaticConfiguration::initialInstructionsLines
     ) { }
 
 /* Derived-screen-specific additional frame processing for display*/

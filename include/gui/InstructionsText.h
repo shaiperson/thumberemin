@@ -14,6 +14,7 @@ struct InstructionsText {
 
     InstructionsText(const vector<string>& lines); // lines should be provided in desired order of appearance
     void write(Mat&, const Point& bottomLeft) const;
+    int maxLineWidth();
 };
 
 #endif

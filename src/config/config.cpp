@@ -12,13 +12,16 @@ const int StaticConfiguration::trackingMarkerThickness = 1;
 
 const size_t StaticConfiguration::termCritIters = 10;
 
+vector<string> StaticConfiguration::initialInstructionsLines =
+    {"Cubrir de manera", "completa con el", "objeto a seguir y", "tocar una tecla"};
+
 DynamicConfiguration::DynamicConfiguration(const Size& fsz, const string& modeOption) {
     /* Size of the frames fed by the camera in use */
     frameSize = Size(fsz);
 
     /* Denotes the subregion of the playing region from where the color sample is taken for tracking */
     samplingRegion = Rect (
-        frameSize.width - 2*StaticConfiguration::trackingWindowSize.width,
+        frameSize.width - 4*StaticConfiguration::trackingWindowSize.width,
         frameSize.height - 2*StaticConfiguration::trackingWindowSize.height,
         StaticConfiguration::trackingWindowSize.width,
         StaticConfiguration::trackingWindowSize.height

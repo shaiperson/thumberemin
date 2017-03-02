@@ -12,6 +12,7 @@ namespace StaticConfiguration {
     extern const Scalar trackingMarkerColor;
     extern const int trackingMarkerThickness;
     extern const size_t termCritIters;
+    extern vector<string> initialInstructionsLines;
 }
 
 enum RunningMode {
