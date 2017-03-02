@@ -6,13 +6,10 @@ Tracker::Tracker(Mat& histogram) :
     { }
 
 void Tracker::update(const Mat& frame) {
-    // Mat roi = frame(Rect(dynconf.samplingRegion.x, 0, 50, frame.rows));
     Mat roi = frame;
     Mat backProjection = IHT_createBackProjectArgumentShort(roi.size());
 
     RunningMode mode = dynconf.runningMode;
-
-    // window.x -= dynconf.samplingRegion.x;
 
     if (mode == IDIOMATIC) {
         IHT_calc3DByteDepthBackProject_CV(roi, sample, backProjection);
@@ -30,8 +27,6 @@ void Tracker::update(const Mat& frame) {
         IHT_meanShift_ASM(backProjection.data, backProjection.rows, backProjection.cols, backProjection.step, &window, StaticConfiguration::termCritIters);
         timer::trackingAccum += timer::t;
     }
-
-    // window.x += dynconf.samplingRegion.x;
 
     timer::trackingRepetitions += 1;
 }

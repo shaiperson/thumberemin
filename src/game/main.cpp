@@ -1,6 +1,5 @@
 #include "../../include/game/Game.h"
 
-// ./main or ./main vid <video_file_path>
 int main(int argc, char* argv[]) {
 
     string option = argc > 1 ? argv[1] : "";

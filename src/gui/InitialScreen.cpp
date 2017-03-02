@@ -1,6 +1,5 @@
 #include "../../include/gui/InitialScreen.h"
 
-// TODO hardcoded values
 InitialScreen::InitialScreen() :
     samplingInstructions (
         {"Cover square", "with object", "and hit any key", "", "Press 'q' to quit"}
