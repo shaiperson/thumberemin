@@ -128,7 +128,7 @@ int main( int argc, char* argv[] ) {
             }
 
             for (int i = 0; i < REPETITIONS; ++i) {
-                IHT_meanShift_ASM(c.densityMap.data, c.densityMap.rows, c.densityMap.cols, c.densityMap.step, &c.ptrsWindow, ITERS);
+                IHT_meanShift_ASM(c.densityMap.data, c.densityMap.rows, c.densityMap.cols, c.densityMap.step, &c.asmWindow, ITERS);
                 asmTime += timer::t;
             }
 
