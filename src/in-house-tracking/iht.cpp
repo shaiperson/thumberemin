@@ -31,13 +31,16 @@ void IHT_calc3DByteDepthUniformHist(const uchar* imgdata, uchar* histdata, size_
 void IHT_calc3DByteDepthUniformHist_CV(const Mat& image, Mat& hist) {
 
     GLOBAL_startTimer();
-
+    /*
     for (size_t i = 0; i < image.rows; ++i) {
         for (size_t j = 0; j < image.cols; ++j) {
             const Vec3b& pixel = image.at<Vec3b>(i,j);
             hist.at<ushort>(pixel[2], pixel[1], pixel[0]) += 1;
         }
     }
+    */
+    for (auto it = image.begin<Vec3b>(); it != image.end<Vec3b>(); ++it)
+        hist.at<ushort>((*it)[2], (*it)[1], (*it)[0]) += 1;
 
     GLOBAL_stopTimer();
 
@@ -94,12 +97,9 @@ void IHT_calc3DByteDepthBackProject_CV(const Mat& image, const Mat& hist, Mat& b
 
     GLOBAL_startTimer();
 
-    for (size_t i = 0; i < image.rows; ++i) {
-        for (size_t j = 0; j < image.cols; ++j) {
-            const Vec3b& pixel = image.at<Vec3b>(i,j);
-            backProjection.at<ushort>(i,j) = hist.at<ushort>(pixel[2], pixel[1], pixel[0]);
-        }
-    }
+    auto backprIt = backProjection.begin<ushort>();
+    for (auto imageIt = image.begin<Vec3b>(); imageIt != image.end<Vec3b>(); ++imageIt)
+        *backprIt = hist.at<ushort>((*imageIt)[2], (*imageIt)[1], (*imageIt)[0]);
 
     GLOBAL_stopTimer();
 
