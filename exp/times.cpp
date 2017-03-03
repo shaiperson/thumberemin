@@ -14,59 +14,146 @@ int main( int argc, char* argv[] ) {
         return 1;
     }
 
-    vector<SquareRandomSamplingCase> samplingCases = createSquareRandomSamplingCases(50, 100, 1);
-    vector<SquareRandomBackprojCase> backprojCases = createSquareRandomBackprojCases(50, 100, 1);
-    vector<SquareRandomMeanshiftCase> meanshiftCases = createSquareRandomMeanshiftCasesWithMidSquareWindow(500, 50, 100, 1);
+    vector<samplingCase> samplingCases = createsamplingCases(50, 150, 5);
+    vector<backprojCase> backprojCases = createbackprojCases(50, 150, 5);
+    vector<meanshiftCase> meanshiftCases = createmeanshiftCasesWithMidSquareWindow(500, 52, 132, 4);
 
     if (string("sampling") == argv[1]) {
 
-        for (SquareRandomSamplingCase& c : samplingCases) {
+        for (samplingCase& c : samplingCases) {
             double cvTime = 0;
             double ptrsTime = 0;
             double asmTime = 0;
+
             for (int i = 0; i < REPETITIONS; ++i) {
                 IHT_calc3DByteDepthUniformHist_CV(c.window, c.cvHist);
                 cvTime += timer::t;
+            }
+
+            for (int i = 0; i < REPETITIONS; ++i) {
                 IHT_calc3DByteDepthUniformHist(c.window.data, c.ptrsHist.data, c.window.rows, c.window.cols, c.window.step);
                 ptrsTime += timer::t;
+            }
+
+            for (int i = 0; i < REPETITIONS; ++i) {
                 IHT_calc3DByteDepthUniformHist_ASM(c.window.data, c.ptrsHist.data, c.window.rows, c.window.cols, c.window.step);
                 asmTime += timer::t;
             }
-            cout << cvTime / REPETITIONS << " " << ptrsTime / REPETITIONS << " " << asmTime / REPETITIONS << endl;
+
+            c.cvTime = cvTime / REPETITIONS;
+            c.ptrsTime = ptrsTime / REPETITIONS;
+            c.asmTime = asmTime / REPETITIONS;
+        }
+
+        // format print idiomatic
+        for (samplingCase& c : samplingCases) {
+            cout << "(" << c.window.total() << ", " << c.cvTime << ")" << endl;
+        }
+
+        cout << endl;
+
+        // format print pointers
+        for (samplingCase& c : samplingCases) {
+            cout << "(" << c.window.total() << ", " << c.ptrsTime << ")" << endl;
+        }
+
+        cout << endl;
+
+        // format print asm
+        for (samplingCase& c : samplingCases) {
+            cout << "(" << c.window.total() << ", " << c.asmTime << ")" << endl;
         }
 
     } else if (string("backprojection") == argv[1]) {
 
-        for (SquareRandomBackprojCase& c : backprojCases) {
+        for (backprojCase& c : backprojCases) {
             double cvTime = 0;
             double ptrsTime = 0;
             double asmTime = 0;
+
             for (int i = 0; i < REPETITIONS; ++i) {
-                IHT_calc3DByteDepthBackProject_CV(c.image, c.hist, c.cvBackproj);
+                IHT_calc3DByteDepthBackProject_CV(c.frame, c.hist, c.cvBackproj);
                 cvTime += timer::t;
-                IHT_calc3DByteDepthBackProject(c.image.data, c.hist.data, c.ptrsBackproj.data, c.image.rows, c.image.cols, c.image.step);
+            }
+
+            for (int i = 0; i < REPETITIONS; ++i) {
+                IHT_calc3DByteDepthBackProject(c.frame.data, c.hist.data, c.ptrsBackproj.data, c.frame.rows, c.frame.cols, c.frame.step);
                 ptrsTime += timer::t;
-                IHT_calc3DByteDepthBackProject_ASM(c.image.data, c.hist.data, c.ptrsBackproj.data, c.image.rows, c.image.cols, c.image.step);
+            }
+
+            for (int i = 0; i < REPETITIONS; ++i) {
+                IHT_calc3DByteDepthBackProject_ASM(c.frame.data, c.hist.data, c.ptrsBackproj.data, c.frame.rows, c.frame.cols, c.frame.step);
                 asmTime += timer::t;
             }
-            cout << cvTime / REPETITIONS << " " << ptrsTime / REPETITIONS << " " << asmTime / REPETITIONS << endl;
+
+            c.cvTime = cvTime / REPETITIONS;
+            c.ptrsTime = ptrsTime / REPETITIONS;
+            c.asmTime = asmTime / REPETITIONS;
+        }
+
+        // format print idiomatic
+        for (backprojCase& c : backprojCases) {
+            cout << "(" << c.frame.total() << ", " << c.cvTime << ")" << endl;
+        }
+
+        cout << endl;
+
+        // format print pointers
+        for (backprojCase& c : backprojCases) {
+            cout << "(" << c.frame.total() << ", " << c.ptrsTime << ")" << endl;
+        }
+
+        cout << endl;
+
+        // format print asm
+        for (backprojCase& c : backprojCases) {
+            cout << "(" << c.frame.total() << ", " << c.asmTime << ")" << endl;
         }
 
     } else if (string("meanshift") == argv[1]) {
 
-        for (SquareRandomMeanshiftCase& c : meanshiftCases) {
+        for (meanshiftCase& c : meanshiftCases) {
             double cvTime = 0;
             double ptrsTime = 0;
             double asmTime = 0;
+
             for (int i = 0; i < REPETITIONS; ++i) {
                 IHT_meanShift_CV(c.densityMap, c.cvWindow, ITERS);
                 cvTime += timer::t;
+            }
+
+            for (int i = 0; i < REPETITIONS; ++i) {
                 IHT_meanShift(c.densityMap.data, c.densityMap.rows, c.densityMap.cols, c.densityMap.step, &c.ptrsWindow, ITERS);
                 ptrsTime += timer::t;
+            }
+
+            for (int i = 0; i < REPETITIONS; ++i) {
                 IHT_meanShift_ASM(c.densityMap.data, c.densityMap.rows, c.densityMap.cols, c.densityMap.step, &c.ptrsWindow, ITERS);
                 asmTime += timer::t;
             }
-            cout << cvTime / REPETITIONS << " " << ptrsTime / REPETITIONS << " " << asmTime / REPETITIONS << endl;
+
+            c.cvTime = cvTime / REPETITIONS;
+            c.ptrsTime = ptrsTime / REPETITIONS;
+            c.asmTime = asmTime / REPETITIONS;
+        }
+
+        // format print idiomatic
+        for (meanshiftCase& c : meanshiftCases) {
+            cout << "(" << c.cvWindow.total() << ", " << c.cvTime << ")" << endl;
+        }
+
+        cout << endl;
+
+        // format print pointers
+        for (meanshiftCase& c : meanshiftCases) {
+            cout << "(" << c.cvWindow.total() << ", " << c.ptrsTime << ")" << endl;
+        }
+
+        cout << endl;
+
+        // format print asm
+        for (meanshiftCase& c : meanshiftCases) {
+            cout << "(" << c.cvWindow.total() << ", " << c.asmTime << ")" << endl;
         }
 
     }

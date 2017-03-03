@@ -14,6 +14,7 @@ struct IHT_window {
     int x, y, width, height;
     Point tl() const { return Point(x,y); }
     Size size() const { return Size(width, height); }
+    size_t total() const { return width*height; }
 
     IHT_window(const Rect& r) : x(r.x), y(r.y), width(r.width), height(r.height) { }
     IHT_window(int x, int y, int w, int h) : x(x), y(y), width(w), height(h) { }
