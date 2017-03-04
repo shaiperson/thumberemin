@@ -99,7 +99,7 @@ void IHT_calc3DByteDepthBackProject_CV(const Mat& image, const Mat& hist, Mat& b
 
     auto backprIt = backProjection.begin<ushort>();
     for (auto imageIt = image.begin<Vec3b>(); imageIt != image.end<Vec3b>(); ++imageIt)
-        *backprIt = hist.at<ushort>((*imageIt)[2], (*imageIt)[1], (*imageIt)[0]);
+        *backprIt++ = hist.at<ushort>((*imageIt)[2], (*imageIt)[1], (*imageIt)[0]);
 
     GLOBAL_stopTimer();
 
