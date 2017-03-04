@@ -1,0 +1,37 @@
+------------------------
+Dependencias
+------------------------
+- Es necesario CMake para poder compilar el proyecto.
+- Requiere tener instalado OpenCV.
+- Requiere tener conectada una cámara web.
+
+------------------------
+Compilación
+------------------------
+- Moverse al directorio build/.
+- Correr "cmake .", lo cual genera un Makefile y dependencias para el mismo.
+- El Makefile resultante tiene 2 targets:
+    - main. Genera el ejecutable que sirve para probar el algoritmo.
+    - exp. Genera el ejecutable utilizado para correr los experimentos de tiempos de ejeución.
+
+Los ejecutables se escriben en el directorio bin/.
+
+------------------------
+Ejecución
+------------------------
+main - prueba del algoritmo.
+    - Ejecutar ./main <opción>.
+    - Opciones:
+        - "idiomatic" - corre el programa usando la versión de C++ idiomática del algoritmo.
+        - "pointers" - corre el programa usando la versión de C++ basada en aritmética de punteros.
+        - cualquier otra opción corre la versión SIMD.
+    - Para usar el programa, cubrir la ventana azul con el objeto a seguir de manera ajustada, i.e, maximizando la superficie del mismo que entra en la ventana sin incluir en ella píxeles que no pertenecen al objeto. Luego tocar cualquier tecla para empezar el seguimiento. Para cortarlo, tocar cualquier tecla nuevamente.
+    - Como el algoritmo se basa en colores, funciona mejor en buenas condiciones de iluminación y si el objeto tiene colores distintos a los que tiene de fondo.
+    - Al finalizar el seguimiento, se imprime por la salida estándar el tiempo promedio de las ejecuciones de las rutinas del algoritmo que se realizaron durante el seguimiento (que se invocan una vez por cada frame de la cámara).
+
+exp - medición de tiempos de ejeución con casos de prueba. Son los experimentos cuyos resultados se exponen en el informe. Imprime los resultados de cada uno por la salida estándar.
+    - Ejecutar ./exp <opción>
+    - Opciones:
+        - "sampling" - experimentos de la etapa de muestreo.
+        - "backprojection" - experimentos de la etapa de generación de mapas de confianza.
+        - "meanshift" - experimentos de la etapa de ubicación.
