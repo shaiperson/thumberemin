@@ -45,6 +45,9 @@ int main( int argc, char* argv[] ) {
             c.asmTime = asmTime / REPETITIONS;
         }
 
+        cout << endl << "(área de V, microsegundos)" << endl;
+        cout << endl;
+        cout << "Versión idiomática" << endl;
         // format print idiomatic
         for (samplingCase& c : samplingCases) {
             cout << "(" << c.window.total() << ", " << c.cvTime << ")" << endl;
@@ -52,6 +55,7 @@ int main( int argc, char* argv[] ) {
 
         cout << endl;
 
+        cout << "Versión con punteros" << endl;
         // format print pointers
         for (samplingCase& c : samplingCases) {
             cout << "(" << c.window.total() << ", " << c.ptrsTime << ")" << endl;
@@ -59,6 +63,7 @@ int main( int argc, char* argv[] ) {
 
         cout << endl;
 
+        cout << "Versión vectorial" << endl;
         // format print asm
         for (samplingCase& c : samplingCases) {
             cout << "(" << c.window.total() << ", " << c.asmTime << ")" << endl;
@@ -91,6 +96,9 @@ int main( int argc, char* argv[] ) {
             c.asmTime = asmTime / REPETITIONS;
         }
 
+        cout << endl << "(área del frame, microsegundos)" << endl;
+        cout << endl;
+        cout << "Versión idiomática" << endl;
         // format print idiomatic
         for (backprojCase& c : backprojCases) {
             cout << "(" << c.frame.total() << ", " << c.cvTime << ")" << endl;
@@ -98,6 +106,7 @@ int main( int argc, char* argv[] ) {
 
         cout << endl;
 
+        cout << "Versión con punteros" << endl;
         // format print pointers
         for (backprojCase& c : backprojCases) {
             cout << "(" << c.frame.total() << ", " << c.ptrsTime << ")" << endl;
@@ -105,6 +114,7 @@ int main( int argc, char* argv[] ) {
 
         cout << endl;
 
+        cout << "Versión vectorial" << endl;
         // format print asm
         for (backprojCase& c : backprojCases) {
             cout << "(" << c.frame.total() << ", " << c.asmTime << ")" << endl;
@@ -137,6 +147,9 @@ int main( int argc, char* argv[] ) {
             c.asmTime = asmTime / REPETITIONS;
         }
 
+        cout << endl << "(área de V, microsegundos)" << endl;
+        cout << endl;
+        cout << "Versión idiomática" << endl;
         // format print idiomatic
         for (meanshiftCase& c : meanshiftCases) {
             cout << "(" << c.cvWindow.total() << ", " << c.cvTime << ")" << endl;
@@ -144,6 +157,7 @@ int main( int argc, char* argv[] ) {
 
         cout << endl;
 
+        cout << "Versión con punteros" << endl;
         // format print pointers
         for (meanshiftCase& c : meanshiftCases) {
             cout << "(" << c.cvWindow.total() << ", " << c.ptrsTime << ")" << endl;
@@ -151,6 +165,7 @@ int main( int argc, char* argv[] ) {
 
         cout << endl;
 
+        cout << "Versión vectorial" << endl;
         // format print asm
         for (meanshiftCase& c : meanshiftCases) {
             cout << "(" << c.cvWindow.total() << ", " << c.asmTime << ")" << endl;
