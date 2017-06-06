@@ -20,8 +20,8 @@ set (
     ../src/tracking/ColorSampler.cpp
     ../src/tracking/Tracker.cpp
     ../src/sound/SilentSoundGenerator.cpp
-    ../src/sound/RangeSoundGenerator.cpp
-    ../src/sound/ContinuousSineWave.cpp
+    ../src/sound/MidiSoundGenerator.cpp
+    ../lib/rtmidi/RtMidi.cpp
 )
 
 # Find OpenCV, you may need to set OpenCV_DIR variable
@@ -32,7 +32,7 @@ set (
 find_package(OpenCV REQUIRED)
 
 #juancho
-add_definitions(--std=c++11)
+add_definitions(--std=c++11 -D__UNIX_JACK__)
 
 # If the package has been found, several variables will
 # be set, you can find the full list with descriptions
@@ -46,31 +46,15 @@ message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
 if(CMAKE_VERSION VERSION_LESS "2.8.11")
   # Add OpenCV headers location to your include paths
   include_directories(${OpenCV_INCLUDE_DIRS})
-endif()	
+endif()
 
 # Declare the executable target built from your sources
 add_executable (
-    prueba
+    main
     ../src/game/main.cpp
     ${COMMON_CPPS}
 )
 
-add_executable (
-    tests
-    ../test/catch.cpp
-    ../test/ContinuousSineWaveTest.cpp
-    ${COMMON_CPPS}
-)
-
-add_executable (
-    exp
-    ../exp/cswExp.cpp
-    ../exp/exp.cpp
-    ${COMMON_CPPS}
-)
-
 # Link your application with OpenCV libraries
-target_link_libraries(prueba ${OpenCV_LIBS} portaudio)
-target_link_libraries(tests ${OpenCV_LIBS} portaudio)
-target_link_libraries(exp ${OpenCV_LIBS} portaudio)
-# target_link_libraries(prueba portaudio)
+target_link_libraries(main jack)
+target_link_libraries(main ${OpenCV_LIBS})

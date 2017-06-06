@@ -30,9 +30,8 @@ void PlayingScreen::drawNoteMarker(Mat& frame, const Point& center) const {
     );
 
     /* print frequency */
-    float freq = dynconf.pixel2Freq[center.y];
     stringstream stream;
-    stream << fixed << setprecision(1) << freq;
+    stream << (int)dynconf.pixel2MidiNote[center.y];
 
     putText(frame, stream.str(), freqPoint - Point(0, 5), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(255,255,255));
 

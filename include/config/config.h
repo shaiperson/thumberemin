@@ -13,7 +13,7 @@ namespace StaticConfiguration {
     extern const int samplingWindowThickness;
     extern const Scalar trackingMarkerColor;
     extern const int trackingMarkerThickness;
-    extern const float noteRange[2];
+    extern const uchar midiLow;
     extern const size_t totalNotes;
     extern const size_t sampleRate;
     extern const size_t numberOfChannels;
@@ -28,13 +28,13 @@ public:
     vector<Rect> inactiveRegions;
     Rect samplingRegion;
     int trackingMarkerRadius;
-    unordered_map<size_t, float> pixel2Freq;
+    unordered_map<size_t, uchar> pixel2MidiNote;
 
     DynamicConfiguration(const Size&);
     DynamicConfiguration() { }
 
 private:
-    void initializePixel2Freq();
+    void initializePixel2MidiNote();
 };
 
 extern DynamicConfiguration dynconf;

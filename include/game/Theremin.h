@@ -11,11 +11,13 @@
 #include "../tracking/Tracker.h"
 #include "../sound/SoundGenerator.h"
 #include "../sound/SilentSoundGenerator.h"
-#include "../sound/RangeSoundGenerator.h"
+#include "../sound/MidiSoundGenerator.h"
+
+#include "../../lib/rtmidi/RtMidi.h"
 
 class Theremin {
 public:
-    Theremin();
+    Theremin(uchar midiChannel);
     ~Theremin();
     void run();
 
@@ -25,10 +27,14 @@ private:
     TrackingInfo* tracker;
     SoundGenerator* sound;
 
+    uchar midiChannel;
+    RtMidiOut* midiout;
+
     bool playingMode; // TODO make polymorphic with respect to run()?
 
     void switchToPlayingMode();
     bool keyOptions();
+    bool chooseMidiPort( RtMidiOut *rtmidi );
 
 };
 
