@@ -2,14 +2,15 @@
 
 int main(int argc, char* argv[]) {
 
-    if (argc < 2) {
-        cout << "Usage: ./main <MIDI channel>" << endl;
+    if (argc < 3) {
+        cout << "Usage: ./main <width> <height>" << endl;
         exit(EXIT_FAILURE);
     }
 
-    uchar midiChannel = (uchar)atoi(argv[1]);
+    int width = (uchar)atoi(argv[1]);
+    int height = (uchar)atoi(argv[2]);
 
-    Theremin theremin(midiChannel);
+    Theremin theremin(width, height);
     theremin.run();
 
     return 0;

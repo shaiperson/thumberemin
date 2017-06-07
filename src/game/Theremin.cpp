@@ -1,7 +1,7 @@
 #include "../../include/game/Theremin.h"
 
-Theremin::Theremin(uchar midiChannel) :
-    capture(StaticConfiguration::defaultCamera),
+Theremin::Theremin(int width, int height) :
+    capture(StaticConfiguration::defaultCamera, width, height),
     midiChannel(midiChannel)
 {
     if(!capture.isOpened()) throw runtime_error("Error initializing camera");

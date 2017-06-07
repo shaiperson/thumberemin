@@ -17,7 +17,7 @@
 
 class Theremin {
 public:
-    Theremin(uchar midiChannel);
+    Theremin(int width, int height);
     ~Theremin();
     void run();
 

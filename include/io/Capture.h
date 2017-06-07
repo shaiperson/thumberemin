@@ -7,7 +7,7 @@
 
 class Capture {
 public:
-    Capture(int cameraId);
+    Capture(int cameraId, int width, int height);
     Size frameSize();
     bool isOpened();
     Capture& operator>>(Mat& image);
