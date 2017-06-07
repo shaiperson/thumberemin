@@ -7,8 +7,8 @@ int main(int argc, char* argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    int width = (uchar)atoi(argv[1]);
-    int height = (uchar)atoi(argv[2]);
+    int width = atoi(argv[1]);
+    int height = atoi(argv[2]);
 
     Theremin theremin(width, height);
     theremin.run();

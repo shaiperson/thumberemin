@@ -1,7 +1,6 @@
 #include "../../include/io/Capture.h"
 
-Capture::Capture(int cameraId, int width, int height) :
-    cvcapture(cameraId) {
+Capture::Capture(int cameraId, int width, int height) : cvcapture(cameraId) {
         cvcapture.set(CV_CAP_PROP_FRAME_WIDTH, width);
         cvcapture.set(CV_CAP_PROP_FRAME_HEIGHT, height);
     }
