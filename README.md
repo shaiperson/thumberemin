@@ -7,7 +7,11 @@
 * cmake and make for compiling
 
 ## Compiling
-Go to build/ and run _cmake ._. This creates an exectuable bin/main.
+* Go to build
+* Run _cmake ._
+* Run _make main_
+
+An exectuable will be written at bin/main.
 
 ## Execution
 First make sure there's a process listening for MIDI messages at an open MIDI port.
