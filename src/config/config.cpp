@@ -4,7 +4,7 @@ const int StaticConfiguration::defaultCamera = 0;
 const string StaticConfiguration::gameWindowName = "Theremin";
 
 const double StaticConfiguration::dimmingFactor = 0.7;
-const double StaticConfiguration::screenDivisionFactor = 48.0;
+const double StaticConfiguration::screenDivisionFactor = 10;
 
 const Size StaticConfiguration::trackingWindowSize = Size(50, 50);
 const Scalar StaticConfiguration::samplingWindowColor = Scalar(255,191,0);
@@ -34,7 +34,7 @@ DynamicConfiguration::DynamicConfiguration(const Size& fsz) {
 
     /* Denotes the region of the screen where motion tracking happens */
     playingRegion = Rect ( // TODO hardcoded
-        frameSize.width*(41 / StaticConfiguration::screenDivisionFactor),
+        frameSize.width*(8   / StaticConfiguration::screenDivisionFactor),
         actual_playingRegionVerticalMargin,
         StaticConfiguration::trackingWindowSize.width,
         actual_playingRegionHeight
@@ -67,7 +67,7 @@ DynamicConfiguration::DynamicConfiguration(const Size& fsz) {
     /* Denotes the subregion of the playing region from where the color sample is taken for tracking */
     samplingRegion = Rect (
         playingRegion.x,
-        playingRegion.height*(40/StaticConfiguration::screenDivisionFactor),
+        playingRegion.height*(8/StaticConfiguration::screenDivisionFactor),
         StaticConfiguration::trackingWindowSize.width,
         StaticConfiguration::trackingWindowSize.height
     );
