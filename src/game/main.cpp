@@ -3,7 +3,7 @@
 int main(int argc, char* argv[]) {
 
     if (argc < 3) {
-        cout << "Usage: ./main <width> <height>" << endl;
+        cout << "Specify window size: ./main <width> <height>" << endl;
         exit(EXIT_FAILURE);
     }
 
