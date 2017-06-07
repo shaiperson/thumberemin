@@ -27,7 +27,6 @@ private:
     TrackingInfo* tracker;
     SoundGenerator* sound;
 
-    uchar midiChannel;
     RtMidiOut* midiout;
 
     bool playingMode; // TODO make polymorphic with respect to run()?

@@ -1,8 +1,7 @@
 #include "../../include/game/Theremin.h"
 
 Theremin::Theremin(int width, int height) :
-    capture(StaticConfiguration::defaultCamera, width, height),
-    midiChannel(midiChannel)
+    capture(StaticConfiguration::defaultCamera, width, height)
 {
     if(!capture.isOpened()) throw runtime_error("Error initializing camera");
 
@@ -98,7 +97,7 @@ void Theremin::switchToPlayingMode() {
 
     /* replace silent sound generator with range sound generator */
     delete sound;
-    sound = new MidiSoundGenerator(midiout, midiChannel);
+    sound = new MidiSoundGenerator(midiout, 0);
 }
 
 bool Theremin::chooseMidiPort(RtMidiOut *rtmidi) {

@@ -4,9 +4,8 @@ MidiSoundGenerator::MidiSoundGenerator(RtMidiOut* midiout, uchar channel) : midi
 
 void MidiSoundGenerator::update(const TrackingInfo& tracker) {
     uchar currNote = dynconf.pixel2MidiNote[tracker.current().y];
-    cout << (int)currNote << endl;
     // send MIDI message only if note has changed
-    if (true) {
+    if (currNote != prevNote) {
         // send note OFF for previous note
         sendMidiMessageForNote(prevNote, OFF);
         // send note ON for new note
