@@ -1,17 +1,19 @@
 #include "../../include/sound/MidiSoundGenerator.h"
 
-MidiSoundGenerator::MidiSoundGenerator(RtMidiOut* midiout, uchar channel) : midiout(midiout), channel(channel) { }
+MidiSoundGenerator::MidiSoundGenerator(RtMidiOut* midiout, uchar channel) : midiout(midiout), channel(channel), prevNote(255) { }
 
 void MidiSoundGenerator::update(const TrackingInfo& tracker) {
-    // send note OFF for previous note
-    sendMidiMessageForNote(prevNote, OFF);
-
-    // send note ON for new note
     uchar currNote = dynconf.pixel2MidiNote[tracker.current().y];
-    sendMidiMessageForNote(currNote, ON);
-
-    // update prevNote
-    prevNote = currNote;
+    cout << (int)currNote << endl;
+    // send MIDI message only if note has changed
+    if (true) {
+        // send note OFF for previous note
+        sendMidiMessageForNote(prevNote, OFF);
+        // send note ON for new note
+        sendMidiMessageForNote(currNote, ON);
+        // update prevNote
+        prevNote = currNote;
+    }
 }
 
 void MidiSoundGenerator::sendMidiMessageForNote(uchar midiNote, keypress p) {
