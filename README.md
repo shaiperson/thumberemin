@@ -15,5 +15,5 @@ An exectuable will be written at bin/main.
 
 ## Execution
 First make sure there's a process listening for MIDI messages at an open MIDI port.
-* Run bin/main
+* Run bin/main <width> <height>
 * Follow on-screen instructions
