@@ -4,7 +4,6 @@
 #include "../global.h"
 #include "../config/config.h"
 #include "../tracking/Tracker.h"
-#include <portaudio.h>
 
 class SoundGenerator {
 public:
