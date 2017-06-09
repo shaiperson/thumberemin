@@ -15,6 +15,7 @@ Theremin::Theremin(int width, int height) :
     sound = new SilentSoundGenerator;
 
     // assign SIGTERM handler
+    signal(SIGINT, cleanup);
     signal(SIGTERM, cleanup);
 
     // create MIDI out object
@@ -50,6 +51,7 @@ void cleanup(int) {
         // interruption occurred after MidiSoundGenerator was initialized
         globalMidiSoundGeneratorPointerForSigterm->lastNoteOff();
     }
+    exit(0);
 }
 
 void Theremin::run() {
