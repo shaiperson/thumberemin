@@ -1,5 +1,7 @@
 #include "../../include/game/Theremin.h"
 
+MidiSoundGenerator* globalMidiSoundGeneratorPointerForSigterm = NULL;
+
 Theremin::Theremin(int width, int height) :
     capture(StaticConfiguration::defaultCamera, width, height)
 {
@@ -11,6 +13,9 @@ Theremin::Theremin(int width, int height) :
     screen = new InitialScreen;
     tracker = new ColorSampler;
     sound = new SilentSoundGenerator;
+
+    // assign SIGTERM handler
+    signal(SIGTERM, cleanup);
 
     // create MIDI out object
     midiout = new RtMidiOut();
@@ -38,6 +43,13 @@ Theremin::~Theremin() {
     delete tracker;
     delete midiout;
     capture.release();
+}
+
+void cleanup(int) {
+    if (globalMidiSoundGeneratorPointerForSigterm) {
+        // interruption occurred after MidiSoundGenerator was initialized
+        globalMidiSoundGeneratorPointerForSigterm->lastNoteOff();
+    }
 }
 
 void Theremin::run() {
@@ -74,6 +86,7 @@ bool Theremin::keyOptions() {
     if (key == 113) {
         cout << "K, quitting." << endl;
         continuePlaying = false;
+        cleanup(123);
     }
 
     return continuePlaying;
@@ -98,6 +111,7 @@ void Theremin::switchToPlayingMode() {
     /* replace silent sound generator with range sound generator */
     delete sound;
     sound = new MidiSoundGenerator(midiout, 0);
+    globalMidiSoundGeneratorPointerForSigterm = (MidiSoundGenerator*)sound;
 }
 
 bool Theremin::chooseMidiPort(RtMidiOut *rtmidi) {

@@ -12,6 +12,7 @@ class MidiSoundGenerator : public SoundGenerator {
 public:
     MidiSoundGenerator(RtMidiOut* midiout, uchar channel);
     void update(const TrackingInfo& tracker);
+    void lastNoteOff();
 private:
     enum keypress {ON, OFF};
     RtMidiOut* midiout;

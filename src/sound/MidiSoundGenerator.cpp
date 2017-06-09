@@ -15,6 +15,10 @@ void MidiSoundGenerator::update(const TrackingInfo& tracker) {
     }
 }
 
+void MidiSoundGenerator::lastNoteOff() {
+    sendMidiMessageForNote(prevNote, OFF);
+}
+
 void MidiSoundGenerator::sendMidiMessageForNote(uchar midiNote, keypress p) {
     uchar statusByte = (p == ON ? 144 : 128) + channel;
 

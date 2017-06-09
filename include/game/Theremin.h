@@ -15,6 +15,8 @@
 
 #include "../../lib/rtmidi/RtMidi.h"
 
+#include <csignal>
+
 class Theremin {
 public:
     Theremin(int width, int height);
@@ -36,5 +38,7 @@ private:
     bool chooseMidiPort( RtMidiOut *rtmidi );
 
 };
+
+void cleanup(int);
 
 #endif
