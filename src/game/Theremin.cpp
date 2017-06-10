@@ -62,7 +62,7 @@ void Theremin::run() {
         sound->update(*tracker);
     }
 
-    if (playingMode) {
+    while (playingMode) {
         while (keyOptions()) {
             capture >> frame;
             tracker->update(frame);
@@ -87,8 +87,18 @@ bool Theremin::keyOptions() {
         cout << "K, quitting." << endl;
         continuePlaying = false;
         cleanup(123);
+        /* set private playingMode flag */
+        playingMode = false;
     }
 
+    if (key == 32) {
+	    cout << "Restarting." << endl;
+        screen = new InitialScreen;
+	    tracker = new ColorSampler;
+    	sound = new SilentSoundGenerator;
+    }
+
+    
     return continuePlaying;
 }
 
