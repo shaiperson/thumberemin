@@ -95,16 +95,19 @@ bool Theremin::keyOptions() {
 
     if (key == 32) {
 	    cout << "Restarting." << endl;
-	    /*delete screen;
+
+        ((MidiSoundGenerator*)sound)->lastNoteOff();
+
+	    delete screen;
     	delete tracker;
-    	delete sound;*/
+    	delete sound;
+
         screen = new InitialScreen;
 	    tracker = new ColorSampler;
     	sound = new SilentSoundGenerator;
-        cleanup(123);
+
     }
 
-    
     return continuePlaying;
 }
 
