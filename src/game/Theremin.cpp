@@ -88,7 +88,8 @@ bool Theremin::keyOptions() {
     if (key == 113) {
         cout << "K, quitting." << endl;
 
-        ((MidiSoundGenerator*)sound)->lastNoteOff();
+        if (playingMode)
+            ((MidiSoundGenerator*)sound)->lastNoteOff();
 
         continuePlaying = false;
         playingMode = false;
