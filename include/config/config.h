@@ -13,10 +13,6 @@ namespace StaticConfiguration {
     extern const int samplingWindowThickness;
     extern const Scalar trackingMarkerColor;
     extern const int trackingMarkerThickness;
-    extern const uchar midiLow;
-    extern const size_t totalNotes;
-    extern const size_t sampleRate;
-    extern const size_t numberOfChannels;
 }
 
 class DynamicConfiguration {
@@ -28,9 +24,12 @@ public:
     vector<Rect> inactiveRegions;
     Rect samplingRegion;
     int trackingMarkerRadius;
+
+    uchar midiLow;
+    int totalNotes;
     unordered_map<size_t, uchar> pixel2MidiNote;
 
-    DynamicConfiguration(const Size&);
+    DynamicConfiguration(const Size& frameSize, uchar midiLow, int totalNotes);
     DynamicConfiguration() { }
 
 private:

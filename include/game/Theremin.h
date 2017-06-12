@@ -19,7 +19,7 @@
 
 class Theremin {
 public:
-    Theremin(int width, int height);
+    Theremin(int width, int height, uchar midiLow, int totalNotes);
     ~Theremin();
     void run();
 

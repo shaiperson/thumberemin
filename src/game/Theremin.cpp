@@ -2,13 +2,13 @@
 
 MidiSoundGenerator* globalMidiSoundGeneratorPointerForSigterm = NULL;
 
-Theremin::Theremin(int width, int height) :
+Theremin::Theremin(int width, int height, uchar midiLow, int totalNotes) :
     capture(StaticConfiguration::defaultCamera, width, height)
 {
     if(!capture.isOpened()) throw runtime_error("Error initializing camera");
 
     // Has to be defined before screen object is created
-    dynconf = DynamicConfiguration(capture.frameSize());
+    dynconf = DynamicConfiguration(capture.frameSize(), midiLow, totalNotes);
 
     screen = new InitialScreen;
     tracker = new ColorSampler;

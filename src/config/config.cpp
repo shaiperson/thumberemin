@@ -13,19 +13,15 @@ const int StaticConfiguration::samplingWindowThickness = 2;
 const Scalar StaticConfiguration::trackingMarkerColor = Scalar(255,191,0);
 const int StaticConfiguration::trackingMarkerThickness = 1;
 
-const uchar StaticConfiguration::midiLow = 60;
-const size_t StaticConfiguration::totalNotes = 3*12; // 12 per octave
-
-DynamicConfiguration::DynamicConfiguration(const Size& fsz) {
-    /* Size of the frames fed by the camera in use */
-    frameSize = Size(fsz);
-
+DynamicConfiguration::DynamicConfiguration(const Size& fsz, uchar midiLow, int totalNotes) :
+    frameSize(fsz), midiLow(midiLow), totalNotes(totalNotes)
+{
     /* Calculate playing region height 1. leaving enough space for tracking marker 2. considering number of notes */
     size_t min_playingRegionMargin = StaticConfiguration::trackingWindowSize.height / 2;
     size_t max_playingRegionHeight = frameSize.height - 2*min_playingRegionMargin;
 
-    pixelsPerNote = max_playingRegionHeight / StaticConfiguration::totalNotes;
-    size_t actual_playingRegionHeight = pixelsPerNote * StaticConfiguration::totalNotes;
+    pixelsPerNote = max_playingRegionHeight / totalNotes;
+    size_t actual_playingRegionHeight = pixelsPerNote * totalNotes;
 
     size_t actual_playingRegionVerticalMargin = (frameSize.height - actual_playingRegionHeight)/2;
 
@@ -78,8 +74,8 @@ DynamicConfiguration::DynamicConfiguration(const Size& fsz) {
 
 void DynamicConfiguration::initializePixel2MidiNote() {
 
-    uchar lo = StaticConfiguration::midiLow;
-    uchar hi = lo + StaticConfiguration::totalNotes;
+    uchar lo = midiLow;
+    uchar hi = lo + totalNotes;
 
     size_t pixelRow = playingRegion.y + playingRegion.height - 1;
     for (uchar note = lo; note <= hi; ++note) {
