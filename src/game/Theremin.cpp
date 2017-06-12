@@ -15,8 +15,8 @@ Theremin::Theremin(int width, int height) :
     sound = new SilentSoundGenerator;
 
     // assign SIGTERM handler
-    signal(SIGINT, cleanup);
-    signal(SIGTERM, cleanup);
+    signal(SIGINT, cleanExit);
+    signal(SIGTERM, cleanExit);
 
     // create MIDI out object
     midiout = new RtMidiOut();
@@ -46,7 +46,7 @@ Theremin::~Theremin() {
     capture.release();
 }
 
-void cleanup(int) {
+void cleanExit(int) {
     if (globalMidiSoundGeneratorPointerForSigterm) {
         // interruption occurred after MidiSoundGenerator was initialized
         globalMidiSoundGeneratorPointerForSigterm->lastNoteOff();
@@ -87,9 +87,10 @@ bool Theremin::keyOptions() {
     /* 'q' key */
     if (key == 113) {
         cout << "K, quitting." << endl;
+
+        ((MidiSoundGenerator*)sound)->lastNoteOff();
+
         continuePlaying = false;
-        cleanup(123);
-        /* set private playingMode flag */
         playingMode = false;
     }
 

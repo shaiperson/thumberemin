@@ -39,6 +39,6 @@ private:
 
 };
 
-void cleanup(int);
+void cleanExit(int);
 
 #endif
