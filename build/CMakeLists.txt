@@ -48,7 +48,7 @@ endif()
 
 # Declare the executable target built from your sources
 add_executable (
-    prueba
+    main
     ../src/game/main.cpp
     ${COMMON_CPPS}
 )
@@ -68,7 +68,7 @@ add_executable (
 )
 
 # Link your application with OpenCV libraries
-target_link_libraries(prueba ${OpenCV_LIBS} portaudio)
+target_link_libraries(main ${OpenCV_LIBS} portaudio)
 target_link_libraries(tests ${OpenCV_LIBS} portaudio)
 target_link_libraries(exp ${OpenCV_LIBS} portaudio)
 # target_link_libraries(prueba portaudio)
