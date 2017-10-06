@@ -44,7 +44,7 @@ bool Theremin::keyOptions() {
     bool continuePlaying = true;
 
     /* enter key */
-    if (key == 13) {
+    if (key == 10) {
         cout << "Entering playing mode" << endl;
         switchToPlayingMode();
         continuePlaying = false;
