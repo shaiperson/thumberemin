@@ -1,6 +1,6 @@
 # Thumberemin
 
-A virtual musical instrument application inspired by the [Theremin](https://en.wikipedia.org/wiki/Theremin "Wikipedia"). The application allows you to control the instrument's pitch by moving your thumb up and down in front of a webcam using a motion tracking algorithm. Quick demo:
+A virtual musical instrument inspired by the [Theremin](https://en.wikipedia.org/wiki/Theremin "Wikipedia"). You control the instrument's pitch by moving your thumb up and down in front of a webcam. Quick demo:
 
 [![MIDI back end demo](https://img.youtube.com/vi/hG-Z1Z72Hyc/0.jpg)](https://www.youtube.com/watch?v=hG-Z1Z72Hyc)
 
